@@ -28,7 +28,9 @@
   --sl-color-gray-4: color-mix(in oklab, var(--ink) 44%, var(--paper));
   --sl-color-gray-5: color-mix(in oklab, var(--ink) 22%, var(--paper));
   --sl-color-gray-6: color-mix(in oklab, var(--ink) 8%, var(--paper));
+  --sl-color-gray-7: color-mix(in oklab, var(--ink) 4%, var(--paper));
   --sl-color-black: var(--paper);
+  --sl-color-text-invert: var(--sl-color-black);
 
   --sl-color-accent-low: color-mix(in oklab, var(--marker) 45%, var(--paper));
   --sl-color-accent: var(--ink);
@@ -74,6 +76,7 @@
     --sl-color-gray-4: color-mix(in oklab, var(--paper) 40%, var(--ink));
     --sl-color-gray-5: color-mix(in oklab, var(--paper) 18%, var(--ink));
     --sl-color-gray-6: color-mix(in oklab, var(--paper) 7%, var(--ink));
+    --sl-color-gray-7: color-mix(in oklab, var(--paper) 4%, var(--ink));
     --sl-color-black: var(--ink);
 
     --sl-color-accent-low: oklch(0.32 0.05 91);
