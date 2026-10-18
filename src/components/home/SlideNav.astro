@@ -73,7 +73,10 @@ import ArrowUp from "@lucide/astro/icons/arrow-up";
   // A step during a smooth scroll continues from its target, so quick presses do not stop at the same slide.
   let targetTop: number | undefined;
 
-  addEventListener("scrollend", () => (targetTop = undefined));
+  addEventListener("scrollend", () => {
+    targetTop = undefined;
+    updateStepButtons();
+  });
   if (!("onscrollend" in window)) {
     let timer: ReturnType<typeof setTimeout>;
     addEventListener("scroll", () => {
@@ -128,10 +131,11 @@ import ArrowUp from "@lucide/astro/icons/arrow-up";
     if (reducedMotion.matches || Math.abs(top - scrollY) <= tolerance) {
       targetTop = undefined;
       scrollTo({ top, behavior: "instant" });
-      return;
+    } else {
+      targetTop = top;
+      scrollTo({ top, behavior: "smooth" });
     }
-    targetTop = top;
-    scrollTo({ top, behavior: "smooth" });
+    updateStepButtons();
   }
 
   document.addEventListener("keydown", (event) => {
@@ -156,17 +160,33 @@ import ArrowUp from "@lucide/astro/icons/arrow-up";
     smoothScrollTo(top);
   });
 
-  for (const button of nav?.querySelectorAll<HTMLButtonElement>(
-    "[data-direction]",
-  ) ?? []) {
-    button.addEventListener("click", () => {
-      const top = stepTop(
-        Number(button.dataset.direction) as 1 | -1,
-        slideTops(),
+  const stepButtons = [
+    ...(nav?.querySelectorAll<HTMLButtonElement>("[data-direction]") ?? []),
+  ].map((button) => ({
+    button,
+    direction: Number(button.dataset.direction) as 1 | -1,
+  }));
+
+  // aria-disabled, unlike disabled, keeps the focus on the button.
+  function updateStepButtons() {
+    const tops = slideTops();
+    for (const { button, direction } of stepButtons)
+      button.setAttribute(
+        "aria-disabled",
+        String(stepTop(direction, tops) === undefined),
       );
+  }
+
+  for (const { button, direction } of stepButtons) {
+    button.addEventListener("click", () => {
+      const top = stepTop(direction, slideTops());
       if (top !== undefined) smoothScrollTo(top);
     });
   }
+
+  // The observer sees late content, such as fonts, and the resize event sees a change of only the window height.
+  new ResizeObserver(updateStepButtons).observe(document.body);
+  addEventListener("resize", updateStepButtons);
 
   // A link to a slide, in the nav or in the page, scrolls the same way as a step.
   document.addEventListener("click", (event) => {
@@ -271,7 +291,7 @@ import ArrowUp from "@lucide/astro/icons/arrow-up";
       display: flex;
       flex-direction: column;
       align-items: center;
-      gap: 0.5rem;
+      gap: 1rem;
       translate: 0 -50%;
     }
   }
@@ -310,13 +330,14 @@ import ArrowUp from "@lucide/astro/icons/arrow-up";
     }
   }
 
-  /* The link is the 24px target (WCAG 2.5.8), and the dot inside it is only the visual. */
+  /* The link is the 24px target (WCAG 2.5.8), and the dot inside it is only the visual.
+     The padding follows the dot height, so the gaps stay equal next to the current dot. */
   ol :global(a) {
     position: relative;
     display: grid;
     place-items: center;
     min-inline-size: 2rem;
-    min-block-size: 1.75rem;
+    padding-block: 0.5rem;
     border-radius: 999px;
   }
 
@@ -378,7 +399,7 @@ import ArrowUp from "@lucide/astro/icons/arrow-up";
   .steps {
     display: flex;
     flex-direction: column;
-    gap: 0.25rem;
+    gap: 0.5rem;
   }
 
   button {
@@ -398,9 +419,15 @@ import ArrowUp from "@lucide/astro/icons/arrow-up";
       border-color var(--hover-duration) ease;
   }
 
-  button:hover {
+  button:not([aria-disabled="true"]):hover {
     border-color: var(--sl-color-white);
     color: var(--sl-color-white);
+  }
+
+  /* Opacity would also dim the focus ring. */
+  button[aria-disabled="true"] {
+    color: var(--sl-color-gray-5);
+    cursor: default;
   }
 
   button:focus-visible {
@@ -416,6 +443,11 @@ import ArrowUp from "@lucide/astro/icons/arrow-up";
 
     ol :global(a[aria-current]::before) {
       background-color: Highlight;
+    }
+
+    button[aria-disabled="true"] {
+      border-color: GrayText;
+      color: GrayText;
     }
   }
 
