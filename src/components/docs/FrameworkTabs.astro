@@ -1,6 +1,5 @@
 ---
 import { Code, TabItem, Tabs } from "@astrojs/starlight/components";
-import { PackageManagers } from "starlight-package-managers";
 
 interface Props {
   react?: string;
@@ -25,13 +24,7 @@ const tabs = frameworks.filter(({ key }) => install || snippets[key]);
 <Tabs syncKey="framework">
   {tabs.map(({ key, label, pkg, lang }) => (
     <TabItem label={label}>
-      {install && (
-        <PackageManagers
-          pkg={pkg}
-          pkgManagers={["pnpm", "npm", "yarn", "bun"]}
-          icons={false}
-        />
-      )}
+      {install && <Code code={`pnpm add ${pkg}`} lang="shell" wrap />}
       {snippets[key] && <Code code={snippets[key]} lang={lang} wrap />}
     </TabItem>
   ))}
