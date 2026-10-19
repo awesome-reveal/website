@@ -1,13 +1,8 @@
 ---
 import { Code, TabItem, Tabs } from "@astrojs/starlight/components";
+import type { SnippetVariant } from "../../lib/snippet-variants";
 
 export type Framework = "react" | "vue" | "astro" | "js";
-
-export interface SnippetVariant {
-  value: string;
-  code: string;
-  mark?: string;
-}
 
 type Props = Partial<Record<Framework, string | SnippetVariant[]>> & {
   install?: boolean;

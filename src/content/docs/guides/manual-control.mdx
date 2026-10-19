@@ -6,29 +6,57 @@ head:
     content: "Trigger Reveal Animations Manually | Awesome Reveal"
 sidebar:
   order: 5
-draft: true
 ---
+
+import FrameworkTabs from "../../../components/docs/FrameworkTabs.astro";
+import detailsReact from "../../../snippets/manual-control/details.jsx?raw";
+import detailsVue from "../../../snippets/manual-control/details.vue?raw";
+import detailsAstro from "../../../snippets/manual-control/details.astro?raw";
+
+By default, the viewport controls the entrance. The `when` option of React, Vue and Astro gives the control to your own state. `@awesome-reveal/core` does not have `when`.
 
 ## Reveal from your state
 
-- `when` in React, Vue and Astro tabs (the Details toggle examples). Astro sets `host.when`.
+Set `when` to `true` to reveal the element, and to `false` to reset the entrance. A reset has no exit animation. With no value or `null`, the viewport controls the entrance.
+
+In this example, a button shows and hides the details:
+
+<FrameworkTabs react={detailsReact} vue={detailsVue} astro={detailsAstro} />
+
+In Astro, the `when` prop sets the value in the server HTML. After the page loads, set the `when` property of the `awesome-reveal` host element. The type import adds the `awesome-reveal` element to the DOM types.
+
+A change to `when` applies immediately. If `when` becomes `false` during the `delay`, the entrance resets and does not play.
 
 ## Play the entrance again
 
-- Set `when` to `false`, then to `true`.
+The entrance plays one time. To play it again, set `when` to `false`, then to `true`.
 
 ## Hide the content
 
-- `when` does not hide content. Use `hidden` or do not render it. `inert` does not hide.
-- Reduced motion reveals the element also when `when` is `false`.
+`when` does not show or hide content. With `false`, the element is transparent, but screen readers read it, and the keyboard can focus its controls. To hide content, also set `hidden`, or do not render it. The example above sets `hidden`.
+
+`inert` does not hide content. It only blocks focus, clicks and assistive technology.
+
+Reduced motion has priority over `when`. If the user asks for reduced motion, the element reveals, also when `when` is `false`.
+
+Focus in a waiting element shows it immediately, so a keyboard user does not focus invisible content. This does not apply when `when` is `false`.
 
 ## Play clipped content by hand
 
-- Core has no manual trigger. Play the paused animations through `getAnimations()`, with `{ subtree: true }` for a cascade.
+If an ancestor with `overflow` clips the element fully, the element does not reveal. An example is a carousel slide that its track clips. In React, Vue and Astro, set `when` to `true` when the slide becomes visible.
 
-## Sources
+`@awesome-reveal/core` has no manual trigger. To play a waiting entrance, play the paused animations of the element:
 
-On the `next` branch of the packages repo:
+```js
+import { reveal } from "@awesome-reveal/core";
 
-- `packages/*/README.md: Control the reveal`
-- `packages/core/README.md: Play an entrance manually`
+reveal(".slide", { from: "left" });
+
+export function playEntrance(slide) {
+  for (const animation of slide.getAnimations()) {
+    if (animation.playState === "paused") animation.play();
+  }
+}
+```
+
+For a cascade, call `getAnimations({ subtree: true })` on the container. The loop also plays your own paused animations of the element.

@@ -6,41 +6,154 @@ head:
     content: "Migrate from react-awesome-reveal v4 | Awesome Reveal"
 sidebar:
   order: 7
-draft: true
 ---
+
+Version 5 of `react-awesome-reveal` changes the API on purpose. It replaces the effect components and Emotion with the `Reveal` and `Cascade` components and native Web Animations. Do the steps on this page to migrate your code.
 
 ## Choose the package
 
-- `react-awesome-reveal@next` (v5) re-exports `@awesome-reveal/react`. New projects use `@awesome-reveal/react`.
+You can use one of these packages. The two packages give the same API.
+
+- **`@awesome-reveal/react`.** Use it for a new project.
+- **`react-awesome-reveal@next`.** Version 5 re-exports `@awesome-reveal/react`, so you can keep the `react-awesome-reveal` import path.
+
+```sh
+pnpm add @awesome-reveal/react
+# or, to keep the import path:
+pnpm add react-awesome-reveal@next
+```
 
 ## Check the requirements
 
-- React 18 or 19, ES modules only, no Emotion.
+- React 18 or 19.
+- A bundler or a runtime that loads ES modules. The packages are ES modules only.
+- If no other code uses Emotion, remove it. Version 5 does not use Emotion.
 
 ## Replace the effect components
 
-- Table: each v4 effect and direction to a `from` value or keyframes. `up` is `from="bottom"`.
-- The default export is removed. Use the named `Reveal`.
+`Reveal` is a named export. Version 4 also had a default export.
+
+```jsx
+import { Reveal } from "@awesome-reveal/react";
+```
+
+Replace each effect component with `Reveal`, and set `from`. `from` names the side where the element starts. In v4, `left` and `right` also name that side, but `up` and `down` name the movement. So `up` becomes a start on the bottom side.
+
+A side in `from` moves the element 24 pixels. The v4 effects moved it by its full size, so this table gives the v4 start position. To use the shorter v5 motion, set `from` to the side, for example `from="bottom"`.
+
+The generated entrance has a different easing and duration than v4. To keep the v4 duration, set `duration={1000}`.
+
+| v4                                      | `from` with the v4 start position        |
+| --------------------------------------- | ---------------------------------------- |
+| `<Fade>`                                | `{ opacity: 0 }`                         |
+| `<Fade direction="up">`                 | `{ opacity: 0, y: "100%" }`              |
+| `<Fade direction="down">`               | `{ opacity: 0, y: "-100%" }`             |
+| `<Fade direction="left">`               | `{ opacity: 0, x: "-100%" }`             |
+| `<Fade direction="right">`              | `{ opacity: 0, x: "100%" }`              |
+| `<Fade direction="top-left">`           | `{ opacity: 0, x: "-100%", y: "-100%" }` |
+| `<Fade direction="top-right">`          | `{ opacity: 0, x: "100%", y: "-100%" }`  |
+| `<Fade direction="bottom-left">`        | `{ opacity: 0, x: "-100%", y: "100%" }`  |
+| `<Fade direction="bottom-right">`       | `{ opacity: 0, x: "100%", y: "100%" }`   |
+| `<Fade big direction="up">`             | `{ opacity: 0, y: 2000 }`                |
+| `<Slide>` or `<Slide direction="left">` | `{ x: "-100%" }`                         |
+| `<Slide direction="right">`             | `{ x: "100%" }`                          |
+| `<Slide direction="up">`                | `{ y: "100%" }`                          |
+| `<Slide direction="down">`              | `{ y: "-100%" }`                         |
+| `<Zoom>`                                | `{ opacity: 0, scale: 0.3 }`             |
+| `<Rotate>`                              | `{ opacity: 0, rotate: -200 }`           |
+| A `<Reveal>` with no `keyframes`        | `{ opacity: 0, x: "-100%" }`             |
+
+The `big` prop with `down`, `left` or `right` also moves the element 2000 pixels, on the applicable axis.
+
+For `Bounce`, `Flip`, `Hinge`, `JackInTheBox`, `Roll` and `AttentionSeeker`, and for `Zoom` or `Rotate` with a direction, use native keyframes. See the next section.
+
+## Change Emotion keyframes into native keyframes
+
+Version 4 took Emotion `keyframes`. Version 5 takes an array of native keyframe objects. Change each step of the CSS animation into an object:
+
+- Put the percentage of the step in `offset`, from 0 to 1.
+- Put the `animation-timing-function` of the step in `easing`. v4 used `ease` for each step with no timing function of its own. A keyframe with no `easing` is linear.
+- Make the last keyframe agree with the resting style of the element.
+
+```jsx
+import { Reveal } from "@awesome-reveal/react";
+
+<Reveal
+  keyframes={[
+    { opacity: 0, transform: "scale(0.3)", easing: "ease" },
+    { opacity: 1, offset: 0.5, easing: "ease" },
+    { opacity: 1, transform: "none" },
+  ]}
+>
+  Zoom in
+</Reveal>;
+```
+
+These keyframes give the exact v4 `Zoom` entrance, which reaches full opacity at the middle. The `from` value in the table above fades over the full entrance. See [Use your own keyframes](/guides/keyframes/).
 
 ## Update the props
 
-- Table: `cascade`, `damping`, `duration`, `fraction`, `triggerOnce`, `childClassName`, `childStyle`, `onVisibilityChange`, `reverse`.
+| v4                             | v5                                                                                                    |
+| ------------------------------ | ----------------------------------------------------------------------------------------------------- |
+| `cascade`                      | The `Cascade` component. For a list, render the list with `Cascade`, for example `<Cascade as="ul">`. |
+| `damping`                      | `interval` on `Cascade`. Set it to the v4 `duration * damping`, in milliseconds.                      |
+| `duration`                     | `duration`. The default is 600 milliseconds. The v4 default was 1000.                                 |
+| `delay`                        | `delay`, in milliseconds. In a cascade, it moves the start of the whole sequence.                     |
+| `fraction`                     | `threshold`.                                                                                          |
+| `triggerOnce`                  | Remove it. The entrance plays one time. To play it again, set `when` to `false`, then to `true`.      |
+| `direction`, `big`             | `from`. See the table above.                                                                          |
+| `keyframes`                    | `keyframes`, with native keyframes.                                                                   |
+| `className`, `style`           | They apply to the one element that `Reveal` renders.                                                  |
+| `childClassName`, `childStyle` | Style the children directly.                                                                          |
+| `onVisibilityChange`           | `onReveal`. It gets the element, one time for each reveal.                                            |
+| `reverse`                      | No replacement. Version 5 has no exit animations.                                                     |
+
+This example shows a v4 cascade and its v5 version:
+
+```jsx title="v4"
+import { Fade } from "react-awesome-reveal";
+
+<Fade direction="up" cascade damping={0.1} triggerOnce>
+  <p>One</p>
+  <p>Two</p>
+</Fade>;
+```
+
+```jsx title="v5"
+import { Cascade } from "@awesome-reveal/react";
+
+<Cascade from={{ opacity: 0, y: "100%" }} duration={1000} interval={100}>
+  <p>One</p>
+  <p>Two</p>
+</Cascade>;
+```
 
 ## Behavior changes
 
-- One rendered element, no wrapper per child, no text splitting, a new easing.
+The type check does not find these changes. Check them after the migration:
 
-## Next.js Pages Router
+- **One element.** `Reveal` renders one element around its children, and `as` sets its tag. Version 4 wrapped each element child in a `div`, and animated each `li` of a list child.
+- **One observer.** One observer watches the whole `Reveal`, so all its children reveal together. For a long list, use one `Reveal` for each item.
+- **`Cascade` does not split text.** To reveal each word, wrap each word in an element. See [Animate a list](/guides/lists/#reveal-the-words-of-a-heading).
+- **A new easing.** The generated entrance uses `cubic-bezier(0.22, 1, 0.36, 1)`. To change it, use native keyframes.
+- **One play.** The entrance plays one time. In v4, it played each time by default.
 
-- Add `@awesome-reveal/react` to `transpilePackages`.
+Also check the refs, the hydration, reduced motion and the teardown.
+
+## Set up the stylesheet
+
+The package loads its stylesheet automatically. Two setups need a step:
+
+- **Next.js Pages Router with webpack.** Add `@awesome-reveal/react` to `transpilePackages`. Add it also when you install only `react-awesome-reveal`.
+
+  ```js title="next.config.mjs"
+  export default { transpilePackages: ["@awesome-reveal/react"] };
+  ```
+
+- **Astro island.** Import `reveal.css` in the page or the layout, from the package that you install: `react-awesome-reveal/reveal.css` or `@awesome-reveal/react/reveal.css`.
+
+The Next.js App Router and Turbopack need no step.
 
 ## Migrate with an agent
 
-- The `migrating-from-v4` skill.
-
-## Sources
-
-On the `next` branch of the packages repo:
-
-- `packages/react/README.md: Migrate from v4`
-- `packages/react/skills/migrating-from-v4/SKILL.md`
+`@awesome-reveal/react` and `react-awesome-reveal` include the `migrating-from-v4` skill. It teaches a coding agent all the changes from v4. pnpm can link the skill into your project after you approve it.

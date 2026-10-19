@@ -6,30 +6,82 @@ head:
     content: "Staggered List Animations with Cascade | Awesome Reveal"
 sidebar:
   order: 4
-draft: true
 ---
+
+import { Code } from "@astrojs/starlight/components";
+import CascadeDemo from "../../../components/docs/CascadeDemo.astro";
+import FrameworkTabs from "../../../components/docs/FrameworkTabs.astro";
+import wordsReact from "../../../snippets/lists/words.jsx?raw";
+import wordsVue from "../../../snippets/lists/words.vue?raw";
+import wordsAstro from "../../../snippets/lists/words.astro?raw";
+import wordsJs from "../../../snippets/lists/words.js?raw";
+import wordsCss from "../../../snippets/lists/words.css?raw";
+import longListReact from "../../../snippets/lists/long-list.jsx?raw";
+import longListVue from "../../../snippets/lists/long-list.vue?raw";
+import longListAstro from "../../../snippets/lists/long-list.astro?raw";
+import longListJs from "../../../snippets/lists/long-list.js?raw";
+
+A cascade reveals the children of a container one after the other, when the container enters the viewport. Each package has a cascade API:
+
+- React: `Cascade` and `useCascade`.
+- Vue: `Cascade` and `v-cascade`.
+- Astro: `Cascade`.
+- JavaScript: `cascade()`.
+
+The cascade APIs accept all the options of a reveal, and also `interval`.
 
 ## Reveal the items one after the other
 
-- `Cascade`, `useCascade`, `v-cascade` and `cascade()` in framework tabs, with a live demo.
-- Only the direct element children animate.
+Put the items in a cascade. Select an interval to see the effect:
+
+<CascadeDemo
+  id="interval"
+  title="Reveal the items one after the other"
+  intervals={[0, 80, 160, 320]}
+  selected={80}
+/>
+
+Only the direct element children animate. Text and deeper descendants do not animate. In React, Vue and Astro, a child with `display: contents` shows immediately.
 
 ## Change the interval
 
-- `interval` in ms, default 80. Child `index` waits `delay + index * interval`.
-- A negative interval starts each later child further into its entrance.
+`interval` sets the time between the entrances of two children, in milliseconds. The default is 80. The child at position `index` waits `delay + index * interval`. So `delay` moves the start of the whole sequence.
+
+A negative interval gives negative delays. Each later child then starts further into its entrance.
 
 ## Reveal the words of a heading
 
-- Wrap each word in an element with `display: inline-block`.
+A cascade does not split text. To reveal each word, wrap each word in an element:
+
+<FrameworkTabs
+  react={wordsReact}
+  vue={wordsVue}
+  astro={wordsAstro}
+  js={wordsJs}
+/>
+
+The entrance moves the element with a transform, and an inline element cannot have a transform. So give the words `display: inline-block`:
+
+<Code code={wordsCss} lang="css" />
 
 ## Reveal a long list or a tall grid
 
-- A cascade schedules all children at once. Wrap each item in `Reveal` instead.
+A cascade schedules all its children at the same time. In a long list, or in a grid that is taller than the viewport, the last children start late or out of view. Reveal each item instead:
 
-## Sources
+<FrameworkTabs
+  react={longListReact}
+  vue={longListVue}
+  astro={longListAstro}
+  js={longListJs}
+/>
 
-On the `next` branch of the packages repo:
+Also reveal each item of a virtualized list.
 
-- `packages/core/README.md: Reveal a list, Cascades`
-- `packages/*/README.md: Reveal a list`
+## Things to know
+
+- **Add the children before the reveal.** In React, Vue and Astro, the cascade reads its children when it reveals. A child that you add after the reveal shows with no animation. In JavaScript, `cascade()` reads the children one time, when you call it.
+- **Do not put a reveal directly inside a cascade.** In React and Vue, the two entrances combine on the same element. In Astro, the host of a nested `Reveal` has `display: contents`, so the cascade does not animate it, and the nested `Reveal` plays only its own entrance.
+- **Wrap an Astro island in an element.** An island has `display: contents`, so the cascade does not animate it.
+- **A Vue `<TransitionGroup>` adds its own animations.** As a direct child of a cascade, it animates the children too.
+- **A React fragment gives one child for each element.** A component that returns a fragment gives one cascade child for each element of the fragment.
+- **The reveal event comes from the container.** `onReveal` and the `reveal` event get the container, not each child.

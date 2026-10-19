@@ -1,0 +1,11 @@
+<script setup>
+import { vReveal } from "@awesome-reveal/vue";
+
+defineProps(["posts"]);
+</script>
+
+<template>
+  <ul>
+    <li v-for="post in posts" :key="post.id" v-reveal>{{ post.title }}</li>
+  </ul>
+</template>

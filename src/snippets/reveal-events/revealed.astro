@@ -1,0 +1,16 @@
+---
+import { Reveal } from "@awesome-reveal/astro";
+---
+
+<Reveal id="card">Hello</Reveal>
+<button id="check">Check</button>
+
+<script>
+  import type {} from "@awesome-reveal/astro";
+
+  const host = document.querySelector("#card")!.closest("awesome-reveal")!;
+
+  document.querySelector("#check")!.addEventListener("click", () => {
+    console.log(host.revealed ? "Revealed" : "Waiting");
+  });
+</script>

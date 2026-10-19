@@ -1,0 +1,100 @@
+---
+import { Cascade } from "@awesome-reveal/astro";
+import { snippetVariants } from "../../lib/snippet-variants";
+import astroSnippet from "../../snippets/lists/cascade.astro?raw";
+import jsSnippet from "../../snippets/lists/cascade.js?raw";
+import reactSnippet from "../../snippets/lists/cascade.jsx?raw";
+import vueSnippet from "../../snippets/lists/cascade.vue?raw";
+import DemoFrame from "./DemoFrame.astro";
+import FrameworkTabs, { type Framework } from "./FrameworkTabs.astro";
+
+interface Props {
+  id: string;
+  title: string;
+  intervals: number[];
+  selected: number;
+}
+
+const { id, title, intervals, selected } = Astro.props;
+
+const snippets: Record<
+  Framework,
+  { code: string; interval: (interval: number) => string }
+> = {
+  react: { code: reactSnippet, interval: (n) => `interval={${n}}` },
+  astro: { code: astroSnippet, interval: (n) => `interval={${n}}` },
+  vue: { code: vueSnippet, interval: (n) => `:interval="${n}"` },
+  js: { code: jsSnippet, interval: (n) => `interval: ${n}` },
+};
+
+// The snippet files show this interval, and each choice replaces it.
+const SNIPPET_INTERVAL = 80;
+
+function frameworkVariants(framework: Framework) {
+  const { code, interval } = snippets[framework];
+  return snippetVariants(
+    code,
+    interval(SNIPPET_INTERVAL),
+    intervals.map((n) => ({ value: String(n), code: interval(n) })),
+  );
+}
+
+const items = ["Small", "Native", "Accessible"];
+---
+
+<DemoFrame
+  id={id}
+  title={title}
+  name="interval"
+  options={intervals.map(String)}
+  selected={String(selected)}
+>
+  {intervals.map((interval) => (
+    <div
+      data-choice={String(interval)}
+      data-selected={interval === selected ? "" : undefined}
+    >
+      <Cascade as="ul" class="tiles" interval={interval} threshold={0.5}>
+        {items.map((item) => (
+          <li>{item}</li>
+        ))}
+      </Cascade>
+    </div>
+  ))}
+  <FrameworkTabs
+    slot="code"
+    selected={String(selected)}
+    react={frameworkVariants("react")}
+    vue={frameworkVariants("vue")}
+    astro={frameworkVariants("astro")}
+    js={frameworkVariants("js")}
+  />
+</DemoFrame>
+
+<style>
+  .tiles {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 0.75rem;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  li {
+    display: grid;
+    place-items: center;
+    min-inline-size: 5.5rem;
+    block-size: 5.5rem;
+    padding-inline: 0.75rem;
+    border-radius: var(--radius-md);
+    /* Forced colors remove the background, so the outline keeps the tile visible. */
+    outline: 1px solid transparent;
+    background-color: var(--marker);
+    color: var(--ink);
+    font-family: var(--sl-font-mono);
+    font-size: var(--sl-text-sm);
+    font-weight: 700;
+  }
+</style>

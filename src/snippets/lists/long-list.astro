@@ -1,0 +1,17 @@
+---
+import { Reveal } from "@awesome-reveal/astro";
+
+interface Props {
+  posts: { title: string }[];
+}
+
+const { posts } = Astro.props;
+---
+
+<ul>
+  {posts.map((post) => (
+    <li>
+      <Reveal>{post.title}</Reveal>
+    </li>
+  ))}
+</ul>

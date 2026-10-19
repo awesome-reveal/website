@@ -6,38 +6,58 @@ head:
     content: "Custom Keyframes for Scroll Animations | Awesome Reveal"
 sidebar:
   order: 2
-draft: true
 ---
+
+import FrameworkTabs from "../../../components/docs/FrameworkTabs.astro";
+import bounceReact from "../../../snippets/keyframes/bounce.jsx?raw";
+import bounceVue from "../../../snippets/keyframes/bounce.vue?raw";
+import bounceAstro from "../../../snippets/keyframes/bounce.astro?raw";
+import bounceJs from "../../../snippets/keyframes/bounce.js?raw";
+
+The [`from`](/guides/entrances/) option gives the most common entrances. For full control, give native [Web Animations keyframes](https://developer.mozilla.org/en-US/docs/Web/API/Web_Animations_API/Keyframe_Formats) in the `keyframes` option. The keyframes replace the generated entrance.
 
 ## Give native keyframes
 
-- Example: the bounce-in keyframes with a cubic-bezier easing, in framework tabs.
-- `from` and `keyframes` cannot be used together.
+Set `keyframes` to an array of keyframe objects. This entrance zooms in and bounces a little at the end:
+
+<FrameworkTabs
+  react={bounceReact}
+  vue={bounceVue}
+  astro={bounceAstro}
+  js={bounceJs}
+/>
+
+You cannot use `from` and `keyframes` together. TypeScript rejects the two options on the same element.
 
 ## Set the easing
 
-- Put the easing on the keyframes. No option sets it.
+Set the easing in the keyframes. The `easing` of a keyframe applies from that keyframe to the next keyframe. Without an `easing`, the change from a keyframe to the next keyframe is linear. No option sets the easing of the full entrance.
 
 ## End at the resting style
 
-- The animation has no forwards fill, so the last keyframe must match the resting style.
+The entrance does not keep its last keyframe after it ends. The element then returns to its own style. If the last keyframe is different from that style, the element jumps at the end of the entrance. Make the last keyframe agree with the resting style of the element.
 
 ## Keep the element's own values
 
-- Use a neutral additive keyframe, such as `{ opacity: 0, composite: "add" }`.
-- Needs Firefox 80 or Safari 16. Chromium runs additive keyframes on the main thread.
+While the element waits and while the entrance plays, the keyframes replace the element's own values of the properties that they animate. To end at the element's own value, end with a neutral additive keyframe. For example, this entrance ends at the `opacity` of the element, also when the CSS sets `opacity: 0.8`:
+
+```js
+const keyframes = [{ opacity: 0 }, { opacity: 0, composite: "add" }];
+```
+
+An additive keyframe adds its value to the element's own value. An `opacity` of 0 adds nothing.
+
+- A keyframe with `composite` needs Firefox 80 or Safari 16.
+- Chromium runs an animation with an additive keyframe on the main thread. The animation can stutter when the main thread is busy.
 
 ## Give explicit values to the first keyframe
 
-- WebKit bug 212409.
+Set each animated property in the first keyframe. An open WebKit bug ([212409](https://bugs.webkit.org/show_bug.cgi?id=212409)) can take an implicit start value from an earlier animation.
 
 ## Animate custom properties
 
-- The type accepts custom properties, such as `"--progress"`.
+A keyframe can animate a CSS custom property, such as `"--progress"`. Register the property with [`@property`](https://developer.mozilla.org/en-US/docs/Web/CSS/@property) and give it a syntax, such as `"<number>"`. Without a registration, the browser cannot interpolate the value, so the value changes in one step at the middle of the entrance.
 
-## Sources
+## Animate the properties that the compositor runs
 
-On the `next` branch of the packages repo:
-
-- `packages/core/README.md: Use your own keyframes, Performance`
-- `packages/core/src/types.ts: keyframes`
+Animate `opacity`, `transform`, `translate`, `scale` and `rotate` when possible. The browser runs these animations on the compositor, so a busy main thread does not make them stutter. A layout property, such as `width`, `top` or `margin`, causes a layout and a paint on each frame.
