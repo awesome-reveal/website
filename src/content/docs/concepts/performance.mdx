@@ -1,0 +1,34 @@
+---
+title: Performance
+description: "Why Awesome Reveal animations stay smooth: compositor animations and a small core with no dependencies, plus advice for keyframes, blur and long lists."
+head:
+  - tag: title
+    content: "Scroll Animation Performance | Awesome Reveal"
+sidebar:
+  order: 4
+draft: true
+---
+
+## Animations on the compositor
+
+- The generated entrance. `blur` and additive keyframes run on the main thread in Chromium.
+
+## Properties for your keyframes
+
+- Animate `opacity`, `transform`, `translate`, `scale` and `rotate`. Avoid layout properties.
+- Do not add `will-change`.
+
+## Bundle size
+
+- Core has no dependencies. Check the size claim against the tree-shaking test.
+
+## Long lists
+
+- Use one `Reveal` for each item, not a long cascade.
+
+## Sources
+
+On the `next` branch of the packages repo:
+
+- `packages/core/README.md: Performance`
+- `packages/core/test/package/tree-shaking.test.ts`

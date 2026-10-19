@@ -1,0 +1,44 @@
+---
+title: How it works
+description: "How Awesome Reveal animates elements on scroll with the Intersection Observer and Web Animations APIs: paused animations, one-time entrances and cleanup."
+head:
+  - tag: title
+    content: "How Scroll Reveal Animations Work | Awesome Reveal"
+sidebar:
+  order: 1
+draft: true
+---
+
+## A paused animation
+
+- `element.animate()` with `fill: "backwards"`, paused at its start.
+
+## The viewport check
+
+- One observer per element, or per cascade container. Thresholds `[0, threshold]`.
+- A start state with `opacity: 0` waits at the resting position.
+
+## One entrance
+
+- The observation stops at the reveal. No exit animation. Finished reveals release themselves.
+
+## The framework packages
+
+- Core holds the behavior. The packages bind it to the render lifecycle and add `when` and `onReveal`.
+
+## Fallbacks
+
+- No Intersection Observer: plays at once. No `Element.animate`: shows at once.
+- Browser errors are reported, and the content shows.
+
+## Things to know
+
+- Do not reveal one element in two calls.
+- Skip paused animations when you wait for `document.getAnimations()`.
+
+## Sources
+
+On the `next` branch of the packages repo:
+
+- `packages/core/README.md: How the entrance works, Errors`
+- `packages/core/src/{animation,observe,reveal}.ts`

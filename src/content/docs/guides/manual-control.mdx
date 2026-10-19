@@ -1,0 +1,34 @@
+---
+title: Control the reveal
+description: "Play a reveal animation from your own state with the when option, replay it, hide content with hidden, and play the entrance of clipped content by hand."
+head:
+  - tag: title
+    content: "Trigger Reveal Animations Manually | Awesome Reveal"
+sidebar:
+  order: 5
+draft: true
+---
+
+## Reveal from your state
+
+- `when` in React, Vue and Astro tabs (the Details toggle examples). Astro sets `host.when`.
+
+## Play the entrance again
+
+- Set `when` to `false`, then to `true`.
+
+## Hide the content
+
+- `when` does not hide content. Use `hidden` or do not render it. `inert` does not hide.
+- Reduced motion reveals the element also when `when` is `false`.
+
+## Play clipped content by hand
+
+- Core has no manual trigger. Play the paused animations through `getAnimations()`, with `{ subtree: true }` for a cascade.
+
+## Sources
+
+On the `next` branch of the packages repo:
+
+- `packages/*/README.md: Control the reveal`
+- `packages/core/README.md: Play an entrance manually`

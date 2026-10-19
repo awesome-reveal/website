@@ -9,9 +9,11 @@ import { findArchivedVersion, getArchivedSiteTitle } from "./lib/versions";
 
 type Head = StarlightRouteData["head"];
 type Entry = StarlightRouteData["entry"];
+type Sidebar = StarlightRouteData["sidebar"];
 
 export const onRequest = defineRouteMiddleware((context) => {
   const route = context.locals.starlightRoute;
+  route.sidebar = removeEmptyGroups(route.sidebar);
   if (route.id === "404") return;
   const archivedVersion = findArchivedVersion(route.id);
   const searchTitle = getSearchTitle(route.entry);
@@ -24,6 +26,16 @@ export const onRequest = defineRouteMiddleware((context) => {
   addMarkdownLinks(route.head, route.id);
   if (!archivedVersion) addStructuredData(route, context, searchTitle);
 });
+
+// Production builds skip draft pages, so a group of drafts has no entries.
+// starlight-versions nests each version sidebar in a group, so the check is recursive.
+function removeEmptyGroups(sidebar: Sidebar): Sidebar {
+  return sidebar.flatMap<Sidebar[number]>((item) => {
+    if (item.type !== "group") return [item];
+    const entries = removeEmptyGroups(item.entries);
+    return entries.length > 0 ? [{ ...item, entries }] : [];
+  });
+}
 
 function getSearchTitle(entry: Entry) {
   const content = entry.data.head.find((tag) => tag.tag === "title")?.content;

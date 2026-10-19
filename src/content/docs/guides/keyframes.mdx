@@ -1,0 +1,43 @@
+---
+title: Use your own keyframes
+description: "Replace the generated entrance with native Web Animations keyframes: set a custom easing, end at the resting style and keep the element's own values."
+head:
+  - tag: title
+    content: "Custom Keyframes for Scroll Animations | Awesome Reveal"
+sidebar:
+  order: 2
+draft: true
+---
+
+## Give native keyframes
+
+- Example: the bounce-in keyframes with a cubic-bezier easing, in framework tabs.
+- `from` and `keyframes` cannot be used together.
+
+## Set the easing
+
+- Put the easing on the keyframes. No option sets it.
+
+## End at the resting style
+
+- The animation has no forwards fill, so the last keyframe must match the resting style.
+
+## Keep the element's own values
+
+- Use a neutral additive keyframe, such as `{ opacity: 0, composite: "add" }`.
+- Needs Firefox 80 or Safari 16. Chromium runs additive keyframes on the main thread.
+
+## Give explicit values to the first keyframe
+
+- WebKit bug 212409.
+
+## Animate custom properties
+
+- The type accepts custom properties, such as `"--progress"`.
+
+## Sources
+
+On the `next` branch of the packages repo:
+
+- `packages/core/README.md: Use your own keyframes, Performance`
+- `packages/core/src/types.ts: keyframes`

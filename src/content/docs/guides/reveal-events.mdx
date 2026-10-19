@@ -1,0 +1,31 @@
+---
+title: Run code on reveal
+description: "Run code when an element scrolls into view with onReveal, the Vue reveal event or the Astro reveal DOM event, and wait for the end of the entrance animation."
+head:
+  - tag: title
+    content: "Run Code When an Element Reveals | Awesome Reveal"
+sidebar:
+  order: 6
+draft: true
+---
+
+## Run code when the reveal starts
+
+- React `onReveal`, Vue `@reveal` and the directive `onReveal` option, Astro `reveal` event that bubbles from the rendered tag.
+- Runs one time for each reveal, also with reduced motion or focus.
+- Core has no callback.
+
+## Wait for the end of the entrance
+
+- `Promise.all` of `element.getAnimations({ subtree: true })` finished promises.
+- Catch the rejection when the entrance stops early.
+
+## Read the revealed state
+
+- React `useReveal().revealed`, Vue slot prop `revealed`, Astro host `revealed` property.
+
+## Sources
+
+On the `next` branch of the packages repo:
+
+- `packages/*/README.md: Run code at the reveal`

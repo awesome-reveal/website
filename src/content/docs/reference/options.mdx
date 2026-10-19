@@ -1,0 +1,126 @@
+---
+title: Options
+description: The reveal options of Awesome Reveal, with types and default values. from, keyframes, duration, delay, threshold, interval, when, onReveal and as.
+head:
+  - tag: title
+    content: "Reveal Animation Options Reference | Awesome Reveal"
+sidebar:
+  order: 1
+---
+
+All packages use the same options, with the same default values. In React, Vue and Astro, an option is a prop of `Reveal` and `Cascade`. Some options are not available in all APIs. See [Where you can use each option](#where-you-can-use-each-option). The React hooks, the Vue directives and the core functions take the options as an object.
+
+## Summary
+
+| Option                    | Type                         | Default    |
+| ------------------------- | ---------------------------- | ---------- |
+| [`from`](#from)           | `Side \| StartState`         | `"bottom"` |
+| [`keyframes`](#keyframes) | `Keyframe[]`                 |            |
+| [`duration`](#duration)   | `number`                     | `600`      |
+| [`delay`](#delay)         | `number`                     | `0`        |
+| [`threshold`](#threshold) | `number`                     | `0`        |
+| [`interval`](#interval)   | `number`                     | `80`       |
+| [`when`](#when)           | `boolean \| null`            |            |
+| [`onReveal`](#onreveal)   | `(element: Element) => void` |            |
+| [`as`](#as)               | tag name                     | `"div"`    |
+
+## Where you can use each option
+
+- `from`, `keyframes`, `duration`, `delay` and `threshold` work with all APIs.
+- `interval` works with the cascade APIs:
+  - React: `Cascade` and `useCascade`.
+  - Vue: `Cascade` and `v-cascade`.
+  - Astro: `Cascade`.
+  - JavaScript: `cascade()`.
+- `when` works with all APIs of React, Vue and Astro. JavaScript does not have it.
+- `onReveal` has these limits:
+  - React: all APIs.
+  - Vue: `v-reveal` and `v-cascade`. The components emit a `reveal` event.
+  - Astro: not available. Listen to `reveal` events.
+  - JavaScript: not available.
+- `as` works with `Reveal` and `Cascade` in React, Vue and Astro.
+
+## Entrance options
+
+### from
+
+**Type:** `"top" | "right" | "bottom" | "left" | StartState`. **Default:** `"bottom"`.
+
+Sets the start state of the entrance. A side gives a fade and a movement of 24 pixels from that side. A `StartState` object sets the complete start state, with the properties `opacity`, `x`, `y`, `scale`, `rotate` and `blur`. A number is in pixels for `x`, `y` and `blur`, and in degrees for `rotate`. A string contains a CSS value with its unit.
+
+You cannot use `from` and `keyframes` together. See [Choose the entrance](/guides/entrances/).
+
+### keyframes
+
+**Type:** `Keyframe[]`. **No default.**
+
+Replaces the generated entrance with native [Web Animations keyframes](https://developer.mozilla.org/en-US/docs/Web/API/Web_Animations_API/Keyframe_Formats). Use it for a different easing or for properties that `from` does not animate.
+
+- End the keyframes at the resting style of the element. The entrance does not keep its last keyframe.
+- Give explicit values to the first keyframe.
+- Set the easing in the keyframes. No option sets the easing.
+
+### duration
+
+**Type:** `number`. **Default:** `600`.
+
+The duration of the entrance, in milliseconds.
+
+### delay
+
+**Type:** `number`. **Default:** `0`.
+
+The time between the reveal and the start of the entrance, in milliseconds. The element keeps its start state during the delay. Keep `delay` below about 300 milliseconds. A long delay makes content appear late when the user scrolls quickly.
+
+## Viewport options
+
+### threshold
+
+**Type:** `number`, from `0` to `1`. **Default:** `0`.
+
+The visible fraction of the element that reveals it. With `0`, the element reveals when its first pixel enters the viewport. With `0.5`, it reveals when half of it is visible.
+
+If the viewport is too small to show this fraction of the element, the element reveals when it enters the viewport. Keep the default for tall elements and long cascades.
+
+## Cascade options
+
+### interval
+
+**Type:** `number`. **Default:** `80`.
+
+The time between the entrances of two direct element children, in milliseconds. The child at position `index` waits `delay + index * interval`. A negative value starts each later child further into its entrance.
+
+Only `Cascade`, `useCascade`, `v-cascade` and `cascade()` accept `interval`.
+
+## Control options
+
+`@awesome-reveal/core` does not have these options. Astro does not have `onReveal`, and in Vue only the directives accept it.
+
+### when
+
+**Type:** `boolean | null`. **No default.**
+
+Controls the entrance manually. `true` reveals the element, and `false` resets the entrance, with no exit animation. With no value or `null`, the viewport controls the entrance. To play the entrance again, set `when` to `false`, then to `true`.
+
+`when` does not show or hide content. With `false`, the element is transparent, but screen readers read it and the keyboard can focus its controls. To hide content, also set `hidden`, or do not render it. If the user asks for reduced motion, the element reveals also when `when` is `false`.
+
+In Astro, set the `when` property of the `awesome-reveal` host element after the page loads.
+
+### onReveal
+
+**Type:** `(element: Element) => void`. **No default.**
+
+Runs one time for each reveal, when the reveal starts. It also runs when no entrance plays, for example with reduced motion. It gets the revealed element.
+
+- In Vue, the `Reveal` and `Cascade` components emit a `reveal` event. The `v-reveal` and `v-cascade` directives accept `onReveal`.
+- In Astro, the rendered tag dispatches a `reveal` event that bubbles.
+
+## Component props
+
+### as
+
+**Type:** a tag name. **Default:** `"div"`.
+
+Sets the tag that `Reveal` and `Cascade` render, for example `"section"` or `"ul"`. The other attributes of the component go to this tag.
+
+In Astro, `as` cannot be a document tag (`html`, `head` or `body`), a table part (such as `tr` or `td`) or a tag that exists only in SVG. The HTML parser moves these tags out of the custom element.

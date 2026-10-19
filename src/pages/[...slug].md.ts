@@ -4,7 +4,12 @@ import { entryToMarkdown } from "../lib/markdown";
 import { getMarkdownSlug } from "../lib/markdown-slug";
 
 export const getStaticPaths = async () =>
-  (await getCollection("docs")).map((entry) => ({
+  (
+    await getCollection(
+      "docs",
+      ({ data }) => import.meta.env.DEV || !data.draft,
+    )
+  ).map((entry) => ({
     params: { slug: getMarkdownSlug(entry.id) },
     props: { entry },
   }));

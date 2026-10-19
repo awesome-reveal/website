@@ -1,0 +1,38 @@
+---
+import { Code, TabItem, Tabs } from "@astrojs/starlight/components";
+import { PackageManagers } from "starlight-package-managers";
+
+interface Props {
+  react?: string;
+  vue?: string;
+  astro?: string;
+  js?: string;
+  install?: boolean;
+}
+
+const { install = false, ...snippets } = Astro.props;
+
+const frameworks = [
+  { key: "react", label: "React", pkg: "@awesome-reveal/react", lang: "jsx" },
+  { key: "vue", label: "Vue", pkg: "@awesome-reveal/vue", lang: "vue" },
+  { key: "astro", label: "Astro", pkg: "@awesome-reveal/astro", lang: "astro" },
+  { key: "js", label: "JavaScript", pkg: "@awesome-reveal/core", lang: "js" },
+] as const;
+const tabs = frameworks.filter(({ key }) => install || snippets[key]);
+---
+
+{/* The key is the same as on the home page, so a framework choice applies on all pages. */}
+<Tabs syncKey="framework">
+  {tabs.map(({ key, label, pkg, lang }) => (
+    <TabItem label={label}>
+      {install && (
+        <PackageManagers
+          pkg={pkg}
+          pkgManagers={["pnpm", "npm", "yarn", "bun"]}
+          icons={false}
+        />
+      )}
+      {snippets[key] && <Code code={snippets[key]} lang={lang} wrap />}
+    </TabItem>
+  ))}
+</Tabs>
