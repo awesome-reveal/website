@@ -1,0 +1,43 @@
+---
+title: Next.js
+description: "Use Awesome Reveal in Next.js: render Reveal and Cascade from Server Components, use the hooks in Client Components, and set up the Pages Router with webpack."
+head:
+  - tag: title
+    content: "Scroll Animations in Next.js | Awesome Reveal"
+sidebar:
+  order: 1
+draft: true
+---
+
+## Server Components
+
+- `Reveal` and `Cascade` are Client Components. Server Components pass serializable props, keyframes included.
+- No `onReveal` or callback `ref` from a Server Component.
+
+## Client Components
+
+- The hooks, `when` and `onReveal`.
+
+## App Router
+
+- No setup with Turbopack.
+
+## Pages Router with webpack
+
+- Add `transpilePackages: ["@awesome-reveal/react"]`.
+
+## Hydration
+
+- Hydrate eagerly. After 5 seconds the content shows, then hides until it reveals.
+
+## Open questions
+
+- Does the `moduleResolution: node` fix of 1.0.0-next.11 cover the default Next.js tsconfig? The smoke test still forces `bundler`.
+
+## Sources
+
+On the `next` branch of the packages repo:
+
+- `packages/react/README.md: Server rendering`
+- `examples/next`
+- `scripts/smoke.mjs`

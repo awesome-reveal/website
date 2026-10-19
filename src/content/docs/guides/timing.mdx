@@ -1,0 +1,33 @@
+---
+title: Change the timing
+description: "Change the duration and the delay of a scroll reveal animation, and set the visible fraction of the element that starts it with the threshold option."
+head:
+  - tag: title
+    content: "Animation Duration, Delay and Threshold | Awesome Reveal"
+sidebar:
+  order: 3
+draft: true
+---
+
+## Change the duration
+
+- `duration` in ms, default 600.
+
+## Delay the entrance
+
+- `delay` in ms, default 0. The element keeps its start state during the delay.
+- Keep it below about 300 ms.
+- Example: a title, then the text after it.
+
+## Reveal later with a threshold
+
+- `threshold` from 0 to 1, default 0.
+- Tall elements and too small scroll containers.
+- Live demo with two thresholds.
+
+## Sources
+
+On the `next` branch of the packages repo:
+
+- `packages/core/README.md: Change the timing, Thresholds and clipped content`
+- `packages/core/src/types.ts`

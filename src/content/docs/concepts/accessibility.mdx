@@ -1,0 +1,32 @@
+---
+title: Accessibility
+description: "How Awesome Reveal respects prefers-reduced-motion, reveals focused content at once, keeps waiting content for screen readers, and shows all content in print."
+head:
+  - tag: title
+    content: "Accessible Scroll Animations | Awesome Reveal"
+sidebar:
+  order: 3
+draft: true
+---
+
+## Reduced motion
+
+- At call time, no animations. A change to reduce shows waiting content.
+
+## Focus
+
+- Focus in a waiting element shows it at once, with no entrance.
+
+## Screen readers
+
+- Waiting content stays in the accessibility tree. `when={false}` does not hide content.
+
+## Print
+
+- Waiting content shows in print. DevTools print emulation does not fire the print events.
+
+## Sources
+
+On the `next` branch of the packages repo:
+
+- `packages/core/README.md: Accessibility`

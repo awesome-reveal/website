@@ -1,0 +1,82 @@
+---
+title: Getting started
+description: Install Awesome Reveal for React, Vue, Astro or JavaScript, reveal your first element on scroll, and animate the items of a list one after the other.
+head:
+  - tag: title
+    content: "Get Started with Scroll Animations | Awesome Reveal"
+---
+
+import { Aside } from "@astrojs/starlight/components";
+import FrameworkTabs from "../../components/docs/FrameworkTabs.astro";
+import revealReact from "../../snippets/getting-started/reveal.jsx?raw";
+import revealVue from "../../snippets/getting-started/reveal.vue?raw";
+import revealAstro from "../../snippets/getting-started/reveal.astro?raw";
+import revealJs from "../../snippets/getting-started/reveal.js?raw";
+import cascadeReact from "../../snippets/getting-started/cascade.jsx?raw";
+import cascadeVue from "../../snippets/getting-started/cascade.vue?raw";
+import cascadeAstro from "../../snippets/getting-started/cascade.astro?raw";
+import cascadeJs from "../../snippets/getting-started/cascade.js?raw";
+
+Awesome Reveal animates elements when they scroll into view. Each framework package uses the same core. The core uses the Intersection Observer API and the Web Animations API of the browser, and it has no dependencies.
+
+## Requirements
+
+| Framework  | Framework version | Node.js        |
+| ---------- | ----------------- | -------------- |
+| React      | 18 or 19          | 20.19 or later |
+| Vue        | 3.5 or later      | 20.19 or later |
+| Astro      | 6 or 7            | 22.12 or later |
+| JavaScript |                   | 20.19 or later |
+
+The packages are ES modules only. They include their TypeScript types.
+
+## Install the package
+
+Install the package for your framework.
+
+<FrameworkTabs install />
+
+With npm, yarn or bun, use `npm install`, `yarn add` or `bun add`, followed by the package name.
+
+## Reveal an element
+
+Wrap the element in `Reveal`. With `@awesome-reveal/core`, call `reveal()` with a CSS selector, an element or a list of elements.
+
+<FrameworkTabs
+  react={revealReact}
+  vue={revealVue}
+  astro={revealAstro}
+  js={revealJs}
+/>
+
+When the element enters the viewport, it fades in and moves up 24 pixels. The entrance plays one time. You do not import a stylesheet.
+
+## Animate a list
+
+`Cascade` reveals its direct children one after the other. The `interval` option sets the time between the start of two children, in milliseconds. The default is 80.
+
+<FrameworkTabs
+  react={cascadeReact}
+  vue={cascadeVue}
+  astro={cascadeAstro}
+  js={cascadeJs}
+/>
+
+## What happens when the page loads
+
+- The React, Vue and Astro packages render the element as hidden in the server HTML, so the element does not flash before the script runs. If the script does not run in 5 seconds, the content shows.
+- Hydrate the reveal content eagerly. With lazy hydration, the script can run after 5 seconds. Then the content shows, and hides again until it reveals.
+- `@awesome-reveal/core` does not hide content before your script calls `reveal()`.
+- If the user asks for reduced motion, the content shows at once, with no animation.
+- If the browser does not support the Intersection Observer API or the Web Animations API, the content shows at once.
+
+<Aside type="caution" title="React or Vue in an Astro island">
+  Hydrate the island with `client:load`, not `client:visible`. Import
+  `@awesome-reveal/react/reveal.css` or `@awesome-reveal/vue/reveal.css` in the
+  Astro page or layout.
+</Aside>
+
+## Next steps
+
+- [Choose the entrance](/guides/entrances/): fade and slide in from a side, or zoom, rotate and blur.
+- [Options](/reference/options/): all the options, with their types and default values.

@@ -1,0 +1,35 @@
+---
+title: Animate a list
+description: "Animate the items of a list, a grid or the words of a heading one after the other with Cascade and the interval option, and reveal long lists item by item."
+head:
+  - tag: title
+    content: "Staggered List Animations with Cascade | Awesome Reveal"
+sidebar:
+  order: 4
+draft: true
+---
+
+## Reveal the items one after the other
+
+- `Cascade`, `useCascade`, `v-cascade` and `cascade()` in framework tabs, with a live demo.
+- Only the direct element children animate.
+
+## Change the interval
+
+- `interval` in ms, default 80. Child `index` waits `delay + index * interval`.
+- A negative interval starts each later child further into its entrance.
+
+## Reveal the words of a heading
+
+- Wrap each word in an element with `display: inline-block`.
+
+## Reveal a long list or a tall grid
+
+- A cascade schedules all children at once. Wrap each item in `Reveal` instead.
+
+## Sources
+
+On the `next` branch of the packages repo:
+
+- `packages/core/README.md: Reveal a list, Cascades`
+- `packages/*/README.md: Reveal a list`

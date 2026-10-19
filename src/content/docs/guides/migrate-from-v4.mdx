@@ -1,0 +1,46 @@
+---
+title: Migrate from v4
+description: "Move from react-awesome-reveal v4 to @awesome-reveal/react: replace Fade, Slide, Zoom and the other effect components, and update renamed and removed props."
+head:
+  - tag: title
+    content: "Migrate from react-awesome-reveal v4 | Awesome Reveal"
+sidebar:
+  order: 7
+draft: true
+---
+
+## Choose the package
+
+- `react-awesome-reveal@next` (v5) re-exports `@awesome-reveal/react`. New projects use `@awesome-reveal/react`.
+
+## Check the requirements
+
+- React 18 or 19, ES modules only, no Emotion.
+
+## Replace the effect components
+
+- Table: each v4 effect and direction to a `from` value or keyframes. `up` is `from="bottom"`.
+- The default export is removed. Use the named `Reveal`.
+
+## Update the props
+
+- Table: `cascade`, `damping`, `duration`, `fraction`, `triggerOnce`, `childClassName`, `childStyle`, `onVisibilityChange`, `reverse`.
+
+## Behavior changes
+
+- One rendered element, no wrapper per child, no text splitting, a new easing.
+
+## Next.js Pages Router
+
+- Add `@awesome-reveal/react` to `transpilePackages`.
+
+## Migrate with an agent
+
+- The `migrating-from-v4` skill.
+
+## Sources
+
+On the `next` branch of the packages repo:
+
+- `packages/react/README.md: Migrate from v4`
+- `packages/react/skills/migrating-from-v4/SKILL.md`

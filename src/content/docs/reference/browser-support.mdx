@@ -1,0 +1,37 @@
+---
+title: Browser support
+description: "The browsers, Node.js versions and TypeScript settings that Awesome Reveal supports, and what happens in browsers without the APIs that the packages use."
+head:
+  - tag: title
+    content: "Browser Support and Requirements | Awesome Reveal"
+sidebar:
+  order: 6
+draft: true
+---
+
+## Browsers
+
+- The minimum versions, and `composite` keyframes.
+
+## Older browsers
+
+- Without the Intersection Observer API or `Element.animate`, the content shows immediately.
+
+## Node.js and modules
+
+- Node.js 20.19 (Astro: 22.12). ES modules only.
+
+## TypeScript
+
+- The DOM lib. `moduleResolution: node` support.
+
+## Open questions
+
+- The core README says Firefox 74 and Safari 14.1. The 1.0.0-next.5 changelog says Firefox 80 and Safari 16. Which is correct?
+
+## Sources
+
+On the `next` branch of the packages repo:
+
+- `packages/core/README.md: Browser support`
+- `packages/core/CHANGELOG.md`

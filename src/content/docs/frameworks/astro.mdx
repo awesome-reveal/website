@@ -1,0 +1,42 @@
+---
+title: Astro
+description: "Use Awesome Reveal in Astro with no client directive: where to place Reveal, and how it works with the ClientRouter, transition:persist, server islands and CSP."
+head:
+  - tag: title
+    content: "Scroll Animations in Astro | Awesome Reveal"
+sidebar:
+  order: 3
+draft: true
+---
+
+## How it works in Astro
+
+- A custom element and a module script. No `client:*` directive and no stylesheet import.
+
+## Where to place Reveal
+
+- Not directly inside `<table>`, its sections and rows, or `<select>`.
+- Inside a `<p>` or inline MDX text, use an inline `as`, such as `span`.
+
+## View transitions
+
+- `<ClientRouter />`, `astro:page-load` and `transition:persist`.
+
+## Server islands
+
+- `server:defer` content reveals.
+
+## Content Security Policy
+
+- `security.csp: true` (not with `<ClientRouter />`) or `build.inlineStylesheets: 'never'`.
+
+## Open questions
+
+- The `options` attribute of the host can change at runtime, but the README does not document it. Document it or not?
+
+## Sources
+
+On the `next` branch of the packages repo:
+
+- `packages/astro/README.md`
+- `examples/astro`

@@ -1,0 +1,55 @@
+---
+import { Code, TabItem, Tabs } from "@astrojs/starlight/components";
+
+export type Framework = "react" | "vue" | "astro" | "js";
+
+export interface SnippetVariant {
+  value: string;
+  code: string;
+  mark?: string;
+}
+
+type Props = Partial<Record<Framework, string | SnippetVariant[]>> & {
+  install?: boolean;
+  selected?: string;
+};
+
+const { install = false, selected = "", ...snippets } = Astro.props;
+
+const frameworks = [
+  { key: "react", label: "React", pkg: "@awesome-reveal/react", lang: "jsx" },
+  { key: "vue", label: "Vue", pkg: "@awesome-reveal/vue", lang: "vue" },
+  { key: "astro", label: "Astro", pkg: "@awesome-reveal/astro", lang: "astro" },
+  { key: "js", label: "JavaScript", pkg: "@awesome-reveal/core", lang: "js" },
+] as const;
+const tabs = frameworks
+  .filter(({ key }) => install || snippets[key])
+  .map((framework) => {
+    const snippet = snippets[framework.key] ?? [];
+    const variants =
+      typeof snippet === "string" ? [{ value: "", code: snippet }] : snippet;
+    return { ...framework, variants };
+  });
+---
+
+{/* The key is the same as on the home page, so a framework choice applies on all pages. */}
+<Tabs syncKey="framework">
+  {tabs.map(({ label, pkg, lang, variants }) => (
+    <TabItem label={label}>
+      {install && <Code code={`pnpm add ${pkg}`} lang="shell" wrap />}
+      {variants.map(({ value, code, mark }) =>
+        variants.length === 1 ? (
+          <Code code={code} lang={lang} mark={mark} wrap />
+        ) : (
+          <div
+            data-snippet={value}
+            hidden={value !== selected}
+            data-markdown-ignore={value !== selected ? "" : undefined}
+          >
+            <Code code={code} lang={lang} mark={mark} wrap />
+          </div>
+        ),
+      )}
+    </TabItem>
+  ))}
+</Tabs>

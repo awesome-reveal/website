@@ -1,0 +1,41 @@
+---
+title: Troubleshooting
+description: "Fix common problems with Awesome Reveal: content that never shows, a flash after lazy hydration, overridden transforms, and animations that never finish."
+head:
+  - tag: title
+    content: "Troubleshoot Scroll Reveal Animations | Awesome Reveal"
+sidebar:
+  order: 1
+draft: true
+---
+
+## The content never shows
+
+- An ancestor with `overflow` clips the element. Play the entrance by hand.
+
+## The content shows, then hides again
+
+- Lazy hydration: `client:visible`, `hydrateOnVisible()`, slow hydration.
+
+## The element loses its own transform
+
+- The entrance replaces the own values of the animated properties.
+
+## My code waits for animations that never finish
+
+- Skip paused animations in `document.getAnimations()`.
+
+## Astro: The HTML parser moved the element
+
+- Placement inside tables, `<select>` and `<p>`.
+
+## Errors in the console
+
+- Invalid easing, duration or threshold. Invalid selectors throw.
+
+## Sources
+
+On the `next` branch of the packages repo:
+
+- `packages/*/README.md`
+- `packages/core/README.md: Errors`
