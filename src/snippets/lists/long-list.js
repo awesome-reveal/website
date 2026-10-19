@@ -1,3 +1,3 @@
 import { reveal } from "@awesome-reveal/core";
 
-reveal(".posts li");
+reveal("ul.posts > li");

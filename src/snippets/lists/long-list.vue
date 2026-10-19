@@ -5,7 +5,7 @@ defineProps(["posts"]);
 </script>
 
 <template>
-  <ul>
+  <ul class="posts">
     <li v-for="post in posts" :key="post.id" v-reveal>{{ post.title }}</li>
   </ul>
 </template>

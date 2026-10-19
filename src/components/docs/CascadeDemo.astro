@@ -39,7 +39,7 @@ function frameworkVariants(framework: Framework) {
   );
 }
 
-const items = ["Small", "Native", "Accessible"];
+const cards = ["1", "2", "3", "4", "5", "6"];
 ---
 
 <DemoFrame
@@ -54,9 +54,9 @@ const items = ["Small", "Native", "Accessible"];
       data-choice={String(interval)}
       data-selected={interval === selected ? "" : undefined}
     >
-      <Cascade as="ul" class="tiles" interval={interval} threshold={0.5}>
-        {items.map((item) => (
-          <li>{item}</li>
+      <Cascade as="ul" class="cards" interval={interval} threshold={0.5}>
+        {cards.map((card) => (
+          <li>{card}</li>
         ))}
       </Cascade>
     </div>
@@ -72,10 +72,9 @@ const items = ["Small", "Native", "Accessible"];
 </DemoFrame>
 
 <style>
-  .tiles {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: center;
+  .cards {
+    display: grid;
+    grid-template-columns: repeat(3, 4.5rem);
     gap: 0.75rem;
     margin: 0;
     padding: 0;
@@ -85,16 +84,15 @@ const items = ["Small", "Native", "Accessible"];
   li {
     display: grid;
     place-items: center;
-    min-inline-size: 5.5rem;
-    block-size: 5.5rem;
-    padding-inline: 0.75rem;
+    aspect-ratio: 1;
+    margin: 0;
     border-radius: var(--radius-md);
-    /* Forced colors remove the background, so the outline keeps the tile visible. */
+    /* Forced colors remove the background, so the outline keeps the card visible. */
     outline: 1px solid transparent;
     background-color: var(--marker);
     color: var(--ink);
     font-family: var(--sl-font-mono);
-    font-size: var(--sl-text-sm);
+    font-size: var(--sl-text-xl);
     font-weight: 700;
   }
 </style>

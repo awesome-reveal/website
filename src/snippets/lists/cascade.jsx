@@ -1,9 +1,9 @@
 import { Cascade } from "@awesome-reveal/react";
 
-export const Features = () => (
-  <Cascade as="ul" interval={80}>
-    <li>Small</li>
-    <li>Native</li>
-    <li>Accessible</li>
+export const Cards = ({ cards }) => (
+  <Cascade as="ul" className="cards" interval={80}>
+    {cards.map((card) => (
+      <li key={card.id}>{card.title}</li>
+    ))}
   </Cascade>
 );

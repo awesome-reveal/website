@@ -1,7 +1,7 @@
 import { Reveal } from "@awesome-reveal/react";
 
 export const Posts = ({ posts }) => (
-  <ul>
+  <ul className="posts">
     {posts.map((post) => (
       <Reveal as="li" key={post.id}>
         {post.title}

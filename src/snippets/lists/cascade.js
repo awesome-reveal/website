@@ -1,3 +1,3 @@
 import { cascade } from "@awesome-reveal/core";
 
-cascade("ul.features", { interval: 80 });
+cascade("ul.cards", { interval: 80 });

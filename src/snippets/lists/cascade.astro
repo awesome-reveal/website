@@ -1,9 +1,15 @@
 ---
 import { Cascade } from "@awesome-reveal/astro";
+
+interface Props {
+  cards: { title: string }[];
+}
+
+const { cards } = Astro.props;
 ---
 
-<Cascade as="ul" interval={80}>
-  <li>Small</li>
-  <li>Native</li>
-  <li>Accessible</li>
+<Cascade as="ul" class="cards" interval={80}>
+  {cards.map((card) => (
+    <li>{card.title}</li>
+  ))}
 </Cascade>
