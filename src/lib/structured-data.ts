@@ -10,7 +10,7 @@ interface PageData {
   siteUrl: string;
 }
 
-export function structuredData({
+export function buildStructuredData({
   id,
   title,
   description,
