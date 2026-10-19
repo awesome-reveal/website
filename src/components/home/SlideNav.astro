@@ -58,11 +58,15 @@ import ArrowUp from "@lucide/astro/icons/arrow-up";
     return document.documentElement.scrollHeight - innerHeight;
   }
 
+  function documentTop(slide: HTMLElement) {
+    return slide.getBoundingClientRect().top + scrollY;
+  }
+
   function slideTops() {
     const offset = headerHeight();
     // The first slide starts at the top of the page, so the banner above the hero shows.
     return slides.map((slide, index) =>
-      index === 0 ? 0 : slide.getBoundingClientRect().top + scrollY - offset,
+      index === 0 ? 0 : documentTop(slide) - offset,
     );
   }
 
@@ -75,8 +79,13 @@ import ArrowUp from "@lucide/astro/icons/arrow-up";
 
   addEventListener("scrollend", () => {
     targetTop = undefined;
+    // The user can stop a step before its target.
+    setCurrentLink(slideIndexAt(scrollY));
     updateStepButtons();
   });
+  // A wheel or touch scroll stops a step, so the observer and the next step start from the real position.
+  for (const type of ["wheel", "touchstart"])
+    addEventListener(type, () => (targetTop = undefined), { passive: true });
   if (!("onscrollend" in window)) {
     let timer: ReturnType<typeof setTimeout>;
     addEventListener("scroll", () => {
@@ -126,6 +135,8 @@ import ArrowUp from "@lucide/astro/icons/arrow-up";
   }
 
   function smoothScrollTo(top: number) {
+    // The dot of the target becomes current at once, so the dots of the passed slides do not flash.
+    setCurrentLink(slideIndexAt(Math.min(top, bottomTop())));
     // A scroll that does not move fires no scrollend, so it must not keep a target.
     // It can also stop a smooth scroll, which then fires no scrollend.
     if (reducedMotion.matches || Math.abs(top - scrollY) <= tolerance) {
@@ -229,17 +240,35 @@ import ArrowUp from "@lucide/astro/icons/arrow-up";
       if (link.matches(":hover, :focus-visible")) link.dataset.dismissed = "";
   });
 
-  // A slide is current while it crosses the middle of the viewport.
+  function setCurrentLink(slideIndex: number) {
+    if (links[slideIndex]?.hasAttribute("aria-current")) return;
+    // Two dot transitions at a time change the height of the nav, so a quick change ends the earlier one.
+    for (const animation of list?.getAnimations({ subtree: true }) ?? [])
+      if (
+        animation.effect instanceof KeyframeEffect &&
+        animation.effect.pseudoElement === "::before"
+      )
+        animation.finish();
+    links.forEach((link, index) => {
+      if (index === slideIndex) link.setAttribute("aria-current", "location");
+      else link.removeAttribute("aria-current");
+    });
+  }
+
+  // A slide is current while it crosses the middle of the viewport. Above the first slide, the first slide is current.
+  function slideIndexAt(top: number) {
+    const middle = top + innerHeight / 2;
+    return Math.max(
+      0,
+      slides.findLastIndex((slide) => documentTop(slide) <= middle),
+    );
+  }
+
+  // The observer only tells when a slide crosses the middle.
   const observer = new IntersectionObserver(
-    (entries) => {
-      for (const entry of entries) {
-        if (!entry.isIntersecting) continue;
-        const current = slides.indexOf(entry.target as HTMLElement);
-        links.forEach((link, index) => {
-          if (index === current) link.setAttribute("aria-current", "location");
-          else link.removeAttribute("aria-current");
-        });
-      }
+    () => {
+      // During a step, the dot of the target is already current.
+      if (targetTop === undefined) setCurrentLink(slideIndexAt(scrollY));
       // The first callback sets the current dot, so the nav shows without a later resize of that dot.
       if (nav) nav.hidden = false;
     },
