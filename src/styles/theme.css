@@ -311,6 +311,26 @@ code:not(pre *, .sl-markdown-content *) {
   }
 }
 
+.sl-link-button {
+  font-weight: 700;
+  translate: 0;
+  transition: translate var(--hover-duration) ease;
+
+  svg {
+    font-size: 1.5rem;
+  }
+
+  @media (hover: hover) and (prefers-reduced-motion: no-preference) {
+    &:hover {
+      translate: 0 -2px;
+    }
+
+    &:active {
+      translate: 0 1px;
+    }
+  }
+}
+
 starlight-tabs {
   [role="tablist"] {
     border-bottom-width: 1px;
