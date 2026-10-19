@@ -1,6 +1,7 @@
 ---
 import { Code, LinkButton, TabItem, Tabs } from "@astrojs/starlight/components";
 import { Reveal } from "@awesome-reveal/astro";
+import ArrowRight from "@lucide/astro/icons/arrow-right";
 import Github from "../../assets/github.svg";
 
 const frameworks = [
@@ -81,9 +82,13 @@ reveal("h1", { from: "left" });`,
       </Tabs>
     </Reveal>
     <Reveal class="actions" threshold={0.5} from={{ opacity: 0, y: 12 }}>
+      <LinkButton href="/getting-started/" variant="primary">
+        Read the docs
+        <ArrowRight aria-hidden="true" width="1em" height="1em" />
+      </LinkButton>
       <LinkButton
         href="https://github.com/awesome-reveal/awesome-reveal"
-        variant="primary"
+        variant="secondary"
       >
         Star on GitHub
         <Github aria-hidden="true" width="1em" height="1em" />
@@ -132,6 +137,13 @@ reveal("h1", { from: "left" });`,
       grid-column: 1;
       grid-row: 2;
     }
+  }
+
+  .actions {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 1rem 1.5rem;
   }
 
   .intro {
