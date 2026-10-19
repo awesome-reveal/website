@@ -1,11 +1,11 @@
 ---
 import ChevronDown from "@lucide/astro/icons/chevron-down";
 import Copy from "@lucide/astro/icons/copy";
-import { markdownPath } from "../lib/markdown-slug";
+import { getMarkdownPath } from "../lib/markdown-slug";
 import { isArchived } from "../lib/versions";
 
 const { id } = Astro.locals.starlightRoute;
-const markdown = markdownPath(id);
+const markdown = getMarkdownPath(id);
 const prompt = encodeURIComponent(
   `Read ${new URL(Astro.url.pathname, Astro.site).href} so I can ask questions about it.`,
 );

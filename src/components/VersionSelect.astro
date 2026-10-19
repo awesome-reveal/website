@@ -2,7 +2,7 @@
 import ChevronDown from "@lucide/astro/icons/chevron-down";
 import Clock from "@lucide/astro/icons/clock";
 import versionsConfig from "virtual:starlight-versions-config";
-import { archivedVersion } from "../lib/versions";
+import { findArchivedVersion } from "../lib/versions";
 
 const { id } = Astro.locals.starlightRoute;
 
@@ -14,7 +14,7 @@ const options = [
     href: `/${slug}/`,
   })),
 ];
-const archived = archivedVersion(id);
+const archived = findArchivedVersion(id);
 const selectedHref = archived ? `/${archived.slug}/` : "/";
 ---
 

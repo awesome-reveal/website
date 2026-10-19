@@ -1,10 +1,10 @@
 ---
 import Clock from "@lucide/astro/icons/clock";
-import { archivedVersion } from "../lib/versions";
+import { findArchivedVersion } from "../lib/versions";
 
 const { id } = Astro.locals.starlightRoute;
 
-const version = archivedVersion(id);
+const version = findArchivedVersion(id);
 const outdated = version?.label
   ? Astro.locals.t("starlightVersions.outdated.label", { label: version.label })
   : Astro.locals.t("starlightVersions.outdated.slug", { slug: version?.slug });

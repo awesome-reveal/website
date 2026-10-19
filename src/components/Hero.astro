@@ -5,7 +5,7 @@ import { Cascade, Reveal } from "@awesome-reveal/astro";
 import ArrowRight from "@lucide/astro/icons/arrow-right";
 import ExternalLink from "@lucide/astro/icons/external-link";
 import Github from "../assets/github.svg";
-import { markdownSlug } from "../lib/markdown-slug";
+import { getMarkdownSlug } from "../lib/markdown-slug";
 
 // The hero schema of Starlight accepts only its own icon names, so the frontmatter name picks the icon here.
 const icons = {
@@ -19,7 +19,7 @@ const { data } = entry;
 const { scrollCueTarget } = data;
 const { title = data.title, tagline, actions = [] } = data.hero ?? {};
 const words = title.split(" ");
-const isHome = markdownSlug(id) === "index";
+const isHome = getMarkdownSlug(id) === "index";
 // Starlight's generated 404 page has no actions, so it gives no way back.
 const heroActions =
   id === "404" && actions.length === 0
