@@ -1,0 +1,139 @@
+---
+interface Props {
+  id: string;
+  name: string;
+  selected: string;
+  options: { value: string; label?: string }[];
+}
+
+const { id, name, selected, options } = Astro.props;
+---
+
+<div class="control" role="radiogroup" aria-labelledby={`${id}-control-name`}>
+  <code class="control-name" id={`${id}-control-name`}>
+    {name}
+  </code>
+  <div class="options">
+    {options.map(({ value, label = value }) => (
+      <label>
+        <input
+          type="radio"
+          name={`${id}-control`}
+          value={value}
+          checked={value === selected}
+          autocomplete="off"
+        />
+        <span>{label}</span>
+      </label>
+    ))}
+  </div>
+</div>
+
+<style>
+  /* Not a fieldset: Safari puts a legend above the content of a flex fieldset, even when the legend floats. */
+  .control {
+    display: flex;
+    flex: 1 1 18rem;
+    align-items: center;
+    gap: 0.75rem;
+    min-inline-size: 0;
+  }
+
+  .control-name {
+    padding: 0;
+    background: none;
+    color: var(--sl-color-gray-3);
+    font-size: var(--sl-text-sm);
+  }
+
+  .options {
+    display: flex;
+    flex: 1;
+    gap: 0.25rem;
+    padding: 0.25rem;
+    border: 1px solid var(--sl-color-hairline-light);
+    border-radius: 999px;
+    background-color: var(--sl-color-black);
+  }
+
+  .options label {
+    position: relative;
+    flex: 1 1 auto;
+    min-inline-size: 0;
+  }
+
+  .options input {
+    position: absolute;
+    inset: 0;
+    margin: 0;
+    opacity: 0;
+    cursor: pointer;
+  }
+
+  .options span {
+    display: grid;
+    place-items: center;
+    min-block-size: var(--option-size);
+    padding-inline: 0.6rem;
+    border-radius: 999px;
+    color: var(--sl-color-gray-2);
+    font-family: var(--sl-font-mono);
+    font-size: var(--sl-text-sm);
+    white-space: nowrap;
+    transition:
+      background-color var(--hover-duration) ease,
+      color var(--hover-duration) ease;
+  }
+
+  .options label:hover span {
+    color: var(--sl-color-white);
+  }
+
+  /* The marker has less than 3:1 on paper, so the ink ring marks the selected option (WCAG 1.4.11). */
+  .options input:checked + span {
+    background-color: var(--marker);
+    box-shadow: inset 0 0 0 1px var(--ink);
+    color: var(--ink);
+    font-weight: 700;
+  }
+
+  .options input:focus-visible + span {
+    outline: 2px solid var(--sl-color-text-accent);
+    outline-offset: 2px;
+  }
+
+  /* On a narrow container, the control shares one row with a replay button, so its name is only for screen readers. */
+  @container (max-width: 30rem) {
+    .control {
+      flex-basis: 0;
+    }
+
+    .control-name {
+      position: absolute;
+      inline-size: 1px;
+      block-size: 1px;
+      overflow: hidden;
+      clip-path: inset(50%);
+      white-space: nowrap;
+    }
+
+    .options span {
+      padding-inline: 0.25rem;
+    }
+  }
+
+  /* Forced colors remove backgrounds, so the selected option needs a system color. */
+  @media (forced-colors: active) {
+    .options input:checked + span {
+      forced-color-adjust: none;
+      background-color: Highlight;
+      color: HighlightText;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .options span {
+      transition: none;
+    }
+  }
+</style>

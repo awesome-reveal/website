@@ -1,0 +1,332 @@
+---
+import { Reveal, type Side, type StartState } from "@awesome-reveal/astro";
+import ArrowDown from "@lucide/astro/icons/arrow-down";
+import ArrowLeft from "@lucide/astro/icons/arrow-left";
+import ArrowRight from "@lucide/astro/icons/arrow-right";
+import ArrowUp from "@lucide/astro/icons/arrow-up";
+import RotateCcw from "@lucide/astro/icons/rotate-ccw";
+import { objectLiteral } from "../../lib/object-literal";
+import ChoiceControl from "../ChoiceControl.astro";
+
+interface Props {
+  id: string;
+  title: string;
+  options: { label: string; from: Side | StartState }[];
+  selected: string;
+}
+
+const { id, title, options, selected } = Astro.props;
+
+const SIDE_OFFSET_PX = 24;
+const sides = {
+  top: { Arrow: ArrowDown, x: 0, y: -SIDE_OFFSET_PX },
+  right: { Arrow: ArrowLeft, x: SIDE_OFFSET_PX, y: 0 },
+  bottom: { Arrow: ArrowUp, x: 0, y: SIDE_OFFSET_PX },
+  left: { Arrow: ArrowRight, x: -SIDE_OFFSET_PX, y: 0 },
+};
+
+const withUnit = (value: number | string, unit: string) =>
+  typeof value === "number" ? `${value}${unit}` : value;
+
+function startPositionStyle(from: Side | StartState) {
+  if (typeof from === "string") {
+    const { x, y } = sides[from];
+    return { translate: `${x}px ${y}px` };
+  }
+  const { x = 0, y = 0, scale, rotate } = from;
+  return {
+    translate: `${withUnit(x, "px")} ${withUnit(y, "px")}`,
+    ...(scale !== undefined && { scale }),
+    ...(rotate !== undefined && { rotate: withUnit(rotate, "deg") }),
+  };
+}
+
+const fromCode = (from: Side | StartState) =>
+  typeof from === "string" ? `from="${from}"` : `from={${objectLiteral(from)}}`;
+
+const choices = options.map(({ label, from }) => ({
+  label,
+  from,
+  code: fromCode(from),
+  Arrow: typeof from === "string" ? sides[from].Arrow : undefined,
+  startPosition: startPositionStyle(from),
+}));
+---
+
+<figure
+  class="entrance-demo not-content"
+  aria-label={title}
+  data-markdown-ignore
+>
+  <div class="stage">
+    {choices.map(({ label, from, Arrow, startPosition }) => (
+      <div
+        class="choice"
+        data-choice={label}
+        data-selected={label === selected ? "" : undefined}
+      >
+        <div class="start" style={startPosition} aria-hidden="true" />
+        <Reveal class="tile" from={from} threshold={0.5}>
+          {Arrow && <Arrow class="arrow" aria-hidden="true" />}
+          <span>{label}</span>
+        </Reveal>
+      </div>
+    ))}
+  </div>
+  <figcaption>
+    {choices.map(({ label, code }) => (
+      <code data-code={label} hidden={label !== selected}>
+        {code}
+      </code>
+    ))}
+    <span class="legend">
+      <span class="legend-swatch" aria-hidden="true"></span>
+      Start position
+    </span>
+  </figcaption>
+  <div class="toolbar">
+    <ChoiceControl
+      id={id}
+      name="from"
+      selected={selected}
+      options={choices.map(({ label }) => ({ value: label }))}
+    />
+    <button type="button" class="replay" aria-label={`Replay ${title}`}>
+      <RotateCcw aria-hidden="true" />
+      <span class="replay-label">Replay</span>
+    </button>
+  </div>
+  <p class="motion-note">
+    Your device asks for reduced motion, so the element shows at once, with no
+    animation. The dashed outline shows where the entrance starts.
+  </p>
+</figure>
+
+<script>
+  import type { RevealElement } from "@awesome-reveal/astro";
+
+  function replay(host: RevealElement | null | undefined) {
+    if (!host) return;
+    host.when = false;
+    host.when = true;
+  }
+
+  for (const demo of document.querySelectorAll(".entrance-demo")) {
+    const choices = demo.querySelectorAll<HTMLElement>("[data-choice]");
+    const codes = demo.querySelectorAll<HTMLElement>("[data-code]");
+    const selectedHost = () =>
+      demo.querySelector<RevealElement>(
+        "[data-choice][data-selected] awesome-reveal",
+      );
+
+    demo.querySelector(".options")?.addEventListener("change", (event) => {
+      if (!(event.target instanceof HTMLInputElement)) return;
+      const { value } = event.target;
+      for (const choice of choices) {
+        choice.toggleAttribute(
+          "data-selected",
+          choice.dataset.choice === value,
+        );
+      }
+      for (const code of codes) code.hidden = code.dataset.code !== value;
+      replay(selectedHost());
+    });
+
+    demo
+      .querySelector(".replay")
+      ?.addEventListener("click", () => replay(selectedHost()));
+  }
+</script>
+
+<style>
+  figure {
+    container: entrance-demo / inline-size;
+    margin-block: 1.5rem;
+    overflow: hidden;
+    border: 1px solid var(--sl-color-hairline-light);
+    border-radius: var(--radius-md);
+    background-color: color-mix(
+      in oklab,
+      var(--sl-color-gray-6) 70%,
+      transparent
+    );
+  }
+
+  .stage {
+    display: grid;
+    place-items: center;
+    min-block-size: 15rem;
+    padding: 2.5rem 1rem;
+  }
+
+  .choice {
+    display: grid;
+    grid-area: 1 / 1;
+
+    &:not([data-selected]) {
+      display: none;
+    }
+  }
+
+  /* The host of Reveal has display: contents, so the tile is a grid item of the choice. */
+  .start,
+  .tile {
+    grid-area: 1 / 1;
+    inline-size: 8rem;
+    aspect-ratio: 1;
+    border-radius: var(--radius-md);
+  }
+
+  /* The outline is above the tile, so a start state inside the tile, such as a zoom, stays visible. */
+  .start {
+    z-index: 1;
+    border: 2px dashed var(--sl-color-gray-3);
+    pointer-events: none;
+    /* Without its own layer, Safari leaves a trail of the old outline after a choice change. */
+    will-change: transform;
+  }
+
+  .tile {
+    display: grid;
+    place-content: center;
+    justify-items: center;
+    gap: 0.4rem;
+    /* Forced colors remove the background, so the outline keeps the tile visible. */
+    outline: 1px solid transparent;
+    background-color: var(--marker);
+    color: var(--ink);
+    font-family: var(--sl-font-mono);
+    font-size: var(--sl-text-sm);
+    font-weight: 700;
+  }
+
+  .arrow {
+    font-size: 1.75rem;
+  }
+
+  figcaption {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.5rem 1rem;
+    padding: 0.5rem 0.75rem;
+    border-block-start: 1px solid var(--sl-color-hairline-light);
+    color: var(--sl-color-gray-3);
+    font-size: var(--sl-text-sm);
+
+    code {
+      padding: 0;
+      background: none;
+      color: var(--sl-color-gray-2);
+    }
+  }
+
+  .legend {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+  }
+
+  .legend-swatch {
+    inline-size: 1em;
+    aspect-ratio: 1;
+    border: 2px dashed var(--sl-color-gray-3);
+    border-radius: 0.2rem;
+  }
+
+  .toolbar {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.75rem 1rem;
+    padding: 0.75rem;
+    border-block-start: 1px solid var(--sl-color-hairline-light);
+    --option-size: 2.25rem;
+    /* The options with their padding and border. */
+    --control-size: calc(var(--option-size) + 0.5rem + 2px);
+  }
+
+  @media (pointer: coarse) {
+    .toolbar {
+      --option-size: 2.75rem;
+    }
+  }
+
+  .replay {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    min-block-size: var(--control-size);
+    margin-inline-start: auto;
+    padding: 0.35rem 0.9rem;
+    border: 1px solid var(--sl-color-hairline-light);
+    border-radius: 999px;
+    background-color: var(--sl-color-black);
+    color: var(--sl-color-gray-2);
+    font: inherit;
+    font-size: var(--sl-text-sm);
+    font-weight: 600;
+    cursor: pointer;
+    transition:
+      border-color var(--hover-duration) ease,
+      color var(--hover-duration) ease;
+
+    @media (hover: hover) {
+      &:hover {
+        border-color: var(--sl-color-text-accent);
+        color: var(--sl-color-white);
+      }
+    }
+  }
+
+  /* On a narrow demo, the control and the replay button share one row. */
+  @container entrance-demo (max-width: 30rem) {
+    .toolbar {
+      flex-wrap: nowrap;
+    }
+
+    .replay-label {
+      position: absolute;
+      inline-size: 1px;
+      block-size: 1px;
+      overflow: hidden;
+      clip-path: inset(50%);
+      white-space: nowrap;
+    }
+
+    .replay {
+      flex: none;
+      justify-content: center;
+      inline-size: var(--control-size);
+      padding: 0;
+    }
+  }
+
+  .motion-note {
+    display: none;
+    margin: 0;
+    padding: 0.75rem;
+    border-block-start: 1px solid var(--sl-color-hairline-light);
+    color: var(--sl-color-gray-3);
+    font-size: var(--sl-text-sm);
+  }
+
+  /* With reduced motion, `when: false` does not reset the entrance, so there is nothing to replay. */
+  @media (prefers-reduced-motion: reduce) {
+    .replay {
+      display: none;
+    }
+
+    .motion-note {
+      display: block;
+    }
+  }
+
+  /* Without a script, the choice and the replay do nothing. */
+  @media (scripting: none) {
+    .toolbar {
+      display: none;
+    }
+  }
+</style>

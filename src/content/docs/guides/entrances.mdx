@@ -8,8 +8,7 @@ sidebar:
   order: 1
 ---
 
-import { Reveal } from "@awesome-reveal/astro";
-import Demo from "../../../components/docs/Demo.astro";
+import EntranceDemo from "../../../components/docs/EntranceDemo.astro";
 import FrameworkTabs from "../../../components/docs/FrameworkTabs.astro";
 import sideReact from "../../../snippets/entrances/side.jsx?raw";
 import sideVue from "../../../snippets/entrances/side.vue?raw";
@@ -26,20 +25,17 @@ The `from` option sets the start state of the entrance. The element animates fro
 
 Set `from` to `"top"`, `"right"`, `"bottom"` or `"left"`. The element starts transparent and 24 pixels away from its resting position, on that side. The default is `"bottom"`, so the element moves up.
 
-<Demo id="sides" caption='from="top" | "right" | "bottom" | "left"'>
-  <Reveal class="demo-tile" from="top" threshold={0.5}>
-    {"top"}
-  </Reveal>
-  <Reveal class="demo-tile" from="right" threshold={0.5}>
-    {"right"}
-  </Reveal>
-  <Reveal class="demo-tile" from="bottom" threshold={0.5}>
-    {"bottom"}
-  </Reveal>
-  <Reveal class="demo-tile" from="left" threshold={0.5}>
-    {"left"}
-  </Reveal>
-</Demo>
+<EntranceDemo
+  id="sides"
+  title="Slide in from a side"
+  selected="bottom"
+  options={[
+    { label: "top", from: "top" },
+    { label: "right", from: "right" },
+    { label: "bottom", from: "bottom" },
+    { label: "left", from: "left" },
+  ]}
+/>
 
 <FrameworkTabs react={sideReact} vue={sideVue} astro={sideAstro} js={sideJs} />
 
@@ -62,20 +58,17 @@ A string contains a CSS value with its unit, for example `"-100%"` or `"-5deg"`.
 
 The object sets the complete start state. Only the properties that you set animate. For example, `{ scale: 0.9 }` scales the element with no fade. To add a fade, also set `opacity: 0`.
 
-<Demo id="start-states" caption="from={{ … }}">
-  <Reveal class="demo-tile" from={{ opacity: 0 }} threshold={0.5}>
-    {"opacity: 0"}
-  </Reveal>
-  <Reveal class="demo-tile" from={{ scale: 0.9 }} threshold={0.5}>
-    {"scale: 0.9"}
-  </Reveal>
-  <Reveal class="demo-tile" from={{ opacity: 0, rotate: -8 }} threshold={0.5}>
-    {"rotate: -8"}
-  </Reveal>
-  <Reveal class="demo-tile" from={{ opacity: 0, blur: 8 }} threshold={0.5}>
-    {"blur: 8"}
-  </Reveal>
-</Demo>
+<EntranceDemo
+  id="start-states"
+  title="Zoom, rotate and blur with a start state"
+  selected="Zoom"
+  options={[
+    { label: "Fade", from: { opacity: 0 } },
+    { label: "Zoom", from: { opacity: 0, scale: 0.8 } },
+    { label: "Rotate", from: { opacity: 0, rotate: -8 } },
+    { label: "Blur", from: { opacity: 0, blur: 8 } },
+  ]}
+/>
 
 <FrameworkTabs
   react={startStateReact}
