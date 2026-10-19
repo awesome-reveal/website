@@ -6,6 +6,12 @@
     overflow-anchor: none;
   }
 
+  /* The Starlight content gaps would put space between the slides. */
+  [data-slide],
+  .sl-markdown-content:has(> [data-slide]) {
+    margin-block-start: 0;
+  }
+
   .slide-title {
     color: var(--sl-color-white);
     font-size: clamp(2.25rem, 1.5rem + 3vw, 3.75rem);
