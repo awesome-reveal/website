@@ -79,6 +79,8 @@ const { id, caption } = Astro.props;
     place-content: center;
     aspect-ratio: 1;
     padding: 0.5rem;
+    /* Forced colors remove the background, so the outline keeps the tile visible. */
+    outline: 1px solid transparent;
     border-radius: var(--radius-md);
     background-color: var(--marker);
     color: var(--ink);
@@ -119,9 +121,17 @@ const { id, caption } = Astro.props;
       border-color var(--hover-duration) ease,
       color var(--hover-duration) ease;
 
-    &:hover {
-      border-color: var(--sl-color-text-accent);
-      color: var(--sl-color-white);
+    @media (hover: hover) {
+      &:hover {
+        border-color: var(--sl-color-text-accent);
+        color: var(--sl-color-white);
+      }
+    }
+  }
+
+  @media (scripting: none) {
+    .replay {
+      display: none;
     }
   }
 

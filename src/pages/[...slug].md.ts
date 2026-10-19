@@ -7,7 +7,7 @@ export const getStaticPaths = async () =>
   (
     await getCollection(
       "docs",
-      ({ data }) => import.meta.env.DEV || !data.draft,
+      ({ data }) => import.meta.env.MODE !== "production" || !data.draft,
     )
   ).map((entry) => ({
     params: { slug: getMarkdownSlug(entry.id) },

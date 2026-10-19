@@ -11,8 +11,10 @@ type Head = StarlightRouteData["head"];
 type Entry = StarlightRouteData["entry"];
 type Sidebar = StarlightRouteData["sidebar"];
 
-export const onRequest = defineRouteMiddleware((context) => {
+export const onRequest = defineRouteMiddleware(async (context, next) => {
   const route = context.locals.starlightRoute;
+  // starlight-versions runs later and replaces the sidebar with the one of the current version.
+  await next();
   route.sidebar = removeEmptyGroups(route.sidebar);
   if (route.id === "404") return;
   const archivedVersion = findArchivedVersion(route.id);
@@ -28,13 +30,10 @@ export const onRequest = defineRouteMiddleware((context) => {
 });
 
 // Production builds skip draft pages, so a group of drafts has no entries.
-// starlight-versions nests each version sidebar in a group, so the check is recursive.
 function removeEmptyGroups(sidebar: Sidebar): Sidebar {
-  return sidebar.flatMap<Sidebar[number]>((item) => {
-    if (item.type !== "group") return [item];
-    const entries = removeEmptyGroups(item.entries);
-    return entries.length > 0 ? [{ ...item, entries }] : [];
-  });
+  return sidebar.filter(
+    (item) => item.type !== "group" || item.entries.length > 0,
+  );
 }
 
 function getSearchTitle(entry: Entry) {
