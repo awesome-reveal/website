@@ -176,8 +176,8 @@ importers:
         specifier: ^0.42.6
         version: 0.42.6(@astrojs/markdown-remark@7.3.2(supports-color@10.2.2))(astro@7.4.0(@astrojs/markdown-remark@7.3.2(supports-color@10.2.2))(@types/node@24.19.2)(esbuild@0.28.2)(jiti@2.4.2)(yaml@2.9.1))(supports-color@10.2.2)(typescript@6.0.3)
       '@awesome-reveal/astro':
-        specifier: 1.0.0-next.10
-        version: 1.0.0-next.10(astro@7.4.0(@astrojs/markdown-remark@7.3.2(supports-color@10.2.2))(@types/node@24.19.2)(esbuild@0.28.2)(jiti@2.4.2)(yaml@2.9.1))
+        specifier: 1.0.0-next.11
+        version: 1.0.0-next.11(astro@7.4.0(@astrojs/markdown-remark@7.3.2(supports-color@10.2.2))(@types/node@24.19.2)(esbuild@0.28.2)(jiti@2.4.2)(yaml@2.9.1))
       astro:
         specifier: ^7.4.0
         version: 7.4.0(@astrojs/markdown-remark@7.3.2(supports-color@10.2.2))(@types/node@24.19.2)(esbuild@0.28.2)(jiti@2.4.2)(yaml@2.9.1)
@@ -474,14 +474,14 @@ packages:
   '@astrojs/yaml2ts@0.2.4':
     resolution: {integrity: sha512-8oddpOae35pJsXPQXhTkM0ypfKPskVsh2bCxRtbf7e+/Epw2nReakFYpLKjZMEr75CsoF203PMnCocpfz0s69A==}
 
-  '@awesome-reveal/astro@1.0.0-next.10':
-    resolution: {integrity: sha512-W4Sqs1o9Wv4pY8/xx0jiIHsmPUcTOZXeOKWq3LiYSD4+opGwFeb9ubPuNGBaTfjG1SwNOhOzHPAMDbm2OI/8+A==}
+  '@awesome-reveal/astro@1.0.0-next.11':
+    resolution: {integrity: sha512-1W7oyCTvxo6UzXL/hR57G9SzIXBerjnR+3vWiFCbQS54VDMkxGxWGxLwPd6s+NXTqtaaTIz+HXUIl1I3Vd3lhg==}
     engines: {node: '>=22.12.0'}
     peerDependencies:
       astro: ^6.0.0 || ^7.0.0
 
-  '@awesome-reveal/core@1.0.0-next.10':
-    resolution: {integrity: sha512-oVKDSWiDfUCbdqvuuLsWrG46Cgl/8iqm5pyAVDau4mNgbRadXOU19vi4truqNP3FSKRk+8B8cFD23lrCMfya0A==}
+  '@awesome-reveal/core@1.0.0-next.11':
+    resolution: {integrity: sha512-KMYQSQAzQO+sgZGZJhZv5dOV3gUFgOoRzlC7Z8rikBK8d90b4scxrf+hWN6MBy+BiHqZvvxvImDlWdsWkoRCQw==}
     engines: {node: '>=20.19.0'}
 
   '@babel/helper-string-parser@7.29.7':
@@ -3624,12 +3624,12 @@ snapshots:
     dependencies:
       yaml: 2.9.1
 
-  '@awesome-reveal/astro@1.0.0-next.10(astro@7.4.0(@astrojs/markdown-remark@7.3.2(supports-color@10.2.2))(@types/node@24.19.2)(esbuild@0.28.2)(jiti@2.4.2)(yaml@2.9.1))':
+  '@awesome-reveal/astro@1.0.0-next.11(astro@7.4.0(@astrojs/markdown-remark@7.3.2(supports-color@10.2.2))(@types/node@24.19.2)(esbuild@0.28.2)(jiti@2.4.2)(yaml@2.9.1))':
     dependencies:
-      '@awesome-reveal/core': 1.0.0-next.10
+      '@awesome-reveal/core': 1.0.0-next.11
       astro: 7.4.0(@astrojs/markdown-remark@7.3.2(supports-color@10.2.2))(@types/node@24.19.2)(esbuild@0.28.2)(jiti@2.4.2)(yaml@2.9.1)
 
-  '@awesome-reveal/core@1.0.0-next.10': {}
+  '@awesome-reveal/core@1.0.0-next.11': {}
 
   '@babel/helper-string-parser@7.29.7': {}
 
