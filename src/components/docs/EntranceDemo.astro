@@ -6,7 +6,12 @@ import ArrowRight from "@lucide/astro/icons/arrow-right";
 import ArrowUp from "@lucide/astro/icons/arrow-up";
 import RotateCcw from "@lucide/astro/icons/rotate-ccw";
 import { objectLiteral } from "../../lib/object-literal";
+import astroSnippet from "../../snippets/entrances/entrance.astro?raw";
+import jsSnippet from "../../snippets/entrances/entrance.js?raw";
+import reactSnippet from "../../snippets/entrances/entrance.jsx?raw";
+import vueSnippet from "../../snippets/entrances/entrance.vue?raw";
 import ChoiceControl from "../ChoiceControl.astro";
+import FrameworkTabs, { type Framework } from "./FrameworkTabs.astro";
 
 interface Props {
   id: string;
@@ -41,66 +46,99 @@ function startPositionStyle(from: Side | StartState) {
   };
 }
 
-const fromCode = (from: Side | StartState) =>
+type From = Side | StartState;
+
+const jsxFrom = (from: From) =>
   typeof from === "string" ? `from="${from}"` : `from={${objectLiteral(from)}}`;
+
+const snippets: Record<
+  Framework,
+  { code: string; from: (from: From) => string }
+> = {
+  react: { code: reactSnippet, from: jsxFrom },
+  astro: { code: astroSnippet, from: jsxFrom },
+  vue: {
+    code: vueSnippet,
+    from: (from) =>
+      typeof from === "string"
+        ? `from="${from}"`
+        : `:from="${objectLiteral(from).replaceAll('"', "'")}"`,
+  },
+  js: {
+    code: jsSnippet,
+    from: (from) =>
+      `from: ${typeof from === "string" ? `"${from}"` : objectLiteral(from)}`,
+  },
+};
+
+// The snippet files show this side, and each choice replaces it.
+const SNIPPET_FROM = "bottom";
+
+function snippetVariants(framework: Framework) {
+  const { code, from: fromCode } = snippets[framework];
+  const sample = fromCode(SNIPPET_FROM);
+  if (code.split(sample).length !== 2) {
+    throw new Error(
+      `The ${framework} entrance snippet must contain ${sample} once.`,
+    );
+  }
+  return options.map(({ label, from }) => ({
+    value: label,
+    code: code.replace(sample, () => fromCode(from)),
+    mark: fromCode(from),
+  }));
+}
 
 const choices = options.map(({ label, from }) => ({
   label,
   from,
-  code: fromCode(from),
   Arrow: typeof from === "string" ? sides[from].Arrow : undefined,
   startPosition: startPositionStyle(from),
 }));
 ---
 
-<figure
-  class="entrance-demo not-content"
-  aria-label={title}
-  data-markdown-ignore
->
-  <div class="stage">
-    {choices.map(({ label, from, Arrow, startPosition }) => (
-      <div
-        class="choice"
-        data-choice={label}
-        data-selected={label === selected ? "" : undefined}
-      >
-        <div class="start" style={startPosition} aria-hidden="true" />
-        <Reveal class="tile" from={from} threshold={0.5}>
-          {Arrow && <Arrow class="arrow" aria-hidden="true" />}
-          <span>{label}</span>
-        </Reveal>
-      </div>
-    ))}
-  </div>
-  <figcaption>
-    {choices.map(({ label, code }) => (
-      <code data-code={label} hidden={label !== selected}>
-        {code}
-      </code>
-    ))}
-    <span class="legend">
-      <span class="legend-swatch" aria-hidden="true"></span>
-      Start position
-    </span>
-  </figcaption>
-  <div class="toolbar">
-    <ChoiceControl
-      id={id}
-      name="from"
-      selected={selected}
-      options={choices.map(({ label }) => ({ value: label }))}
-    />
-    <button type="button" class="replay" aria-label={`Replay ${title}`}>
-      <RotateCcw aria-hidden="true" />
-      <span class="replay-label">Replay</span>
-    </button>
-  </div>
-  <p class="motion-note">
-    Your device asks for reduced motion, so the element shows at once, with no
-    animation. The dashed outline shows where the entrance starts.
-  </p>
-</figure>
+<div class="entrance-demo">
+  <figure class="not-content" aria-label={title} data-markdown-ignore>
+    <div class="stage">
+      {choices.map(({ label, from, Arrow, startPosition }) => (
+        <div
+          class="choice"
+          data-choice={label}
+          data-selected={label === selected ? "" : undefined}
+        >
+          <div class="start" style={startPosition} aria-hidden="true" />
+          <Reveal class="tile" from={from} threshold={0.5}>
+            {Arrow && <Arrow class="arrow" aria-hidden="true" />}
+            <span>{label}</span>
+          </Reveal>
+        </div>
+      ))}
+    </div>
+    <div class="toolbar">
+      <ChoiceControl
+        id={id}
+        name="from"
+        selected={selected}
+        options={choices.map(({ label }) => ({ value: label }))}
+      />
+      <button type="button" class="replay" aria-label={`Replay ${title}`}>
+        <RotateCcw aria-hidden="true" />
+        <span class="replay-label">Replay</span>
+      </button>
+    </div>
+    <p class="motion-note">
+      Your device asks for reduced motion, so the element shows at once, with no
+      animation. The dashed outline shows where the entrance starts.
+    </p>
+  </figure>
+  <FrameworkTabs
+    selected={selected}
+    react={snippetVariants("react")}
+    vue={snippetVariants("vue")}
+    astro={snippetVariants("astro")}
+    js={snippetVariants("js")}
+  />
+</div>
 
 <script>
   import type { RevealElement } from "@awesome-reveal/astro";
@@ -113,7 +151,7 @@ const choices = options.map(({ label, from }) => ({
 
   for (const demo of document.querySelectorAll(".entrance-demo")) {
     const choices = demo.querySelectorAll<HTMLElement>("[data-choice]");
-    const codes = demo.querySelectorAll<HTMLElement>("[data-code]");
+    const snippets = demo.querySelectorAll<HTMLElement>("[data-snippet]");
     const selectedHost = () =>
       demo.querySelector<RevealElement>(
         "[data-choice][data-selected] awesome-reveal",
@@ -128,7 +166,9 @@ const choices = options.map(({ label, from }) => ({
           choice.dataset.choice === value,
         );
       }
-      for (const code of codes) code.hidden = code.dataset.code !== value;
+      for (const snippet of snippets) {
+        snippet.hidden = snippet.dataset.snippet !== value;
+      }
       replay(selectedHost());
     });
 
@@ -202,37 +242,6 @@ const choices = options.map(({ label, from }) => ({
 
   .arrow {
     font-size: 1.75rem;
-  }
-
-  figcaption {
-    display: flex;
-    flex-wrap: wrap;
-    align-items: center;
-    justify-content: space-between;
-    gap: 0.5rem 1rem;
-    padding: 0.5rem 0.75rem;
-    border-block-start: 1px solid var(--sl-color-hairline-light);
-    color: var(--sl-color-gray-3);
-    font-size: var(--sl-text-sm);
-
-    code {
-      padding: 0;
-      background: none;
-      color: var(--sl-color-gray-2);
-    }
-  }
-
-  .legend {
-    display: inline-flex;
-    align-items: center;
-    gap: 0.4rem;
-  }
-
-  .legend-swatch {
-    inline-size: 1em;
-    aspect-ratio: 1;
-    border: 2px dashed var(--sl-color-gray-3);
-    border-radius: 0.2rem;
   }
 
   .toolbar {

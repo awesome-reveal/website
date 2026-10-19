@@ -1,7 +1,7 @@
 import { Reveal } from "@awesome-reveal/react";
 
 export const Title = () => (
-  <Reveal from="left">
-    <h2>From the left</h2>
+  <Reveal from="bottom">
+    <h2>Hello</h2>
   </Reveal>
 );

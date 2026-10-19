@@ -9,15 +9,6 @@ sidebar:
 ---
 
 import EntranceDemo from "../../../components/docs/EntranceDemo.astro";
-import FrameworkTabs from "../../../components/docs/FrameworkTabs.astro";
-import sideReact from "../../../snippets/entrances/side.jsx?raw";
-import sideVue from "../../../snippets/entrances/side.vue?raw";
-import sideAstro from "../../../snippets/entrances/side.astro?raw";
-import sideJs from "../../../snippets/entrances/side.js?raw";
-import startStateReact from "../../../snippets/entrances/start-state.jsx?raw";
-import startStateVue from "../../../snippets/entrances/start-state.vue?raw";
-import startStateAstro from "../../../snippets/entrances/start-state.astro?raw";
-import startStateJs from "../../../snippets/entrances/start-state.js?raw";
 
 The `from` option sets the start state of the entrance. The element animates from this state to no offset, no rotation, no blur, a scale of 1 and an opacity of 1.
 
@@ -36,8 +27,6 @@ Set `from` to `"top"`, `"right"`, `"bottom"` or `"left"`. The element starts tra
     { label: "left", from: "left" },
   ]}
 />
-
-<FrameworkTabs react={sideReact} vue={sideVue} astro={sideAstro} js={sideJs} />
 
 The distance is always 24 pixels. For a different distance, set a start state.
 
@@ -68,13 +57,6 @@ The object sets the complete start state. Only the properties that you set anima
     { label: "Rotate", from: { opacity: 0, rotate: -8 } },
     { label: "Blur", from: { opacity: 0, blur: 8 } },
   ]}
-/>
-
-<FrameworkTabs
-  react={startStateReact}
-  vue={startStateVue}
-  astro={startStateAstro}
-  js={startStateJs}
 />
 
 These start states give common entrances:
