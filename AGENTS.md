@@ -16,12 +16,12 @@ The docs site for the `@awesome-reveal/*` packages, at <https://awesome-reveal.d
 Use the Node version in `.nvmrc` and the pnpm version in `packageManager`. A shell can start with an older Node: check `node -v` first, because Astro 7.4 needs Node 22.22 or later.
 
 - `pnpm dev`: start the dev server. When Astro detects an AI agent, it runs the server in the background and prints its URL. If a dev server already runs, it prints that URL. `/_astro/status` returns `{"ok": true}` when the server is ready. Stop it with `pnpm astro dev stop`.
-- `pnpm build`: run `astro check`, then build to `dist/`.
+- `pnpm build`: run `astro check`, then build to `dist/`. `starlight-links-validator` fails the build on a broken internal link or anchor. It does not check external links.
 - `pnpm astro build --timings`: build, and show the time of each build phase, Vite plugin, Markdown plugin, page and integration. Use it to find a slow build step.
 - `pnpm check`: run `astro check`, ESLint and Prettier `--check`. A warning fails it.
 - `pnpm exec prettier --write .` to format.
 
-The repo has no tests and no CI. Before a PR, run `pnpm check` and `pnpm build`, and look at the changed pages in the dev server, on a narrow (about 400 px) and a wide viewport. The build does not check links or anchors.
+The repo has no tests. The `Check` workflow in `.github/workflows/` runs `pnpm check` and `pnpm build` on each PR and on each push to `main`. Before a PR, run both, and look at the changed pages in the dev server, on a narrow (about 400 px) and a wide viewport.
 
 ## Docs lookup
 

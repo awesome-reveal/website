@@ -1,6 +1,7 @@
 import starlight from "@astrojs/starlight";
 import { defineConfig, fontProviders } from "astro/config";
 import starlightHeadingBadges from "starlight-heading-badges";
+import starlightLinksValidator from "starlight-links-validator";
 import starlightLlmsTxt from "starlight-llms-txt";
 import starlightVersions from "starlight-versions";
 import { codeThemes, markBackground } from "./src/code-themes";
@@ -54,6 +55,7 @@ export default defineConfig({
     starlight({
       plugins: [
         starlightHeadingBadges(),
+        starlightLinksValidator(),
         starlightLlmsTxt({
           projectName: siteConfig.name,
           description:
