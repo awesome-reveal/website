@@ -1,6 +1,6 @@
 ---
-import RotateCcw from "@lucide/astro/icons/rotate-ccw";
 import ChoiceControl from "../ChoiceControl.astro";
+import ReplayButton from "../ReplayButton.astro";
 
 interface Props {
   id: string;
@@ -45,12 +45,7 @@ const hasToolbar = options.length > 0 || replay;
             options={options.map((value) => ({ value }))}
           />
         )}
-        {replay && (
-          <button type="button" class="replay" aria-label={`Replay ${title}`}>
-            <RotateCcw aria-hidden="true" />
-            <span class="replay-label">Replay</span>
-          </button>
-        )}
+        {replay && <ReplayButton class="toolbar-end" title={title} />}
       </div>
     )}
     <p class="motion-note">
@@ -166,54 +161,14 @@ const hasToolbar = options.length > 0 || replay;
     }
   }
 
-  .replay {
-    display: inline-flex;
-    align-items: center;
-    gap: var(--space-2);
-    min-block-size: var(--control-size);
+  .toolbar-end {
     margin-inline-start: auto;
-    padding: var(--space-2) var(--space-4);
-    border: 1px solid var(--sl-color-hairline-light);
-    border-radius: 999px;
-    background-color: var(--sl-color-black);
-    color: var(--sl-color-gray-2);
-    font: inherit;
-    font-size: var(--sl-text-sm);
-    font-weight: 600;
-    cursor: pointer;
-    outline-offset: -1px;
-    transition:
-      border-color var(--hover-duration) ease,
-      color var(--hover-duration) ease;
-
-    @media (hover: hover) {
-      &:hover {
-        border-color: var(--sl-color-text-accent);
-        color: var(--sl-color-white);
-      }
-    }
   }
 
   /* On a narrow demo, the control and the replay button share one row. */
   @container demo (max-width: 30rem) {
     .toolbar {
       flex-wrap: nowrap;
-    }
-
-    .replay-label {
-      position: absolute;
-      inline-size: 1px;
-      block-size: 1px;
-      overflow: hidden;
-      clip-path: inset(50%);
-      white-space: nowrap;
-    }
-
-    .replay {
-      flex: none;
-      justify-content: center;
-      inline-size: var(--control-size);
-      padding: 0;
     }
   }
 
@@ -226,12 +181,7 @@ const hasToolbar = options.length > 0 || replay;
     font-size: var(--sl-text-sm);
   }
 
-  /* With reduced motion, `when: false` does not reset the entrance, so there is nothing to replay. */
   @media (prefers-reduced-motion: reduce) {
-    .replay {
-      display: none;
-    }
-
     .motion-note {
       display: block;
     }

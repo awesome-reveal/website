@@ -1,0 +1,74 @@
+---
+import RotateCcw from "@lucide/astro/icons/rotate-ccw";
+
+interface Props {
+  title: string;
+  class?: string;
+}
+
+const { title, class: className } = Astro.props;
+---
+
+<button
+  type="button"
+  class:list={["replay", className]}
+  aria-label={`Replay ${title}`}
+>
+  <RotateCcw aria-hidden="true" />
+  <span class="label">Replay</span>
+</button>
+
+<style>
+  .replay {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-2);
+    min-block-size: var(--control-size);
+    padding: var(--space-2) var(--space-4);
+    border: 1px solid var(--sl-color-hairline-light);
+    border-radius: 999px;
+    background-color: var(--sl-color-black);
+    color: var(--sl-color-gray-2);
+    font: inherit;
+    font-size: var(--sl-text-sm);
+    font-weight: 600;
+    cursor: pointer;
+    outline-offset: -1px;
+    transition:
+      border-color var(--hover-duration) ease,
+      color var(--hover-duration) ease;
+
+    @media (hover: hover) {
+      &:hover {
+        border-color: var(--sl-color-text-accent);
+        color: var(--sl-color-white);
+      }
+    }
+  }
+
+  /* On a narrow container, the button shares one row with a choice control, so its label is only for screen readers. */
+  @container (max-width: 30rem) {
+    .replay {
+      flex: none;
+      justify-content: center;
+      inline-size: var(--control-size);
+      padding: 0;
+    }
+
+    .label {
+      position: absolute;
+      inline-size: 1px;
+      block-size: 1px;
+      overflow: hidden;
+      clip-path: inset(50%);
+      white-space: nowrap;
+    }
+  }
+
+  /* With reduced motion, `when: false` does not reset the entrance, so there is nothing to replay. */
+  @media (prefers-reduced-motion: reduce) {
+    .replay {
+      display: none;
+    }
+  }
+</style>
