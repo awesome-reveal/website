@@ -261,11 +261,11 @@
 }
 
 .card-grid {
-  gap: 2.5rem 2rem;
+  gap: var(--space-8);
 }
 
 .card {
-  padding: 1.25rem 0 0;
+  padding: var(--space-4) 0 0;
   border: 0;
   border-top: 2px solid var(--sl-color-white);
   background: none;
