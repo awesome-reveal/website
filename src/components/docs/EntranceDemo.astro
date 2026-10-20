@@ -5,13 +5,13 @@ import ArrowLeft from "@lucide/astro/icons/arrow-left";
 import ArrowRight from "@lucide/astro/icons/arrow-right";
 import ArrowUp from "@lucide/astro/icons/arrow-up";
 import { objectLiteral } from "../../lib/object-literal";
-import { snippetVariants } from "../../lib/snippet-variants";
-import astroSnippet from "../../snippets/entrances/entrance.astro?raw";
-import jsSnippet from "../../snippets/entrances/entrance.js?raw";
-import reactSnippet from "../../snippets/entrances/entrance.jsx?raw";
-import vueSnippet from "../../snippets/entrances/entrance.vue?raw";
+import { type Framework, snippetVariants } from "../../lib/snippet-variants";
+import astroSnippet from "../../snippets/entrances/section-title.astro?raw";
+import jsSnippet from "../../snippets/entrances/section-title.js?raw";
+import reactSnippet from "../../snippets/entrances/section-title.jsx?raw";
+import vueSnippet from "../../snippets/entrances/section-title.vue?raw";
 import DemoFrame from "./DemoFrame.astro";
-import FrameworkTabs, { type Framework } from "./FrameworkTabs.astro";
+import FrameworkTabs from "./FrameworkTabs.astro";
 
 interface Props {
   id: string;
@@ -106,9 +106,8 @@ const choices = options.map(({ label, from }) => ({
       data-selected={label === selected ? "" : undefined}
     >
       <div class="start" style={startPosition} aria-hidden="true" />
-      <Reveal class="tile" from={from} threshold={0.5}>
+      <Reveal class="tile demo-tile" from={from} threshold={0.5}>
         {Arrow && <Arrow class="arrow" aria-hidden="true" />}
-        <span>{label}</span>
       </Reveal>
     </div>
   ))}
@@ -143,20 +142,6 @@ const choices = options.map(({ label, from }) => ({
     pointer-events: none;
     /* Without its own layer, Safari leaves a trail of the old outline after a choice change. */
     will-change: transform;
-  }
-
-  .tile {
-    display: grid;
-    place-content: center;
-    justify-items: center;
-    gap: 0.4rem;
-    /* Forced colors remove the background, so the outline keeps the tile visible. */
-    outline: 1px solid transparent;
-    background-color: var(--marker);
-    color: var(--ink);
-    font-family: var(--sl-font-mono);
-    font-size: var(--sl-text-sm);
-    font-weight: 700;
   }
 
   .arrow {

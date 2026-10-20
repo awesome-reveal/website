@@ -3,10 +3,7 @@ import { Reveal } from "@awesome-reveal/astro";
 import CircleCheck from "@lucide/astro/icons/circle-check";
 import Chapter from "./Chapter.astro";
 
-const code = `<Reveal
-  when={saved}
-  hidden={!saved}
->
+const code = `<Reveal when={saved} hidden={!saved}>
   <Toast>Changes saved</Toast>
 </Reveal>`;
 ---

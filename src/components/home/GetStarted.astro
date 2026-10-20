@@ -75,8 +75,8 @@ reveal("h1", { from: "left" });`,
       <Tabs syncKey="framework">
         {frameworks.map(({ label, pkg, lang, code }) => (
           <TabItem label={label}>
-            <Code code={`pnpm add ${pkg}`} lang="shell" wrap />
-            <Code code={code} lang={lang} wrap />
+            <Code code={`pnpm add ${pkg}`} lang="shell" />
+            <Code code={code} lang={lang} />
           </TabItem>
         ))}
       </Tabs>

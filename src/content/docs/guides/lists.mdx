@@ -8,18 +8,17 @@ sidebar:
   order: 4
 ---
 
-import { Code } from "@astrojs/starlight/components";
 import CascadeDemo from "../../../components/docs/CascadeDemo.astro";
 import FrameworkTabs from "../../../components/docs/FrameworkTabs.astro";
-import wordsReact from "../../../snippets/lists/words.jsx?raw";
-import wordsVue from "../../../snippets/lists/words.vue?raw";
-import wordsAstro from "../../../snippets/lists/words.astro?raw";
-import wordsJs from "../../../snippets/lists/words.js?raw";
-import wordsCss from "../../../snippets/lists/words.css?raw";
-import longListReact from "../../../snippets/lists/long-list.jsx?raw";
-import longListVue from "../../../snippets/lists/long-list.vue?raw";
-import longListAstro from "../../../snippets/lists/long-list.astro?raw";
-import longListJs from "../../../snippets/lists/long-list.js?raw";
+import WordsDemo from "../../../components/docs/WordsDemo.astro";
+import wordsReact from "../../../snippets/lists/heading-words.jsx?raw";
+import wordsVue from "../../../snippets/lists/heading-words.vue?raw";
+import wordsAstro from "../../../snippets/lists/heading-words.astro?raw";
+import wordsJs from "../../../snippets/lists/heading-words.js?raw";
+import longListReact from "../../../snippets/lists/post-list.jsx?raw";
+import longListVue from "../../../snippets/lists/post-list.vue?raw";
+import longListAstro from "../../../snippets/lists/post-list.astro?raw";
+import longListJs from "../../../snippets/lists/post-list.js?raw";
 
 A cascade reveals the children of a container one after the other, when the container enters the viewport. Each package has a cascade API:
 
@@ -60,9 +59,9 @@ A cascade does not split text. To reveal each word, wrap each word in an element
   js={wordsJs}
 />
 
-The entrance moves the element with a transform, and an inline element cannot have a transform. So give the words `display: inline-block`:
+The entrance moves the element with a transform, and an inline element cannot have a transform. So give the words `display: inline-block`. Select `inline` to see the words fade in with no movement:
 
-<Code code={wordsCss} lang="css" />
+<WordsDemo id="words" title="Reveal the words of a heading" />
 
 ## Reveal a long list or a tall grid
 

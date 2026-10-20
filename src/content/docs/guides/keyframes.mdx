@@ -8,11 +8,7 @@ sidebar:
   order: 2
 ---
 
-import FrameworkTabs from "../../../components/docs/FrameworkTabs.astro";
-import bounceReact from "../../../snippets/keyframes/bounce.jsx?raw";
-import bounceVue from "../../../snippets/keyframes/bounce.vue?raw";
-import bounceAstro from "../../../snippets/keyframes/bounce.astro?raw";
-import bounceJs from "../../../snippets/keyframes/bounce.js?raw";
+import EasingDemo from "../../../components/docs/EasingDemo.astro";
 
 The [`from`](/guides/entrances/) option gives the most common entrances. For full control, give native [Web Animations keyframes](https://developer.mozilla.org/en-US/docs/Web/API/Web_Animations_API/Keyframe_Formats) in the `keyframes` option. The keyframes replace the generated entrance.
 
@@ -20,18 +16,13 @@ The [`from`](/guides/entrances/) option gives the most common entrances. For ful
 
 Set `keyframes` to an array of keyframe objects. This entrance zooms in and bounces a little at the end:
 
-<FrameworkTabs
-  react={bounceReact}
-  vue={bounceVue}
-  astro={bounceAstro}
-  js={bounceJs}
-/>
+<EasingDemo id="easing" title="Give native keyframes" />
 
 You cannot use `from` and `keyframes` together. TypeScript rejects the two options on the same element.
 
 ## Set the easing
 
-Set the easing in the keyframes. The `easing` of a keyframe applies from that keyframe to the next keyframe. Without an `easing`, the change from a keyframe to the next keyframe is linear. No option sets the easing of the full entrance.
+Set the easing in the keyframes. The `easing` of a keyframe applies from that keyframe to the next keyframe. Without an `easing`, the change from a keyframe to the next keyframe is linear. No option sets the easing of the full entrance. Select an easing in the example above to compare.
 
 ## End at the resting style
 

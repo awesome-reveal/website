@@ -2,7 +2,7 @@
 import { Reveal } from "@awesome-reveal/astro";
 
 interface Props {
-  posts: { title: string }[];
+  posts: { id: string; title: string }[];
 }
 
 const { posts } = Astro.props;

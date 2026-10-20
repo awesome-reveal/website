@@ -9,12 +9,10 @@ sidebar:
 ---
 
 import FrameworkTabs from "../../../components/docs/FrameworkTabs.astro";
-import onRevealReact from "../../../snippets/reveal-events/on-reveal.jsx?raw";
-import onRevealVue from "../../../snippets/reveal-events/on-reveal.vue?raw";
-import onRevealAstro from "../../../snippets/reveal-events/on-reveal.astro?raw";
-import revealedReact from "../../../snippets/reveal-events/revealed.jsx?raw";
-import revealedVue from "../../../snippets/reveal-events/revealed.vue?raw";
-import revealedAstro from "../../../snippets/reveal-events/revealed.astro?raw";
+import RevealEventsDemo from "../../../components/docs/RevealEventsDemo.astro";
+import revealedReact from "../../../snippets/reveal-events/revealed-card.jsx?raw";
+import revealedVue from "../../../snippets/reveal-events/revealed-card.vue?raw";
+import revealedAstro from "../../../snippets/reveal-events/revealed-card.astro?raw";
 
 React, Vue and Astro tell your code when an element reveals. `@awesome-reveal/core` has no callback.
 
@@ -26,7 +24,9 @@ Each package gives the revealed element in a different way:
 - Vue: the `reveal` event of `Reveal` and `Cascade`, and the `onReveal` option of `v-reveal` and `v-cascade`.
 - Astro: a `reveal` DOM event. It comes from the rendered tag and bubbles.
 
-<FrameworkTabs react={onRevealReact} vue={onRevealVue} astro={onRevealAstro} />
+<RevealEventsDemo id="on-reveal" title="Run code when the reveal starts" />
+
+The example logs the reveal event and the end of the entrance. Select Replay to see the events again.
 
 The code runs one time for each reveal, when the reveal starts. In a cascade, it gets the container.
 

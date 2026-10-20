@@ -1,0 +1,74 @@
+---
+import { Reveal } from "@awesome-reveal/astro";
+import Logo from "../../assets/logo.svg";
+import { frameworkVariants } from "../../lib/snippet-variants";
+import astro from "../../snippets/keyframes/bouncing-logo.astro?raw";
+import js from "../../snippets/keyframes/bouncing-logo.js?raw";
+import react from "../../snippets/keyframes/bouncing-logo.jsx?raw";
+import vue from "../../snippets/keyframes/bouncing-logo.vue?raw";
+import DemoFrame from "./DemoFrame.astro";
+import FrameworkTabs from "./FrameworkTabs.astro";
+
+interface Props {
+  id: string;
+  title: string;
+}
+
+const { id, title } = Astro.props;
+
+const easings = {
+  overshoot: "cubic-bezier(0.34, 1.56, 0.64, 1)",
+  "ease-out": "ease-out",
+  linear: "linear",
+};
+type EasingName = keyof typeof easings;
+
+// The snippet files show this easing, and each choice replaces it.
+const SNIPPET_EASING: EasingName = "overshoot";
+
+const values = Object.keys(easings) as EasingName[];
+---
+
+<DemoFrame
+  id={id}
+  title={title}
+  name="easing"
+  options={values}
+  selected={SNIPPET_EASING}
+>
+  {values.map((value) => (
+    <div
+      data-choice={value}
+      data-selected={value === SNIPPET_EASING ? "" : undefined}
+    >
+      <Reveal
+        keyframes={[
+          { opacity: 0, scale: 0.8, easing: easings[value] },
+          { opacity: 1, scale: 1 },
+        ]}
+        threshold={0.5}
+      >
+        <Logo role="img" aria-label="Awesome Reveal" class="logo" />
+      </Reveal>
+    </div>
+  ))}
+  <FrameworkTabs
+    slot="code"
+    selected={SNIPPET_EASING}
+    {...frameworkVariants(
+      { react, vue, astro, js },
+      (_, value) => `easing: "${easings[value as EasingName]}"`,
+      SNIPPET_EASING,
+      values,
+    )}
+  />
+</DemoFrame>
+
+<style>
+  .logo {
+    display: block;
+    inline-size: 8rem;
+    block-size: auto;
+    color: var(--sl-color-text-accent);
+  }
+</style>

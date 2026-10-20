@@ -5,13 +5,23 @@ import ChoiceControl from "../ChoiceControl.astro";
 interface Props {
   id: string;
   title: string;
-  name: string;
-  options: string[];
-  selected: string;
+  name?: string;
+  options?: string[];
+  selected?: string;
+  replay?: boolean;
   motionNote?: string;
 }
 
-const { id, title, name, options, selected, motionNote = "" } = Astro.props;
+const {
+  id,
+  title,
+  name = "",
+  options = [],
+  selected = "",
+  replay = true,
+  motionNote = "",
+} = Astro.props;
+const hasToolbar = options.length > 0 || replay;
 ---
 
 <div class="demo-frame">
@@ -19,21 +29,27 @@ const { id, title, name, options, selected, motionNote = "" } = Astro.props;
     <div class="stage">
       <slot />
     </div>
-    <div class="toolbar">
-      <ChoiceControl
-        id={id}
-        name={name}
-        selected={selected}
-        options={options.map((value) => ({ value }))}
-      />
-      <button type="button" class="replay" aria-label={`Replay ${title}`}>
-        <RotateCcw aria-hidden="true" />
-        <span class="replay-label">Replay</span>
-      </button>
-    </div>
+    {hasToolbar && (
+      <div class="toolbar">
+        {options.length > 0 && (
+          <ChoiceControl
+            id={id}
+            name={name}
+            selected={selected}
+            options={options.map((value) => ({ value }))}
+          />
+        )}
+        {replay && (
+          <button type="button" class="replay" aria-label={`Replay ${title}`}>
+            <RotateCcw aria-hidden="true" />
+            <span class="replay-label">Replay</span>
+          </button>
+        )}
+      </div>
+    )}
     <p class="motion-note">
-      Your device asks for reduced motion, so the content shows at once, with no
-      animation. {motionNote}
+      Your device asks for reduced motion, so the content shows immediately,
+      with no animation. {motionNote}
     </p>
   </figure>
   <slot name="code" />
@@ -42,19 +58,21 @@ const { id, title, name, options, selected, motionNote = "" } = Astro.props;
 <script>
   import type { RevealElement } from "@awesome-reveal/astro";
 
-  function replay(host: RevealElement | null | undefined) {
-    if (!host) return;
-    host.when = false;
-    host.when = true;
-  }
-
   for (const demo of document.querySelectorAll(".demo-frame")) {
-    const choices = demo.querySelectorAll<HTMLElement>("[data-choice]");
+    const stage = demo.querySelector(".stage")!;
+    const choices = stage.querySelectorAll<HTMLElement>("[data-choice]");
     const snippets = demo.querySelectorAll<HTMLElement>("[data-snippet]");
-    const selectedHost = () =>
-      demo.querySelector<RevealElement>(
-        "[data-choice][data-selected] awesome-reveal",
-      );
+    const shownHosts = () =>
+      (choices.length > 0
+        ? stage.querySelector("[data-choice][data-selected]")!
+        : stage
+      ).querySelectorAll<RevealElement>("awesome-reveal");
+
+    const replay = () => {
+      const hosts = shownHosts();
+      for (const host of hosts) host.when = false;
+      for (const host of hosts) host.when = true;
+    };
 
     demo.querySelector(".options")?.addEventListener("change", (event) => {
       if (!(event.target instanceof HTMLInputElement)) return;
@@ -66,21 +84,22 @@ const { id, title, name, options, selected, motionNote = "" } = Astro.props;
         );
       }
       for (const snippet of snippets) {
-        snippet.hidden = snippet.dataset.snippet !== value;
+        snippet.toggleAttribute(
+          "data-current",
+          snippet.dataset.snippet === value,
+        );
       }
-      replay(selectedHost());
+      replay();
     });
 
-    demo
-      .querySelector(".replay")
-      ?.addEventListener("click", () => replay(selectedHost()));
+    demo.querySelector(".replay")?.addEventListener("click", replay);
   }
 </script>
 
 <style>
   figure {
     container: demo / inline-size;
-    margin-block: 1.5rem;
+    margin-block: var(--space-6);
     overflow: hidden;
     border: 1px solid var(--sl-color-hairline-light);
     border-radius: var(--radius-md);
@@ -95,23 +114,52 @@ const { id, title, name, options, selected, motionNote = "" } = Astro.props;
     display: grid;
     place-items: center;
     min-block-size: 15rem;
-    padding: 2.5rem 1rem;
+    padding: var(--space-8) var(--space-4);
   }
 
-  .stage > :global([data-choice]:not([data-selected])) {
-    display: none;
+  /* All choices and snippet variants share one grid cell, so the frame keeps the size of the largest one when the choice changes. */
+  .stage > :global([data-choice]),
+  .demo-frame :global(.snippet-variants > [data-snippet]) {
+    grid-area: 1 / 1;
+    margin: 0;
+  }
+
+  .stage > :global([data-choice]:not([data-selected])),
+  .demo-frame :global(.snippet-variants > [data-snippet]:not([data-current])) {
+    visibility: hidden;
+  }
+
+  /* Without `minmax(0, 1fr)`, the column grows to the longest code line, so the page scrolls instead of the code block. */
+  .demo-frame :global(.snippet-variants) {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  :where(.stage) :global(.demo-tile) {
+    display: grid;
+    place-content: center;
+    justify-items: center;
+    gap: var(--space-2);
+    border-radius: var(--radius-md);
+    /* Forced colors remove the background, so the outline keeps the tile visible. */
+    outline: 1px solid transparent;
+    background-color: var(--marker);
+    color: var(--ink);
+    font-family: var(--sl-font-mono);
+    font-size: var(--sl-text-sm);
+    font-weight: 700;
   }
 
   .toolbar {
     display: flex;
     flex-wrap: wrap;
     align-items: center;
-    gap: 0.75rem 1rem;
-    padding: 0.75rem;
+    gap: var(--space-3);
+    padding: var(--space-3);
     border-block-start: 1px solid var(--sl-color-hairline-light);
     --option-size: 2.25rem;
     /* The options with their padding and border. */
-    --control-size: calc(var(--option-size) + 0.5rem + 2px);
+    --control-size: calc(var(--option-size) + 2 * var(--space-1) + 2px);
   }
 
   @media (pointer: coarse) {
@@ -123,10 +171,10 @@ const { id, title, name, options, selected, motionNote = "" } = Astro.props;
   .replay {
     display: inline-flex;
     align-items: center;
-    gap: 0.4rem;
+    gap: var(--space-2);
     min-block-size: var(--control-size);
     margin-inline-start: auto;
-    padding: 0.35rem 0.9rem;
+    padding: var(--space-2) var(--space-4);
     border: 1px solid var(--sl-color-hairline-light);
     border-radius: 999px;
     background-color: var(--sl-color-black);
@@ -173,7 +221,7 @@ const { id, title, name, options, selected, motionNote = "" } = Astro.props;
   .motion-note {
     display: none;
     margin: 0;
-    padding: 0.75rem;
+    padding: var(--space-3);
     border-block-start: 1px solid var(--sl-color-hairline-light);
     color: var(--sl-color-gray-3);
     font-size: var(--sl-text-sm);

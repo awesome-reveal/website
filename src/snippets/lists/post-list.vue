@@ -1,7 +1,7 @@
 <script setup>
 import { vReveal } from "@awesome-reveal/vue";
 
-defineProps(["posts"]);
+defineProps({ posts: { type: Array, required: true } });
 </script>
 
 <template>

@@ -1,0 +1,75 @@
+---
+import { Cascade } from "@awesome-reveal/astro";
+import { Code } from "@astrojs/starlight/components";
+import { snippetVariants } from "../../lib/snippet-variants";
+import css from "../../snippets/lists/heading-words.css?raw";
+import DemoFrame from "./DemoFrame.astro";
+
+interface Props {
+  id: string;
+  title: string;
+}
+
+const { id, title } = Astro.props;
+
+// The snippet file shows this display, and each choice replaces it.
+const SNIPPET_DISPLAY = "inline-block";
+
+const values = [SNIPPET_DISPLAY, "inline"];
+const variants = snippetVariants(
+  css,
+  `display: ${SNIPPET_DISPLAY};`,
+  values.map((value) => ({ value, code: `display: ${value};` })),
+);
+---
+
+<DemoFrame
+  id={id}
+  title={title}
+  name="display"
+  options={values}
+  selected={SNIPPET_DISPLAY}
+>
+  {values.map((value) => (
+    <div
+      data-choice={value}
+      data-selected={value === SNIPPET_DISPLAY ? "" : undefined}
+    >
+      <Cascade
+        as="p"
+        class="words"
+        style={{ "--word-display": value }}
+        interval={60}
+        threshold={0.5}
+      >
+        <span>Reveal</span> <span>each</span> <span>word</span>
+      </Cascade>
+    </div>
+  ))}
+  <div slot="code" class="snippet-variants">
+    {variants.map(({ value, code, mark }) => (
+      <div
+        data-snippet={value}
+        data-current={value === SNIPPET_DISPLAY ? "" : undefined}
+        data-markdown-ignore={value !== SNIPPET_DISPLAY ? "" : undefined}
+      >
+        <Code code={code} lang="css" mark={mark} />
+      </div>
+    ))}
+  </div>
+</DemoFrame>
+
+<style>
+  .words {
+    margin: 0;
+    color: var(--sl-color-white);
+    font-family: var(--font-display);
+    font-size: var(--sl-text-h2);
+    font-weight: 700;
+    text-align: center;
+  }
+
+  .words span {
+    display: var(--word-display);
+  }
+</style>

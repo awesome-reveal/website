@@ -8,10 +8,7 @@ sidebar:
   order: 5
 ---
 
-import FrameworkTabs from "../../../components/docs/FrameworkTabs.astro";
-import detailsReact from "../../../snippets/manual-control/details.jsx?raw";
-import detailsVue from "../../../snippets/manual-control/details.vue?raw";
-import detailsAstro from "../../../snippets/manual-control/details.astro?raw";
+import DetailsDemo from "../../../components/docs/DetailsDemo.astro";
 
 By default, the viewport controls the entrance. The `when` option of React, Vue and Astro gives the control to your own state. `@awesome-reveal/core` does not have `when`.
 
@@ -21,7 +18,7 @@ Set `when` to `true` to reveal the element, and to `false` to reset the entrance
 
 In this example, a button shows and hides the details:
 
-<FrameworkTabs react={detailsReact} vue={detailsVue} astro={detailsAstro} />
+<DetailsDemo id="details" title="Show and hide the details" />
 
 In Astro, the `when` prop sets the value in the server HTML. After the page loads, set the `when` property of the `awesome-reveal` host element. The type import adds the `awesome-reveal` element to the DOM types.
 

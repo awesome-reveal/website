@@ -1,7 +1,7 @@
 <script setup>
 import { Cascade } from "@awesome-reveal/vue";
 
-defineProps(["cards"]);
+defineProps({ cards: { type: Array, required: true } });
 </script>
 
 <template>

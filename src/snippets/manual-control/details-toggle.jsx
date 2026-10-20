@@ -1,11 +1,15 @@
 import { useState } from "react";
 import { Reveal } from "@awesome-reveal/react";
 
-export function Details() {
+export function DetailsToggle() {
   const [open, setOpen] = useState(false);
   return (
     <>
-      <button aria-expanded={open} onClick={() => setOpen(!open)}>
+      <button
+        type="button"
+        aria-expanded={open}
+        onClick={() => setOpen((open) => !open)}
+      >
         Details
       </button>
       <Reveal when={open} hidden={!open} from={{ opacity: 0 }}>

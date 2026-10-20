@@ -8,21 +8,25 @@ sidebar:
   order: 3
 ---
 
+import DelayDemo from "../../../components/docs/DelayDemo.astro";
+import DurationDemo from "../../../components/docs/DurationDemo.astro";
 import FrameworkTabs from "../../../components/docs/FrameworkTabs.astro";
-import delayReact from "../../../snippets/timing/delay.jsx?raw";
-import delayVue from "../../../snippets/timing/delay.vue?raw";
-import delayAstro from "../../../snippets/timing/delay.astro?raw";
-import delayJs from "../../../snippets/timing/delay.js?raw";
-import thresholdReact from "../../../snippets/timing/threshold.jsx?raw";
-import thresholdVue from "../../../snippets/timing/threshold.vue?raw";
-import thresholdAstro from "../../../snippets/timing/threshold.astro?raw";
-import thresholdJs from "../../../snippets/timing/threshold.js?raw";
+import thresholdReact from "../../../snippets/timing/downloads-chart.jsx?raw";
+import thresholdVue from "../../../snippets/timing/downloads-chart.vue?raw";
+import thresholdAstro from "../../../snippets/timing/downloads-chart.astro?raw";
+import thresholdJs from "../../../snippets/timing/downloads-chart.js?raw";
 
 Three options set when the entrance plays and how long it takes: `duration`, `delay` and `threshold`.
 
 ## Change the duration
 
-`duration` sets the duration of the entrance, in milliseconds. The default is 600.
+`duration` sets the duration of the entrance, in milliseconds. The default is 600. Select a duration to see the effect:
+
+<DurationDemo
+  id="duration"
+  title="Change the duration"
+  durations={[300, 600, 1000, 2000]}
+/>
 
 ## Delay the entrance
 
@@ -30,12 +34,7 @@ Three options set when the entrance plays and how long it takes: `duration`, `de
 
 In this example, the title takes 800 milliseconds. The text starts 200 milliseconds after its reveal, so it starts after the title:
 
-<FrameworkTabs
-  react={delayReact}
-  vue={delayVue}
-  astro={delayAstro}
-  js={delayJs}
-/>
+<DelayDemo id="delay" title="Delay the entrance" delays={[0, 200, 600]} />
 
 Keep `delay` below about 300 milliseconds. A long delay makes content appear late when the user scrolls quickly. Focus during the delay does not make the entrance start earlier.
 

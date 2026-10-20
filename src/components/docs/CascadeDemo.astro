@@ -1,12 +1,15 @@
 ---
 import { Cascade } from "@awesome-reveal/astro";
-import { snippetVariants } from "../../lib/snippet-variants";
-import astroSnippet from "../../snippets/lists/cascade.astro?raw";
-import jsSnippet from "../../snippets/lists/cascade.js?raw";
-import reactSnippet from "../../snippets/lists/cascade.jsx?raw";
-import vueSnippet from "../../snippets/lists/cascade.vue?raw";
+import {
+  frameworkVariants,
+  numberOptionCode,
+} from "../../lib/snippet-variants";
+import astro from "../../snippets/lists/card-list.astro?raw";
+import js from "../../snippets/lists/card-list.js?raw";
+import react from "../../snippets/lists/card-list.jsx?raw";
+import vue from "../../snippets/lists/card-list.vue?raw";
 import DemoFrame from "./DemoFrame.astro";
-import FrameworkTabs, { type Framework } from "./FrameworkTabs.astro";
+import FrameworkTabs from "./FrameworkTabs.astro";
 
 interface Props {
   id: string;
@@ -17,36 +20,18 @@ interface Props {
 
 const { id, title, intervals, selected } = Astro.props;
 
-const snippets: Record<
-  Framework,
-  { code: string; interval: (interval: number) => string }
-> = {
-  react: { code: reactSnippet, interval: (n) => `interval={${n}}` },
-  astro: { code: astroSnippet, interval: (n) => `interval={${n}}` },
-  vue: { code: vueSnippet, interval: (n) => `:interval="${n}"` },
-  js: { code: jsSnippet, interval: (n) => `interval: ${n}` },
-};
-
 // The snippet files show this interval, and each choice replaces it.
-const SNIPPET_INTERVAL = 80;
+const SNIPPET_INTERVAL = "80";
 
-function frameworkVariants(framework: Framework) {
-  const { code, interval } = snippets[framework];
-  return snippetVariants(
-    code,
-    interval(SNIPPET_INTERVAL),
-    intervals.map((n) => ({ value: String(n), code: interval(n) })),
-  );
-}
-
-const cards = ["1", "2", "3", "4", "5", "6"];
+const values = intervals.map(String);
+const CARD_COUNT = 6;
 ---
 
 <DemoFrame
   id={id}
   title={title}
   name="interval"
-  options={intervals.map(String)}
+  options={values}
   selected={String(selected)}
 >
   {intervals.map((interval) => (
@@ -54,9 +39,15 @@ const cards = ["1", "2", "3", "4", "5", "6"];
       data-choice={String(interval)}
       data-selected={interval === selected ? "" : undefined}
     >
-      <Cascade as="ul" class="cards" interval={interval} threshold={0.5}>
-        {cards.map((card) => (
-          <li>{card}</li>
+      <Cascade
+        as="ul"
+        class="cards"
+        aria-hidden="true"
+        interval={interval}
+        threshold={0.5}
+      >
+        {Array.from({ length: CARD_COUNT }, () => (
+          <li class="demo-tile" />
         ))}
       </Cascade>
     </div>
@@ -64,10 +55,12 @@ const cards = ["1", "2", "3", "4", "5", "6"];
   <FrameworkTabs
     slot="code"
     selected={String(selected)}
-    react={frameworkVariants("react")}
-    vue={frameworkVariants("vue")}
-    astro={frameworkVariants("astro")}
-    js={frameworkVariants("js")}
+    {...frameworkVariants(
+      { react, vue, astro, js },
+      numberOptionCode("interval"),
+      SNIPPET_INTERVAL,
+      values,
+    )}
   />
 </DemoFrame>
 
@@ -75,24 +68,14 @@ const cards = ["1", "2", "3", "4", "5", "6"];
   .cards {
     display: grid;
     grid-template-columns: repeat(3, 4.5rem);
-    gap: 0.75rem;
+    gap: var(--space-3);
     margin: 0;
     padding: 0;
     list-style: none;
   }
 
   li {
-    display: grid;
-    place-items: center;
     aspect-ratio: 1;
     margin: 0;
-    border-radius: var(--radius-md);
-    /* Forced colors remove the background, so the outline keeps the card visible. */
-    outline: 1px solid transparent;
-    background-color: var(--marker);
-    color: var(--ink);
-    font-family: var(--sl-font-mono);
-    font-size: var(--sl-text-xl);
-    font-weight: 700;
   }
 </style>

@@ -42,9 +42,11 @@ const control = {
   selected,
   options: presets.map(({ name, keyframes }) => ({
     value: name,
-    code: `<Cascade keyframes={[
-${keyframes.map((keyframe) => `  ${objectLiteral(keyframe)},`).join("\n")}
-]}>
+    code: `<Cascade
+  keyframes={[
+${keyframes.map((keyframe) => `    ${objectLiteral(keyframe)},`).join("\n")}
+  ]}
+>
   {cards}
 </Cascade>`,
   })),

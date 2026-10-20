@@ -3,7 +3,5 @@ import { Reveal } from "@awesome-reveal/vue";
 </script>
 
 <template>
-  <Reveal v-slot="{ revealed }">
-    {{ revealed ? "Hello" : "Waiting" }}
-  </Reveal>
+  <Reveal class="card" :duration="600">A card</Reveal>
 </template>

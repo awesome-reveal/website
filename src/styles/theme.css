@@ -16,6 +16,13 @@
   --hover-duration: 160ms;
   --radius-sm: 0.5rem;
   --radius-md: 0.75rem;
+
+  --space-1: 0.25rem;
+  --space-2: 0.5rem;
+  --space-3: 0.75rem;
+  --space-4: 1rem;
+  --space-6: 1.5rem;
+  --space-8: 2rem;
 }
 
 /* Paper is the base, and the ink palette applies only on screen, so print always gets the light palette. */

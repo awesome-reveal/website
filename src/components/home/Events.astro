@@ -2,9 +2,7 @@
 import { Reveal } from "@awesome-reveal/astro";
 import Chapter from "./Chapter.astro";
 
-const code = `<Reveal
-  onReveal={() => track("pricing_seen")}
->
+const code = `<Reveal onReveal={() => track("pricing_seen")}>
   <Pricing />
 </Reveal>`;
 ---

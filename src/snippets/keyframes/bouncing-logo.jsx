@@ -5,8 +5,10 @@ const bounceIn = [
   { opacity: 1, scale: 1 },
 ];
 
-export const Logo = () => (
-  <Reveal keyframes={bounceIn}>
-    <img src="/logo.svg" alt="Awesome Reveal" />
-  </Reveal>
-);
+export function BouncingLogo() {
+  return (
+    <Reveal keyframes={bounceIn}>
+      <img src="/logo.svg" alt="Awesome Reveal" />
+    </Reveal>
+  );
+}
