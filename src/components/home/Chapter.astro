@@ -275,13 +275,16 @@ const hasToolbar = control || replay || Astro.slots.has("controls");
     font-size: var(--sl-text-sm);
     font-weight: 600;
     cursor: pointer;
+    outline-offset: -1px;
     transition:
       border-color var(--hover-duration) ease,
       color var(--hover-duration) ease;
 
-    &:hover {
-      border-color: var(--sl-color-text-accent);
-      color: var(--sl-color-white);
+    @media (hover: hover) {
+      &:hover {
+        border-color: var(--sl-color-text-accent);
+        color: var(--sl-color-white);
+      }
     }
   }
 

@@ -97,9 +97,10 @@ const { id, name, selected, options } = Astro.props;
     font-weight: 700;
   }
 
+  /* 1px, not 2px: the 4px padding of the group then keeps a gap between the ring and the group border. */
   .options input:focus-visible + span {
     outline: 2px solid var(--sl-color-text-accent);
-    outline-offset: 2px;
+    outline-offset: 1px;
   }
 
   /* On a narrow container, the control shares one row with a replay button, so its name is only for screen readers. */

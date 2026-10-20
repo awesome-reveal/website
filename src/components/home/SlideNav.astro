@@ -443,13 +443,14 @@ import ArrowUp from "@lucide/astro/icons/arrow-up";
     color: var(--sl-color-gray-3);
     font-size: var(--sl-text-xs);
     cursor: pointer;
+    outline-offset: -1px;
     transition:
       color var(--hover-duration) ease,
       border-color var(--hover-duration) ease;
   }
 
   button:not([aria-disabled="true"]):hover {
-    border-color: var(--sl-color-white);
+    border-color: var(--sl-color-text-accent);
     color: var(--sl-color-white);
   }
 
@@ -457,10 +458,6 @@ import ArrowUp from "@lucide/astro/icons/arrow-up";
   button[aria-disabled="true"] {
     color: var(--sl-color-gray-5);
     cursor: default;
-  }
-
-  button:focus-visible {
-    outline-offset: 2px;
   }
 
   /* Forced colors remove backgrounds, so the dots need a system color. */
