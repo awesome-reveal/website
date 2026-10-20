@@ -30,7 +30,7 @@ import ThemeToggle from "./ThemeToggle.astro";
     display: flex;
     align-items: center;
     justify-content: space-between;
-    gap: 0.5rem;
+    gap: var(--space-2);
     height: 100%;
   }
 
@@ -38,8 +38,8 @@ import ThemeToggle from "./ThemeToggle.astro";
   .title-wrapper {
     display: flex;
     min-width: 0;
-    margin: -0.25rem;
-    padding: 0.25rem;
+    margin: calc(-1 * var(--space-1));
+    padding: var(--space-1);
     overflow: clip;
   }
 
@@ -50,7 +50,7 @@ import ThemeToggle from "./ThemeToggle.astro";
 
   .search :global(button > kbd) {
     border-radius: 999px;
-    padding-inline: 0.5rem;
+    padding-inline: var(--space-2);
   }
 
   .search :global(dialog) {
@@ -70,7 +70,7 @@ import ThemeToggle from "./ThemeToggle.astro";
   .controls {
     display: flex;
     align-items: center;
-    gap: 0.25rem;
+    gap: var(--space-1);
   }
 
   .social-icons {
@@ -79,7 +79,7 @@ import ThemeToggle from "./ThemeToggle.astro";
 
   .social-icons :global(a) {
     margin: 0;
-    padding: 0.5rem;
+    padding: var(--space-2);
     border-radius: 999px;
     font-size: 1.125rem;
   }
@@ -90,6 +90,10 @@ import ThemeToggle from "./ThemeToggle.astro";
 
   /* With the menu button, the title needs this space on narrow phones. The menu footer shows the icons there. */
   @media (max-width: 24.99rem) {
+    .header {
+      gap: var(--space-1);
+    }
+
     :global(:root[data-has-sidebar]) .social-icons {
       display: none;
     }
@@ -139,7 +143,7 @@ import ThemeToggle from "./ThemeToggle.astro";
     .search :global(button[data-open-modal]) {
       border-color: var(--sl-color-hairline-light);
       border-radius: 999px;
-      padding-inline: 1rem 0.5rem;
+      padding-inline: var(--space-4) var(--space-2);
       transition: border-color var(--hover-duration) ease;
     }
 
@@ -153,7 +157,7 @@ import ThemeToggle from "./ThemeToggle.astro";
 
     .versions {
       display: flex;
-      margin-inline-end: 0.5rem;
+      margin-inline-end: var(--space-2);
     }
   }
 </style>

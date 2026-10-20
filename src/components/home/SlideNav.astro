@@ -315,12 +315,12 @@ import ArrowUp from "@lucide/astro/icons/arrow-up";
     .slide-nav:not([hidden]) {
       position: fixed;
       inset-block-start: 50%;
-      inset-inline-end: 1.25rem;
+      inset-inline-end: var(--space-5);
       z-index: var(--sl-z-index-navbar);
       display: flex;
       flex-direction: column;
       align-items: center;
-      gap: 1rem;
+      gap: var(--space-4);
       translate: 0 -50%;
     }
   }
@@ -366,7 +366,7 @@ import ArrowUp from "@lucide/astro/icons/arrow-up";
     display: grid;
     place-items: center;
     min-inline-size: 2rem;
-    padding-block: 0.5rem;
+    padding-block: var(--space-2);
     border-radius: 999px;
   }
 
@@ -406,7 +406,7 @@ import ArrowUp from "@lucide/astro/icons/arrow-up";
     position: absolute;
     inset-block-start: 50%;
     inset-inline-end: 100%;
-    padding: 0.25rem 0.6rem;
+    padding: var(--space-1) var(--space-2);
     border: 1px solid var(--sl-color-hairline-light);
     border-radius: 999px;
     background-color: var(--sl-color-black);
@@ -428,7 +428,7 @@ import ArrowUp from "@lucide/astro/icons/arrow-up";
   .steps {
     display: flex;
     flex-direction: column;
-    gap: 0.5rem;
+    gap: var(--space-2);
   }
 
   button {

@@ -37,10 +37,12 @@ const selectedHref = archived ? `/${archived.slug}/` : "/";
 
 <style>
   label {
+    --label-icon-size: 0.875rem;
+    --caret-icon-size: 1rem;
     position: relative;
     display: flex;
     align-items: center;
-    gap: 0.25rem;
+    gap: var(--space-1);
     color: var(--sl-color-gray-2);
 
     &:hover {
@@ -56,19 +58,24 @@ const selectedHref = archived ? `/${archived.slug}/` : "/";
   }
 
   .label-icon {
-    inset-inline-start: 0.75rem;
-    font-size: 0.875rem;
+    inset-inline-start: var(--space-3);
+    font-size: var(--label-icon-size);
   }
 
   .caret-icon {
-    inset-inline-end: 0.5rem;
-    font-size: 1rem;
+    inset-inline-end: var(--space-2);
+    font-size: var(--caret-icon-size);
   }
 
   select {
     appearance: none;
-    padding-block: 0.375rem;
-    padding-inline: 1.875rem 1.75rem;
+    /* The height of the Starlight search button beside it. */
+    block-size: 2.5rem;
+    padding-block: 0;
+    padding-inline: calc(
+        var(--space-3) + var(--label-icon-size) + var(--space-1)
+      )
+      calc(var(--caret-icon-size) + var(--space-2) + var(--space-1));
     border: 1px solid var(--sl-color-hairline-light);
     border-radius: 999px;
     background-color: transparent;

@@ -66,7 +66,7 @@ const tiles = Array.from({ length: columns * 4 }, (_, index) => {
   .mosaic {
     display: grid;
     grid-template-columns: repeat(var(--columns), minmax(0, 1fr));
-    gap: 0.5rem;
+    gap: var(--space-2);
   }
 
   span {

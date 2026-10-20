@@ -106,7 +106,7 @@ const decks = presets.map((preset) => ({
   .deck {
     display: grid;
     grid-template-columns: repeat(3, minmax(0, 1fr));
-    gap: 0.75rem;
+    gap: var(--space-3);
     perspective: 40rem;
   }
 
@@ -114,9 +114,9 @@ const decks = presets.map((preset) => ({
     display: flex;
     flex-direction: column;
     justify-content: space-between;
-    gap: 1.5rem;
+    gap: var(--space-6);
     aspect-ratio: 3 / 4;
-    padding: 0.875rem;
+    padding: var(--space-4);
     border-radius: var(--radius-md);
     background-color: var(--pencil);
     color: var(--ink);
@@ -141,7 +141,7 @@ const decks = presets.map((preset) => ({
   .value {
     display: flex;
     flex-direction: column;
-    gap: 0.15rem;
+    gap: var(--space-1);
     color: color-mix(in oklab, var(--ink) 70%, transparent);
     font-size: var(--sl-text-xs);
     font-weight: 600;
@@ -156,7 +156,7 @@ const decks = presets.map((preset) => ({
 
   @media (max-width: 30rem) {
     .keyframe {
-      padding: 0.625rem;
+      padding: var(--space-3);
     }
   }
 </style>
