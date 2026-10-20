@@ -43,6 +43,7 @@
     "globals": "^17.13.0",
     "prettier": "^3.9.10",
     "prettier-plugin-astro": "^1.1.1",
+    "starlight-links-validator": "^0.27.0",
     "typescript": "^6.0.3",
     "typescript-eslint": "^8.71.2",
     "vue-eslint-parser": "^10.4.1",
