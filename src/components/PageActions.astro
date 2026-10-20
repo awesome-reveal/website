@@ -9,6 +9,7 @@ import OpenaiLogo from "../assets/openai.svg";
 import { getMarkdownPath } from "../lib/markdown-slug";
 import { isArchived } from "../lib/versions";
 
+const { class: className } = Astro.props;
 const { id } = Astro.locals.starlightRoute;
 const markdown = getMarkdownPath(id);
 const prompt = encodeURIComponent(
@@ -23,7 +24,11 @@ const askLinks = isArchived(id)
     ];
 ---
 
-<div class="page-actions" data-markdown-ignore data-pagefind-ignore>
+<div
+  class:list={["page-actions", className]}
+  data-markdown-ignore
+  data-pagefind-ignore
+>
   <div class="split">
     <button type="button" class="copy" data-copy={markdown} data-state="idle">
       <span class="icon">
@@ -207,11 +212,28 @@ const askLinks = isArchived(id)
       }, 2000);
     };
 
+    const fetchText = async (url: string) => {
+      const response = await fetch(url);
+      if (!response.ok) throw new Error(String(response.status));
+      return response.text();
+    };
+
+    // Safari rejects a clipboard write after an await, so the write takes the pending text.
+    const writeClipboardText = async (text: Promise<string>) => {
+      if (!("ClipboardItem" in window)) {
+        return navigator.clipboard.writeText(await text);
+      }
+      const blob = text.then(
+        (value) => new Blob([value], { type: "text/plain" }),
+      );
+      return navigator.clipboard.write([
+        new ClipboardItem({ "text/plain": blob }),
+      ]);
+    };
+
     button.addEventListener("click", async () => {
       try {
-        const response = await fetch(button.dataset.copy!);
-        if (!response.ok) throw new Error(String(response.status));
-        await navigator.clipboard.writeText(await response.text());
+        await writeClipboardText(fetchText(button.dataset.copy!));
         show("copied", "Page copied as Markdown");
       } catch {
         show("failed", "Copy failed");
@@ -258,6 +280,8 @@ const askLinks = isArchived(id)
       if (event.key === "ArrowDown" || event.key === "ArrowUp") {
         event.preventDefault();
         open(event.key === "ArrowDown" ? 0 : -1);
+      } else if (event.key === "Escape") {
+        close();
       }
     });
 
