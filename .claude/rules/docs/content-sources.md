@@ -23,4 +23,4 @@ A claim about the behavior of a waiting or revealing element is true only for on
 
 The v4 archive (`src/content/docs/v4/`) documents a different API. Do not copy examples from it into the current docs.
 
-The build checks internal links and anchors. Open each changed external link.
+The build checks internal links and anchors. To check external links, see `review.md`.
