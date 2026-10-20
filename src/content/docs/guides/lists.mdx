@@ -75,7 +75,7 @@ Also reveal each item of a virtualized list.
 
 ## Things to know
 
-- **Add the children before the reveal.** In React, Vue and Astro, the cascade reads its children when it reveals. A child that you add after the reveal shows with no animation. In JavaScript, `cascade()` reads the children one time, when you call it.
+- **Add the children before the reveal.** In React, Vue and Astro, the cascade reads its children when it reveals. A child that you add after the reveal shows with no animation. For JavaScript, see [Targets](/reference/javascript/#targets).
 - **Do not put a reveal directly inside a cascade.** In React and Vue, the two entrances combine on the same element. In Astro, the host of a nested `Reveal` has `display: contents`, so the cascade does not animate it, and the nested `Reveal` plays only its own entrance.
 - **Wrap an Astro island in an element.** An [island](https://docs.astro.build/en/concepts/islands/) has `display: contents`, so the cascade does not animate it.
 - **A Vue [`<TransitionGroup>`](https://vuejs.org/guide/built-ins/transition-group.html) adds its own animations.** As a direct child of a cascade, it animates the children too.

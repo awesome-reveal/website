@@ -4,28 +4,67 @@ description: "API reference of @awesome-reveal/astro: the Reveal and Cascade com
 sidebar:
   order: 4
   label: Astro API
-draft: true
 ---
 
-## Reveal and Cascade
+`@awesome-reveal/astro` exports two components. They take the same [options](/reference/options/) as props. For the supported versions, see [Requirements](/getting-started/#requirements).
 
-- Props, `as` with `RevealTag`, no `onReveal`.
+```js
+import { Cascade, Reveal } from "@awesome-reveal/astro";
+```
+
+## Reveal
+
+Renders a tag around its children, and reveals the tag when it enters the viewport.
+
+```astro
+<Reveal as="section" from="left" class="hero">
+  Hello
+</Reveal>
+```
+
+- **Props**: `as`, `from`, `keyframes`, `duration`, `delay`, `threshold` and `when`. See [Options](/reference/options/).
+- **Other attributes**: the component gives them to the rendered tag, for example `class` and `id`.
+- **`as`**: a [`RevealTag`](#types). The default is `"div"`.
+
+The props go into the server HTML, so they must be values that JSON can serialize. To run code at the reveal, listen to the [`reveal` event](#the-reveal-event).
+
+## Cascade
+
+Renders a tag around its children. When the tag enters the viewport, it reveals the direct element children one after the other. See [Animate a list](/guides/lists/).
+
+`Cascade` accepts the props of `Reveal`, and [`interval`](/reference/options/#interval).
 
 ## The awesome-reveal element
 
-- `when` property and attribute, `revealed`, the `options` attribute.
+For the role of the custom element, see [How it works in Astro](/frameworks/astro/#how-it-works-in-astro).
+
+To get the custom element, call `closest("awesome-reveal")` on the rendered tag. Import the types of the package in your script, so that TypeScript knows the custom element:
+
+```ts
+import type {} from "@awesome-reveal/astro";
+
+const host = document.querySelector("#details")!.closest("awesome-reveal")!;
+host.when = true;
+```
+
+| Member     | Type              | Description                                                                                           |
+| ---------- | ----------------- | ----------------------------------------------------------------------------------------------------- |
+| `when`     | `boolean \| null` | Gets or sets the [manual control](/guides/manual-control/). `null` gives the control to the viewport. |
+| `revealed` | `boolean`         | `true` after the reveal. Read only.                                                                   |
 
 ## The reveal event
 
-- Dispatched from the rendered tag. It bubbles.
+The rendered tag dispatches a `reveal` event when the reveal starts. The event [bubbles](https://developer.mozilla.org/en-US/docs/Web/API/Event/bubbles), so you can listen on an ancestor or on `document`. See [Run code when the reveal starts](/guides/reveal-events/#run-code-when-the-reveal-starts).
 
 ## Types
 
-- `RevealProps`, `CascadeProps`, `RevealTag`, `RevealElement`, `RevealOptions`, `CascadeOptions`, `Side`, `StartState`.
-
-## Sources
-
-On the `next` branch of the packages repo:
-
-- `packages/astro/src`
-- `packages/astro/README.md: API`
+| Type             | Description                                                     |
+| ---------------- | --------------------------------------------------------------- |
+| `RevealProps`    | The props of `Reveal`.                                          |
+| `CascadeProps`   | The props of `Cascade`.                                         |
+| `RevealTag`      | The tags that `as` accepts. See [`as`](/reference/options/#as). |
+| `RevealElement`  | The type of the `awesome-reveal` custom element.                |
+| `RevealOptions`  | The reveal options.                                             |
+| `CascadeOptions` | The cascade options.                                            |
+| `Side`           | The sides of [`from`](/reference/options/#from).                |
+| `StartState`     | The [start state](/guides/entrances/) object of `from`.         |

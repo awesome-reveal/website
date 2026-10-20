@@ -4,40 +4,101 @@ description: "API reference of @awesome-reveal/react: the Reveal and Cascade com
 sidebar:
   order: 2
   label: React API
-draft: true
 ---
+
+`@awesome-reveal/react` exports two components and two hooks. They take the same [options](/reference/options/), as props or as an object. For the supported versions, see [Requirements](/getting-started/#requirements).
+
+```js
+import { Cascade, Reveal, useCascade, useReveal } from "@awesome-reveal/react";
+```
 
 ## Reveal
 
-- Props, `as`, `ref`, the other props go to the element.
+Renders an element around its children, and reveals the element when it enters the viewport.
+
+```tsx
+<Reveal as="section" from="left" className="hero">
+  Hello
+</Reveal>
+```
+
+- **Props**: `as`, `from`, `keyframes`, `duration`, `delay`, `threshold`, `when` and `onReveal`. See [Options](/reference/options/).
+- **Other props**: the component gives them to the rendered element, for example `className`, `id` and `ref`.
+- **`as`**: an HTML or SVG tag. The types of the other props and of `ref` follow the tag.
 
 ## Cascade
 
-- `Reveal` props plus `interval`.
+Renders an element around its children. When the element enters the viewport, it reveals the direct element children one after the other. See [Animate a list](/guides/lists/).
+
+`Cascade` accepts the props of `Reveal`, and [`interval`](/reference/options/#interval).
 
 ## useReveal
 
-- Options, returns `RevealState`.
+Reveals an element that you render, with no wrapper element.
+
+```tsx
+import { useReveal } from "@awesome-reveal/react";
+
+export function Card() {
+  const { getProps, revealed } = useReveal<HTMLElement>({ from: "left" });
+  return (
+    <article {...getProps({ className: "card" })}>
+      {revealed ? "Hello" : "Waiting"}
+    </article>
+  );
+}
+```
+
+- **Parameter**: the options of `Reveal`, except `as`.
+- **Type parameter**: the type of the element. The default is `HTMLElement`.
+- **Return value**: a [`RevealState`](#revealstate).
 
 ## useCascade
 
-- Options with `interval`.
+Reveals the direct element children of an element that you render. It accepts the options of `useReveal`, and [`interval`](/reference/options/#interval). It returns a [`RevealState`](#revealstate).
 
-## RevealState and getProps
+## RevealState
 
-- `revealed`, `getProps()`. `getProps` does not merge `style`.
+The hooks return an object with two members.
 
-## Types
+### getProps
 
-- `RevealProps`, `CascadeProps`, `RevealOptions`, `CascadeOptions`, `RevealState`, `RevealTargetProps`, `Side`, `StartState`.
+```ts
+getProps<P extends object>(
+  props?: P & { ref?: Ref<T> },
+): Omit<P, "ref"> & RevealTargetProps<T>
+```
+
+Adds the reveal to the props of your element. Spread the result on one DOM element. `getProps()` returns your props with two changes:
+
+- **`ref`**: a ref callback. If you give your own `ref`, `getProps()` merges it. Your ref can be an object or a callback. In React 19, a callback can return a cleanup function.
+- **`data-awesome-reveal`**: the attribute that the [package stylesheet](/concepts/server-rendering/) hides. It has no value after the reveal.
+
+For your own component, give the `ref` and the `data-awesome-reveal` prop to a DOM element.
+
+### revealed
+
+**Type:** `boolean`.
+
+`true` after the reveal. It is `false` in the server render. See [Read the revealed state](/guides/reveal-events/#read-the-revealed-state).
+
+## Server Components
+
+To use `Reveal`, `Cascade` and the hooks with Server Components, see [Next.js](/frameworks/nextjs/).
 
 ## Stylesheet
 
-- `@awesome-reveal/react/reveal.css` for Astro islands.
+The package imports its stylesheet. It also exports the stylesheet as `@awesome-reveal/react/reveal.css`, for the [setups that need an import](/concepts/server-rendering/#hidden-in-the-server-html).
 
-## Sources
+## Types
 
-On the `next` branch of the packages repo:
-
-- `packages/react/src`
-- `packages/react/README.md: API`
+| Type                   | Description                                                        |
+| ---------------------- | ------------------------------------------------------------------ |
+| `RevealProps<T>`       | The props of `Reveal`. `T` is the tag, and the default is `"div"`. |
+| `CascadeProps<T>`      | The props of `Cascade`.                                            |
+| `RevealOptions`        | The options of `useReveal`.                                        |
+| `CascadeOptions`       | The options of `useCascade`.                                       |
+| `RevealState<T>`       | The return value of the hooks. `T` is the type of the element.     |
+| `RevealTargetProps<T>` | The props that `getProps()` adds: `ref` and `data-awesome-reveal`. |
+| `Side`                 | The sides of [`from`](/reference/options/#from).                   |
+| `StartState`           | The [start state](/guides/entrances/) object of `from`.            |

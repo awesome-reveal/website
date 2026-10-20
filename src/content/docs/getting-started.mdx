@@ -66,7 +66,7 @@ When the element enters the viewport, it [fades in and moves up 24 pixels](/guid
 - The React, Vue and Astro packages render the element as hidden in the server HTML, so the element [does not flash](/concepts/server-rendering/) before the script runs. Hydrate the reveal content eagerly. See [The 5 second hold](/concepts/server-rendering/#the-5-second-hold).
 - `@awesome-reveal/core` [does not hide content](/concepts/server-rendering/#the-javascript-api) before your script calls `reveal()`.
 - If the user asks for [reduced motion](https://developer.mozilla.org/en-US/docs/Web/CSS/Reference/At-rules/@media/prefers-reduced-motion), the content shows at once, with [no animation](/concepts/accessibility/#reduced-motion).
-- If the browser does not support the Intersection Observer API or the Web Animations API, the content shows at once.
+- In [older browsers](/reference/browser-support/#older-browsers), the content does not stay hidden.
 
 <Aside type="caution" title="React or Vue in an Astro island">
   Hydrate the island with `client:load`, not `client:visible`. Import
