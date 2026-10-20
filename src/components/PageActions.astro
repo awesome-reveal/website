@@ -23,7 +23,7 @@ const askLinks = isArchived(id)
     ];
 ---
 
-<div class="actions" data-markdown-ignore data-pagefind-ignore>
+<div class="page-actions" data-markdown-ignore data-pagefind-ignore>
   <div class="split">
     <button type="button" class="copy" data-copy={markdown}>
       <span class="icon">
@@ -33,55 +33,60 @@ const askLinks = isArchived(id)
       </span>
       <span>Copy page</span>
     </button>
-    <details class="more">
-      <summary aria-label="More page actions">
-        <ChevronDown />
-      </summary>
-      <ul class="menu">
-        <li>
-          <a href={markdown}>
-            <FileText />
-            View as Markdown
+    <button
+      type="button"
+      class="more"
+      id="page-actions-trigger"
+      aria-label="More page actions"
+      aria-haspopup="menu"
+      aria-expanded="false"
+      aria-controls="page-actions-menu"
+    >
+      <ChevronDown />
+    </button>
+    <ul
+      class="menu"
+      id="page-actions-menu"
+      role="menu"
+      aria-labelledby="page-actions-trigger"
+      hidden
+    >
+      <li role="none">
+        <a href={markdown} role="menuitem" tabindex="-1">
+          <FileText />
+          View as Markdown
+        </a>
+      </li>
+      {askLinks.map(({ name, url, Logo }) => (
+        <li role="none">
+          <a
+            href={url + prompt}
+            role="menuitem"
+            tabindex="-1"
+            rel="noopener noreferrer"
+            target="_blank"
+            aria-label={`Ask ${name} about this page (opens in a new tab)`}
+          >
+            <Logo aria-hidden="true" width="1em" height="1em" />
+            Ask {name}
           </a>
         </li>
-        {askLinks.map(({ name, url, Logo }) => (
-          <li>
-            <a
-              href={url + prompt}
-              rel="noopener noreferrer"
-              target="_blank"
-              aria-label={`Ask ${name} about this page (opens in a new tab)`}
-            >
-              <Logo aria-hidden="true" width="1em" height="1em" />
-              Ask {name}
-            </a>
-          </li>
-        ))}
-      </ul>
-    </details>
+      ))}
+    </ul>
   </div>
   <span class="status" role="status" data-status></span>
   <noscript>
     <style is:inline>
-      /* The copy button needs JavaScript. Without it, only the menu shows, so the menu needs a label. */
-      .actions .copy {
+      /* Both buttons need JavaScript. */
+      .page-actions {
         display: none;
-      }
-      .actions .more {
-        margin-inline-start: 0;
-      }
-      .actions summary {
-        border-radius: 999px;
-      }
-      .actions summary::before {
-        content: "Page actions";
       }
     </style>
   </noscript>
 </div>
 
 <style>
-  .actions {
+  .page-actions {
     display: flex;
     justify-content: flex-end;
   }
@@ -90,7 +95,7 @@ const askLinks = isArchived(id)
     display: inline-flex;
   }
   .copy,
-  summary {
+  .more {
     position: relative;
     display: inline-flex;
     align-items: center;
@@ -138,23 +143,17 @@ const askLinks = isArchived(id)
         filter var(--hover-duration) ease;
     }
   }
-  summary {
-    list-style: none;
-    padding-inline: var(--space-2) var(--space-3);
-    border-radius: 0 999px 999px 0;
-  }
-  summary::-webkit-details-marker {
-    display: none;
-  }
   /* The halves overlap by one border, and the active half sits on top to show its whole outline. */
   .more {
     margin-inline-start: -1px;
+    padding-inline: var(--space-2) var(--space-3);
+    border-radius: 0 999px 999px 0;
   }
   .copy:hover,
   .copy:focus-visible,
-  summary:hover,
-  summary:focus-visible,
-  .more[open] summary {
+  .more:hover,
+  .more:focus-visible,
+  .more[aria-expanded="true"] {
     z-index: 1;
     border-color: var(--sl-color-text-accent);
     color: var(--sl-color-white);
@@ -185,10 +184,15 @@ const askLinks = isArchived(id)
     font-size: var(--sl-text-sm);
     text-decoration: none;
   }
-  a:hover,
+  /* Not :hover alone: an item under a resting pointer would stay active after an arrow key moves the focus. */
+  a:hover:focus,
   a:focus-visible {
     background: var(--sl-color-gray-6);
     color: var(--sl-color-white);
+  }
+  /* With the default offset, the ring crowds the menu border. */
+  a:focus-visible {
+    outline-offset: -2px;
   }
   .status {
     position: absolute;
@@ -228,20 +232,111 @@ const askLinks = isArchived(id)
     });
   }
 
-  const menu = document.querySelector<HTMLDetailsElement>(".actions .more");
-  if (menu) {
-    const close = () => (menu.open = false);
-    document.addEventListener("click", (event) => {
-      if (!menu.contains(event.target as Node)) close();
+  // The menu button pattern of the WAI-ARIA APG: https://www.w3.org/WAI/ARIA/apg/patterns/menu-button/
+  const trigger = document.getElementById("page-actions-trigger");
+  const menu = document.getElementById("page-actions-menu");
+
+  if (trigger && menu) {
+    const items = [...menu.querySelectorAll<HTMLElement>("[role=menuitem]")];
+    const isOpen = () => !menu.hidden;
+    const focusItem = (index: number) =>
+      items[(index + items.length) % items.length]?.focus();
+
+    const open = (index: number) => {
+      menu.hidden = false;
+      trigger.setAttribute("aria-expanded", "true");
+      focusItem(index);
+    };
+    const close = ({ returnFocus = false } = {}) => {
+      if (!isOpen()) return;
+      menu.hidden = true;
+      trigger.setAttribute("aria-expanded", "false");
+      if (returnFocus) trigger.focus();
+    };
+
+    trigger.addEventListener("click", () =>
+      isOpen() ? close({ returnFocus: true }) : open(0),
+    );
+    // Keeps the focus in the menu, so the focusout below does not close it before this click toggles it.
+    trigger.addEventListener("mousedown", (event) => {
+      if (isOpen()) event.preventDefault();
+    });
+    trigger.addEventListener("keydown", (event) => {
+      if (event.key === "ArrowDown" || event.key === "ArrowUp") {
+        event.preventDefault();
+        open(event.key === "ArrowDown" ? 0 : -1);
+      }
+    });
+
+    menu.addEventListener("keydown", (event) => {
+      if (event.altKey || event.ctrlKey || event.metaKey) return;
+      const current = items.indexOf(document.activeElement as HTMLElement);
+      switch (event.key) {
+        case "ArrowDown":
+          focusItem(current + 1);
+          break;
+        case "ArrowUp":
+          focusItem(current - 1);
+          break;
+        case "Home":
+          focusItem(0);
+          break;
+        case "End":
+          focusItem(-1);
+          break;
+        case "Escape":
+          close({ returnFocus: true });
+          break;
+        case " ":
+          break;
+        default: {
+          if (event.key.length !== 1) return;
+          const key = event.key.toLowerCase();
+          const next = [
+            ...items.slice(current + 1),
+            ...items.slice(0, current + 1),
+          ].find((item) =>
+            item.textContent!.trim().toLowerCase().startsWith(key),
+          );
+          next?.focus();
+        }
+      }
+      event.preventDefault();
+    });
+    // A link ignores Space, but the APG activates a menu item on it. On keydown, the keyup that follows
+    // would reach the trigger after the focus returns to it, and it could open the menu again.
+    menu.addEventListener("keyup", (event) => {
+      if (event.key !== " " || event.altKey || event.ctrlKey || event.metaKey)
+        return;
+      items.find((item) => item === document.activeElement)?.click();
+    });
+    // A press on the padding or the border would move the focus to the body, out of reach of the keydown above.
+    menu.addEventListener("mousedown", (event) => {
+      if (!(event.target as Element).closest("[role=menuitem]"))
+        event.preventDefault();
     });
     menu.addEventListener("click", (event) => {
-      if ((event.target as Element).closest("a")) close();
-    });
-    menu.addEventListener("keydown", (event) => {
-      if (event.key === "Escape" && menu.open) {
-        close();
-        menu.querySelector("summary")!.focus();
+      if ((event.target as Element).closest("[role=menuitem]")) {
+        close({ returnFocus: true });
       }
+    });
+    // The hovered item takes the focus, so that only one item shows as active.
+    menu.addEventListener("pointermove", (event) => {
+      const item = (event.target as Element).closest<HTMLElement>(
+        "[role=menuitem]",
+      );
+      if (item && item !== document.activeElement) {
+        item.focus({ preventScroll: true });
+      }
+    });
+    menu.addEventListener("focusout", (event) => {
+      const next = event.relatedTarget as Node | null;
+      if (next && !menu.contains(next)) close();
+    });
+    // Not click: iOS Safari sends no click for a tap on content that is not interactive.
+    document.addEventListener("pointerdown", (event) => {
+      const target = event.target as Node;
+      if (!menu.contains(target) && !trigger.contains(target)) close();
     });
   }
 </script>
