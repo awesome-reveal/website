@@ -1,0 +1,77 @@
+---
+title: Nuxt and Vue SSR scroll animations
+description: "Add scroll animations to Nuxt and Vue SSR apps: hide content in the server HTML, register v-reveal in a Nuxt plugin, and prevent a flash after lazy hydration."
+sidebar:
+  order: 2
+  label: Vue SSR and Nuxt
+---
+
+Use `@awesome-reveal/vue` to add scroll animations to a Nuxt app or to your own [Vue SSR](https://vuejs.org/guide/scaling-up/ssr.html) setup. [Install the package](/getting-started/#install-the-package), and import it in your components. Server rendering needs no setup. The Nuxt development server needs one line of config.
+
+## Server rendering
+
+`Reveal`, [`Cascade`](/guides/lists/), `v-reveal` and `v-cascade` render the waiting element hidden in the server HTML. The package stylesheet hides it, so the content does not flash before the script runs. Your bundler adds the stylesheet to the page.
+
+Hydration attaches the element to the viewport observer, with no hydration mismatch. With [`:when="true"`](/guides/manual-control/), the server still renders the element hidden. The entrance plays after hydration.
+
+## Use it in Nuxt
+
+Import the components and the directives in your components, as in any Vue app:
+
+```vue
+<!-- app/pages/index.vue -->
+<script setup>
+import { Cascade, Reveal } from "@awesome-reveal/vue";
+</script>
+
+<template>
+  <Reveal as="h1">Scroll animations in Nuxt</Reveal>
+  <Cascade as="ul">
+    <li>Fast</li>
+    <li>Small</li>
+    <li>Accessible</li>
+  </Cascade>
+</template>
+```
+
+### Register the directives for all components
+
+To use `v-reveal` and `v-cascade` with no import, register them in a [Nuxt plugin](https://nuxt.com/docs/4.x/directory-structure/app/plugins). The `GlobalDirectives` declaration lets TypeScript check the values of the directives:
+
+```ts
+// app/plugins/awesome-reveal.ts
+import { vCascade, vReveal } from "@awesome-reveal/vue";
+
+export default defineNuxtPlugin((nuxtApp) => {
+  nuxtApp.vueApp.directive("reveal", vReveal);
+  nuxtApp.vueApp.directive("cascade", vCascade);
+});
+
+declare module "vue" {
+  interface GlobalDirectives {
+    vReveal: typeof vReveal;
+    vCascade: typeof vCascade;
+  }
+}
+```
+
+In a Vue app without Nuxt, call [`app.directive("reveal", vReveal)`](https://vuejs.org/api/application.html#app-directive) on your app.
+
+### Add the stylesheet in development
+
+The production build of Nuxt adds the package stylesheet to the server HTML. The development server adds it only after the page loads, so the content can show for a moment before it hides. To get the same result as in production, add the stylesheet to the [`css`](https://nuxt.com/docs/4.x/api/nuxt-config#css) option:
+
+```ts
+// nuxt.config.ts
+export default defineNuxtConfig({
+  css: ["@awesome-reveal/vue/reveal.css"],
+});
+```
+
+The production build adds the stylesheet one time.
+
+## Hydrate the reveals eagerly
+
+The server HTML hides each waiting element until hydration attaches it, for at most 5 seconds. See [What happens when the page loads](/getting-started/#what-happens-when-the-page-loads).
+
+Lazy hydration often attaches the element after 5 seconds. Examples are [`hydrateOnVisible()`](https://vuejs.org/guide/components/async.html#lazy-hydration) in Vue and the [`hydrate-on-visible`](https://nuxt.com/docs/4.x/directory-structure/app/components#delayed-or-lazy-hydration) prop of a Nuxt lazy component. Then the content shows, and hides again when the user scrolls to it. Do not use lazy hydration for components with a reveal.

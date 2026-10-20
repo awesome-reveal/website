@@ -1,42 +1,113 @@
 ---
-title: Astro
-description: "Use Awesome Reveal in Astro with no client directive: where to place Reveal, and how it works with the ClientRouter, transition:persist, server islands and CSP."
-head:
-  - tag: title
-    content: "Scroll Animations in Astro | Awesome Reveal"
+title: Astro scroll animations without hydration
+description: "Add scroll animations to Astro with no client directive: where to place Reveal, and how it works with ClientRouter, transition:persist, server islands and CSP."
 sidebar:
   order: 3
-draft: true
+  label: Astro
 ---
+
+Use `@awesome-reveal/astro` to add scroll animations to Astro 6 and 7 sites. [Install the package](/getting-started/#install-the-package), and import `Reveal` and [`Cascade`](/guides/lists/) in your `.astro` files. The package does not use a UI framework, so it needs no [`client:*` directive](https://docs.astro.build/en/reference/directives-reference/#client-directives) and no stylesheet import:
+
+```astro
+---
+import { Cascade, Reveal } from "@awesome-reveal/astro";
+---
+
+<Reveal as="h1" from="left">
+  Scroll animations in Astro
+</Reveal>
+<Cascade as="ul">
+  <li>Fast</li>
+  <li>Small</li>
+  <li>Accessible</li>
+</Cascade>
+```
 
 ## How it works in Astro
 
-- A custom element and a module script. No `client:*` directive and no stylesheet import.
+Each `Reveal` and `Cascade` renders its tag inside an `awesome-reveal` [custom element](https://developer.mozilla.org/en-US/docs/Web/API/Web_components/Using_custom_elements). The custom element has `display: contents`, so it does not change the layout. To control the entrance from a script, set the [`when` property](/guides/manual-control/#reveal-from-your-state) of the custom element.
 
-## Where to place Reveal
+Astro adds the stylesheet and a small module script of the package to the page. The stylesheet hides the waiting elements in the server HTML. The script defines the custom element, and the custom element attaches its tag to the viewport observer. Without JavaScript, the content shows.
 
-- Not directly inside `<table>`, its sections and rows, or `<select>`.
-- Inside a `<p>` or inline MDX text, use an inline `as`, such as `span`.
+## Where to place a reveal
+
+The HTML parser moves some tags out of the `awesome-reveal` element. Obey these rules:
+
+- Do not put `Reveal` or `Cascade` directly in a `<table>`, a table section, a row or a `<select>`. Reveal the whole table, or reveal content inside a table cell.
+- In a `<p>`, also inline in MDX text, use an inline tag, such as `as="span"`.
+
+```astro
+<Reveal as="table">
+  <tbody>
+    <tr>
+      <td>The whole table reveals together.</td>
+    </tr>
+  </tbody>
+</Reveal>
+
+<p>
+  Reveal{" "}
+  <Reveal as="span" from={{ opacity: 0 }}>
+    a part of the text
+  </Reveal>
+  .
+</p>
+```
+
+If the parser moves the tag, the browser console shows an error. After a few seconds, the tag shows with no entrance.
+
+`as` does not accept the document tags (`html`, `head` and `body`), the table parts or the SVG-only tags. TypeScript rejects them.
 
 ## View transitions
 
-- `<ClientRouter />`, `astro:page-load` and `transition:persist`.
+Reveals work with the [`<ClientRouter />`](https://docs.astro.build/en/guides/view-transitions/), with no setup. After a navigation, each new `awesome-reveal` element attaches itself.
+
+An element with [`transition:persist`](https://docs.astro.build/en/guides/view-transitions/#maintaining-state) keeps its state. If it revealed before the navigation, its entrance does not play again. Put `transition:persist` on an ancestor, or directly on `Reveal`:
+
+```astro
+<Reveal as="h2" transition:persist="intro">
+  Reveals one time across navigations
+</Reveal>
+```
+
+The package does not need the `astro:page-load` event. Your own scripts that find `awesome-reveal` elements need it, because the `<ClientRouter />` does not run a module script again after a navigation.
+
+A [prerendered page](https://developer.mozilla.org/en-US/docs/Web/API/Speculation_Rules_API) does not animate until the browser activates it.
 
 ## Server islands
 
-- `server:defer` content reveals.
+A `Reveal` inside a [server island](https://docs.astro.build/en/guides/server-islands/) reveals when Astro adds the island to the page. You do not need a step:
+
+```astro
+---
+import ServerTime from "../components/ServerTime.astro";
+---
+
+<ServerTime server:defer>
+  <p slot="fallback">Loading...</p>
+</ServerTime>
+```
+
+```astro
+---
+// src/components/ServerTime.astro
+import { Reveal } from "@awesome-reveal/astro";
+---
+
+<Reveal>Rendered at {new Date().toLocaleTimeString()}</Reveal>
+```
 
 ## Content Security Policy
 
-- `security.csp: true` (not with `<ClientRouter />`) or `build.inlineStylesheets: 'never'`.
+The package writes no `style` attribute, no inline script and no CSS at runtime. But Astro can put the package stylesheet and your scripts inline in the HTML. Use one of these setups:
 
-## Open questions
+- Set [`security.csp`](https://docs.astro.build/en/reference/configuration-reference/#securitycsp) to `true`. Astro adds a `<meta>` policy with hashes for the inline styles and scripts that it adds. Astro does not support this option with the `<ClientRouter />`.
+- Send your own policy, such as `style-src 'self'; script-src 'self'`, and set [`build.inlineStylesheets`](https://docs.astro.build/en/reference/configuration-reference/#buildinlinestylesheets) to `'never'`. Also make sure that the built HTML has no inline `<script>` that your policy blocks.
 
-- The `options` attribute of the host can change at runtime, but the README does not document it. Document it or not?
+Astro adds the `security.csp` policy only to the build. To check a policy, use `astro build` and `astro preview`.
 
-## Sources
+With the default `build.inlineStylesheets: 'auto'`, Astro puts a stylesheet smaller than 4 kB in a `<style>` element. If your policy blocks the package stylesheet, the content does not hide before the reveal, and the `awesome-reveal` element changes the layout.
 
-On the `next` branch of the packages repo:
+## React or Vue islands
 
-- `packages/astro/README.md`
-- `examples/astro`
+`@awesome-reveal/astro` animates Astro markup. Inside a React or Vue island, use the package of that framework. See [React or Vue in Astro](/frameworks/react-vue-astro/).
