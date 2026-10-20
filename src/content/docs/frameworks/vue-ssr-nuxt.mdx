@@ -72,6 +72,6 @@ The production build adds the stylesheet one time.
 
 ## Hydrate the reveals eagerly
 
-The server HTML hides each waiting element until hydration attaches it, for at most 5 seconds. See [What happens when the page loads](/getting-started/#what-happens-when-the-page-loads).
+The server HTML hides each waiting element until hydration attaches it, for at most 5 seconds. See [The 5 second hold](/concepts/server-rendering/#the-5-second-hold).
 
 Lazy hydration often attaches the element after 5 seconds. Examples are [`hydrateOnVisible()`](https://vuejs.org/guide/components/async.html#lazy-hydration) in Vue and the [`hydrate-on-visible`](https://nuxt.com/docs/4.x/directory-structure/app/components#delayed-or-lazy-hydration) prop of a Nuxt lazy component. Then the content shows, and hides again when the user scrolls to it. Do not use lazy hydration for components with a reveal.
