@@ -231,7 +231,8 @@
 }
 
 /* Only the ring is set, so the inside offsets of Starlight still keep it unclipped in scroll containers.
-   `:root` outweighs the unlayered `outline: revert` of the Pagefind reset. */
+   `:root` outweighs the unlayered `outline: revert` of the Pagefind reset.
+   A control with a 1px border sets `outline-offset: -1px`: the ring covers the border, so it stays 2px wide. */
 :root :focus-visible {
   outline: 2px solid var(--sl-color-text-accent);
 }
@@ -329,6 +330,7 @@ code:not(pre *, .sl-markdown-content *) {
 .pagination-links a {
   border-color: var(--sl-color-hairline-light);
   border-radius: var(--radius-md);
+  outline-offset: -1px;
   transition: border-color var(--hover-duration) ease;
 
   &:hover {
@@ -338,11 +340,25 @@ code:not(pre *, .sl-markdown-content *) {
 
 .sl-link-button {
   font-weight: 700;
+  outline-offset: 2px;
   translate: 0;
   transition: translate var(--hover-duration) ease;
 
   svg {
     font-size: 1.5rem;
+  }
+
+  &.secondary {
+    outline-offset: -1px;
+    transition:
+      translate var(--hover-duration) ease,
+      border-color var(--hover-duration) ease;
+
+    @media (hover: hover) {
+      &:hover {
+        border-color: var(--sl-color-text-accent);
+      }
+    }
   }
 
   @media (hover: hover) and (prefers-reduced-motion: no-preference) {
@@ -367,6 +383,10 @@ starlight-tabs {
   }
 }
 
+.expressive-code pre {
+  outline-offset: -1px;
+}
+
 .expressive-code .copy {
   /* A device with no mouse or trackpad is not one to write code on, and there the button always covers the code. */
   @media (any-hover: none) {
@@ -375,9 +395,16 @@ starlight-tabs {
 
   button {
     border-radius: var(--radius-sm);
+    outline-offset: -1px;
 
     &:is(:hover, :focus-visible)::after {
       background-color: var(--sl-color-text-accent);
+    }
+
+    @media (hover: hover) {
+      &:hover::before {
+        border-color: var(--sl-color-text-accent);
+      }
     }
   }
 
@@ -431,6 +458,14 @@ starlight-tabs {
   font-size: var(--header-icon-size);
   background-color: var(--sl-color-bg-nav);
   color: var(--sl-color-white);
+  outline-offset: -1px;
+  transition: border-color var(--hover-duration) ease;
+
+  @media (hover: hover) {
+    &:hover {
+      border-color: var(--sl-color-text-accent);
+    }
+  }
 
   &:has(~ :popover-open) {
     border-color: var(--sl-color-text-accent);

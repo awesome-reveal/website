@@ -30,8 +30,10 @@ import Sun from "@lucide/astro/icons/sun";
     cursor: pointer;
   }
 
-  button:hover {
-    color: var(--sl-color-white);
+  @media (hover: hover) {
+    button:hover {
+      color: var(--sl-color-white);
+    }
   }
 
   @media (scripting: none) {

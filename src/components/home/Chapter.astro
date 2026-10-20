@@ -2,8 +2,8 @@
 import { Code } from "@astrojs/starlight/components";
 import type { ComponentProps } from "astro/types";
 import { Cascade, Reveal } from "@awesome-reveal/astro";
-import RotateCcw from "@lucide/astro/icons/rotate-ccw";
 import ChoiceControl from "../ChoiceControl.astro";
+import ReplayButton from "../ReplayButton.astro";
 
 interface Snippet {
   value: string;
@@ -64,18 +64,7 @@ const hasToolbar = control || replay || Astro.slots.has("controls");
           />
         )}
         <slot name="controls" />
-        {replay && (
-          <button
-            type="button"
-            class="replay"
-            aria-labelledby={`${id}-replay ${id}-title`}
-          >
-            <RotateCcw aria-hidden="true" />
-            <span class="replay-label" id={`${id}-replay`}>
-              Replay
-            </span>
-          </button>
-        )}
+        {replay && <ReplayButton class="toolbar-end" title={title} />}
       </div>
     )}
     {replay && (
@@ -132,7 +121,7 @@ const hasToolbar = control || replay || Astro.slots.has("controls");
       }
     });
 
-    chapter.querySelector(".replay")?.addEventListener("click", () => {
+    chapter.querySelector("[data-replay]")?.addEventListener("click", () => {
       // A host plays and fires `reveal` also when its content is not displayed.
       // All checks run before the first replay, so the style recalculates only once.
       const shownHosts = [
@@ -260,51 +249,14 @@ const hasToolbar = control || replay || Astro.slots.has("controls");
     }
   }
 
-  .replay {
-    display: inline-flex;
-    align-items: center;
-    gap: var(--space-2);
-    min-block-size: var(--control-size);
+  .toolbar-end {
     margin-inline-start: auto;
-    padding: var(--space-2) var(--space-4);
-    border: 1px solid var(--sl-color-hairline-light);
-    border-radius: 999px;
-    background-color: var(--sl-color-black);
-    color: var(--sl-color-gray-2);
-    font: inherit;
-    font-size: var(--sl-text-sm);
-    font-weight: 600;
-    cursor: pointer;
-    transition:
-      border-color var(--hover-duration) ease,
-      color var(--hover-duration) ease;
-
-    &:hover {
-      border-color: var(--sl-color-text-accent);
-      color: var(--sl-color-white);
-    }
   }
 
-  /* On a narrow stage, the control and the replay button share one row, so their labels are only for screen readers. */
+  /* On a narrow stage, the control and the replay button share one row. */
   @container stage (max-width: 30rem) {
     .toolbar {
       flex-wrap: nowrap;
-    }
-
-    .replay-label {
-      position: absolute;
-      inline-size: 1px;
-      block-size: 1px;
-      overflow: hidden;
-      clip-path: inset(50%);
-      white-space: nowrap;
-    }
-
-    .replay {
-      flex: none;
-      justify-content: center;
-      inline-size: var(--control-size);
-      padding: 0;
     }
   }
 
@@ -316,12 +268,7 @@ const hasToolbar = control || replay || Astro.slots.has("controls");
     font-size: var(--sl-text-sm);
   }
 
-  /* With reduced motion, `when: false` does not reset the entrance, so there is nothing to replay. */
   @media (prefers-reduced-motion: reduce) {
-    .replay {
-      display: none;
-    }
-
     .motion-note {
       display: block;
     }

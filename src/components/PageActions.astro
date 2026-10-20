@@ -109,6 +109,7 @@ const askLinks = isArchived(id)
     font-weight: 600;
     line-height: 1.4;
     cursor: pointer;
+    outline-offset: -1px;
     transition:
       border-color var(--hover-duration) ease,
       color var(--hover-duration) ease;
@@ -148,11 +149,18 @@ const askLinks = isArchived(id)
     border-radius: 0 999px 999px 0;
   }
   /* Astro does not scope a compound that starts with :is(). */
-  button:is(.copy, .more):is(:hover, :focus-visible),
+  button:is(.copy, .more):focus-visible,
   .more[aria-expanded="true"] {
     z-index: 1;
     border-color: var(--sl-color-text-accent);
     color: var(--sl-color-white);
+  }
+  @media (hover: hover) {
+    button:is(.copy, .more):hover {
+      z-index: 1;
+      border-color: var(--sl-color-text-accent);
+      color: var(--sl-color-white);
+    }
   }
   .menu {
     position: absolute;
