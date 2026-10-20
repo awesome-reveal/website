@@ -1,5 +1,6 @@
 ---
 import Default from "@astrojs/starlight/components/PageTitle.astro";
+import { hasMarkdownVersion } from "../lib/markdown-slug";
 import PageActions from "./PageActions.astro";
 import VersionNotice from "./VersionNotice.astro";
 
@@ -7,5 +8,5 @@ const { id } = Astro.locals.starlightRoute;
 ---
 
 <VersionNotice />
-{id !== "404" && <PageActions />}
+{hasMarkdownVersion(id) && <PageActions />}
 <Default />
