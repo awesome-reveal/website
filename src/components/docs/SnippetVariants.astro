@@ -33,6 +33,7 @@ const { variants, lang, selected } = Astro.props;
   /* All variants share one grid cell, so the code area keeps the size of the largest one when the choice changes. */
   [data-snippet] {
     grid-area: 1 / 1;
+    margin: 0;
   }
 
   [data-snippet]:not([data-current]) {
