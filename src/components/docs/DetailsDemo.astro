@@ -1,0 +1,100 @@
+---
+import { Reveal } from "@awesome-reveal/astro";
+import astro from "../../snippets/manual-control/details-toggle.astro?raw";
+import react from "../../snippets/manual-control/details-toggle.jsx?raw";
+import vue from "../../snippets/manual-control/details-toggle.vue?raw";
+import DemoFrame from "./DemoFrame.astro";
+import FrameworkTabs from "./FrameworkTabs.astro";
+
+interface Props {
+  id: string;
+  title: string;
+}
+
+const { id, title } = Astro.props;
+---
+
+<DemoFrame id={id} title={title} replay={false}>
+  <div class="details-demo">
+    <button
+      type="button"
+      class="toggle"
+      aria-expanded="false"
+      aria-controls={`${id}-details`}
+    >
+      Details
+    </button>
+    <Reveal
+      id={`${id}-details`}
+      class="details demo-tile"
+      when={false}
+      hidden
+      from={{ opacity: 0 }}
+    />
+  </div>
+  <FrameworkTabs slot="code" react={react} vue={vue} astro={astro} />
+</DemoFrame>
+
+<script>
+  import type {} from "@awesome-reveal/astro";
+
+  for (const demo of document.querySelectorAll(".details-demo")) {
+    const button = demo.querySelector(".toggle")!;
+    const details = demo.querySelector(".details")!;
+    const host = details.closest("awesome-reveal")!;
+
+    button.addEventListener("click", () => {
+      const open = !host.when;
+      host.when = open;
+      details.toggleAttribute("hidden", !open);
+      button.setAttribute("aria-expanded", String(open));
+    });
+  }
+</script>
+
+<style>
+  .details-demo {
+    display: grid;
+    align-content: start;
+    justify-items: center;
+    justify-self: stretch;
+    min-block-size: 8rem;
+    gap: var(--space-4);
+  }
+
+  .toggle {
+    min-block-size: 2.75rem;
+    padding: var(--space-2) var(--space-4);
+    border: 1px solid var(--sl-color-hairline-light);
+    border-radius: 999px;
+    background-color: var(--sl-color-black);
+    color: var(--sl-color-white);
+    font: inherit;
+    font-weight: 600;
+    cursor: pointer;
+
+    @media (hover: hover) {
+      &:hover {
+        border-color: var(--sl-color-text-accent);
+      }
+    }
+  }
+
+  .details {
+    inline-size: 12rem;
+    block-size: 4rem;
+  }
+
+  /* `.demo-tile` sets `display`, which overrides the `hidden` attribute. Without a script, the toggle cannot work, so the details stay visible. */
+  @media (scripting: enabled) {
+    .details[hidden] {
+      display: none;
+    }
+  }
+
+  @media (scripting: none) {
+    .toggle {
+      display: none;
+    }
+  }
+</style>

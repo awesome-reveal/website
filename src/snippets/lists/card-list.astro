@@ -1,0 +1,15 @@
+---
+import { Cascade } from "@awesome-reveal/astro";
+
+interface Props {
+  cards: { id: string; title: string }[];
+}
+
+const { cards } = Astro.props;
+---
+
+<Cascade as="ul" class="cards" interval={80}>
+  {cards.map((card) => (
+    <li>{card.title}</li>
+  ))}
+</Cascade>

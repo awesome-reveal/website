@@ -1,13 +1,7 @@
 ---
 import { Code, TabItem, Tabs } from "@astrojs/starlight/components";
-
-export type Framework = "react" | "vue" | "astro" | "js";
-
-export interface SnippetVariant {
-  value: string;
-  code: string;
-  mark?: string;
-}
+import type { Framework, SnippetVariant } from "../../lib/snippet-variants";
+import SnippetVariants from "./SnippetVariants.astro";
 
 type Props = Partial<Record<Framework, string | SnippetVariant[]>> & {
   install?: boolean;
@@ -36,19 +30,13 @@ const tabs = frameworks
 <Tabs syncKey="framework">
   {tabs.map(({ label, pkg, lang, variants }) => (
     <TabItem label={label}>
-      {install && <Code code={`pnpm add ${pkg}`} lang="shell" wrap />}
-      {variants.map(({ value, code, mark }) =>
-        variants.length === 1 ? (
-          <Code code={code} lang={lang} mark={mark} wrap />
-        ) : (
-          <div
-            data-snippet={value}
-            hidden={value !== selected}
-            data-markdown-ignore={value !== selected ? "" : undefined}
-          >
-            <Code code={code} lang={lang} mark={mark} wrap />
-          </div>
-        ),
+      {install && <Code code={`pnpm add ${pkg}`} lang="shell" />}
+      {variants.length <= 1 ? (
+        variants.map(({ code, mark }) => (
+          <Code code={code} lang={lang} mark={mark} />
+        ))
+      ) : (
+        <SnippetVariants variants={variants} lang={lang} selected={selected} />
       )}
     </TabItem>
   ))}

@@ -97,7 +97,7 @@ const hasToolbar = control || replay || Astro.slots.has("controls");
         hidden={value !== selected}
         data-markdown-ignore={value !== selected ? "" : undefined}
       >
-        <Code code={code} lang="jsx" wrap mark={mark} />
+        <Code code={code} lang="jsx" mark={mark} />
       </div>
     ))}
   </Reveal>

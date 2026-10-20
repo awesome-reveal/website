@@ -6,28 +6,62 @@ head:
     content: "Animation Duration, Delay and Threshold | Awesome Reveal"
 sidebar:
   order: 3
-draft: true
 ---
+
+import DelayDemo from "../../../components/docs/DelayDemo.astro";
+import DurationDemo from "../../../components/docs/DurationDemo.astro";
+import FrameworkTabs from "../../../components/docs/FrameworkTabs.astro";
+import thresholdReact from "../../../snippets/timing/downloads-chart.jsx?raw";
+import thresholdVue from "../../../snippets/timing/downloads-chart.vue?raw";
+import thresholdAstro from "../../../snippets/timing/downloads-chart.astro?raw";
+import thresholdJs from "../../../snippets/timing/downloads-chart.js?raw";
+
+Three options set when the entrance plays and how long it takes: [`duration`](/reference/options/#duration), [`delay`](/reference/options/#delay) and [`threshold`](/reference/options/#threshold).
 
 ## Change the duration
 
-- `duration` in ms, default 600.
+`duration` sets the duration of the entrance, in milliseconds. The default is 600. Select a duration to see the effect:
+
+<DurationDemo
+  id="duration"
+  title="Change the duration"
+  durations={[300, 600, 1000, 2000]}
+/>
 
 ## Delay the entrance
 
-- `delay` in ms, default 0. The element keeps its start state during the delay.
-- Keep it below about 300 ms.
-- Example: a title, then the text after it.
+`delay` sets the time between the reveal and the start of the entrance, in milliseconds. The default is 0. The element keeps its start state during the delay.
+
+In this example, the title takes 800 milliseconds. The text starts 200 milliseconds after its reveal, so it starts while the title still moves:
+
+<DelayDemo id="delay" title="Delay the entrance" delays={[0, 200, 600]} />
+
+Keep `delay` below about 300 milliseconds. A long delay makes content appear late when the user scrolls quickly. Focus during the delay does not make the entrance start earlier.
 
 ## Reveal later with a threshold
 
-- `threshold` from 0 to 1, default 0.
-- Tall elements and too small scroll containers.
-- Live demo with two thresholds.
+`threshold` sets the [visible fraction](https://developer.mozilla.org/en-US/docs/Web/API/Intersection_Observer_API#thresholds) of the element that reveals it, from 0 to 1. The default is 0, so the element reveals when its first pixel enters the viewport. With 0.5, the element reveals when half of it is visible:
 
-## Sources
+<FrameworkTabs
+  react={thresholdReact}
+  vue={thresholdVue}
+  astro={thresholdAstro}
+  js={thresholdJs}
+/>
 
-On the `next` branch of the packages repo:
+A change to `threshold` applies immediately in React, Vue and Astro. A change to `duration` or `delay` applies at the next reveal.
 
-- `packages/core/README.md: Change the timing, Thresholds and clipped content`
-- `packages/core/src/types.ts`
+### Tall elements and small scroll containers
+
+- If the viewport is too small to show the threshold fraction of the element, the element reveals when it enters the viewport.
+- In a [scroll container](https://developer.mozilla.org/en-US/docs/Glossary/Scroll_container) that is too small, the element reveals when it leaves the visible area of the container.
+
+Keep the default threshold for tall elements and for [long cascades](/guides/lists/#reveal-a-long-list-or-a-tall-grid).
+
+### The start state moves the box of `reveal()`
+
+React, Vue and Astro hide a waiting element with CSS at its resting position. They create the entrance at the reveal, so the start state does not change the box that the viewport check uses.
+
+`reveal()` of the JavaScript API holds a waiting element at the first keyframe of a paused entrance. A [start state](/guides/entrances/) with `opacity: 0`, such as each side, waits at the resting position of the element. Other start states and [your own keyframes](/guides/keyframes/) wait at their first keyframe. Their offset, scale and rotation change the box that the viewport check uses. For example, with the start state `{ y: 80 }`, the element waits 80 pixels lower, so it reveals later.
+
+`cascade()` holds each child at its first keyframe, but the viewport check uses the box of the container. So the start state of the children does not change when the cascade reveals.

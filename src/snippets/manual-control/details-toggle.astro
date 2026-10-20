@@ -1,0 +1,25 @@
+---
+import { Reveal } from "@awesome-reveal/astro";
+---
+
+<button type="button" id="toggle" aria-expanded="false">
+  Details
+</button>
+<Reveal id="details" when={false} hidden from={{ opacity: 0 }}>
+  The details.
+</Reveal>
+
+<script>
+  import type {} from "@awesome-reveal/astro";
+
+  const button = document.querySelector("#toggle")!;
+  const details = document.querySelector("#details")!;
+  const host = details.closest("awesome-reveal")!;
+
+  button.addEventListener("click", () => {
+    const open = !host.when;
+    host.when = open;
+    details.toggleAttribute("hidden", !open);
+    button.setAttribute("aria-expanded", String(open));
+  });
+</script>

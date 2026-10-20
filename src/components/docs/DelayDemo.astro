@@ -1,0 +1,90 @@
+---
+import { Reveal } from "@awesome-reveal/astro";
+import {
+  frameworkVariants,
+  numberOptionCode,
+} from "../../lib/snippet-variants";
+import astro from "../../snippets/timing/page-intro.astro?raw";
+import js from "../../snippets/timing/page-intro.js?raw";
+import react from "../../snippets/timing/page-intro.jsx?raw";
+import vue from "../../snippets/timing/page-intro.vue?raw";
+import DemoFrame from "./DemoFrame.astro";
+import FrameworkTabs from "./FrameworkTabs.astro";
+
+interface Props {
+  id: string;
+  title: string;
+  delays: number[];
+}
+
+const { id, title, delays } = Astro.props;
+
+// The snippet files show this delay, and each choice replaces it.
+const SNIPPET_DELAY = "200";
+
+const values = delays.map(String);
+---
+
+<DemoFrame
+  id={id}
+  title={title}
+  name="delay"
+  options={values}
+  selected={SNIPPET_DELAY}
+>
+  {values.map((value) => (
+    <div
+      class="intro"
+      data-choice={value}
+      data-selected={value === SNIPPET_DELAY ? "" : undefined}
+    >
+      <Reveal as="p" class="title" from="left" duration={800} threshold={0.5}>
+        Welcome
+      </Reveal>
+      <Reveal
+        as="p"
+        class="text"
+        from={{ opacity: 0 }}
+        delay={Number(value)}
+        threshold={0.5}
+      >
+        The text starts after the delay.
+      </Reveal>
+    </div>
+  ))}
+  <FrameworkTabs
+    slot="code"
+    selected={SNIPPET_DELAY}
+    {...frameworkVariants(
+      { react, vue, astro, js },
+      numberOptionCode("delay"),
+      SNIPPET_DELAY,
+      values,
+    )}
+  />
+</DemoFrame>
+
+<style>
+  .intro {
+    display: grid;
+    gap: var(--space-2);
+    text-align: center;
+  }
+
+  .title,
+  .text {
+    margin: 0;
+  }
+
+  /* The demo is not a section of the page, so the title is not a real heading. */
+  .title {
+    color: var(--sl-color-white);
+    font-family: var(--font-display);
+    font-size: var(--sl-text-h3);
+    font-weight: 700;
+  }
+
+  .text {
+    color: var(--sl-color-gray-2);
+  }
+</style>

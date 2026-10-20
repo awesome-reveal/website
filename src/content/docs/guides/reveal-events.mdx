@@ -6,26 +6,63 @@ head:
     content: "Run Code When an Element Reveals | Awesome Reveal"
 sidebar:
   order: 6
-draft: true
 ---
+
+import FrameworkTabs from "../../../components/docs/FrameworkTabs.astro";
+import RevealEventsDemo from "../../../components/docs/RevealEventsDemo.astro";
+import revealedReact from "../../../snippets/reveal-events/revealed-card.jsx?raw";
+import revealedVue from "../../../snippets/reveal-events/revealed-card.vue?raw";
+import revealedAstro from "../../../snippets/reveal-events/revealed-card.astro?raw";
+
+React, Vue and Astro tell your code when an element reveals. `@awesome-reveal/core` has no callback.
 
 ## Run code when the reveal starts
 
-- React `onReveal`, Vue `@reveal` and the directive `onReveal` option, Astro `reveal` event that bubbles from the rendered tag.
-- Runs one time for each reveal, also with reduced motion or focus.
-- Core has no callback.
+Each package gives the revealed element in a different way:
+
+- React: the [`onReveal`](/reference/options/#onreveal) prop.
+- Vue: the `reveal` event of `Reveal` and `Cascade`, and the `onReveal` option of `v-reveal` and `v-cascade`.
+- Astro: a `reveal` DOM event. It comes from the rendered tag and [bubbles](https://developer.mozilla.org/en-US/docs/Web/API/Event/bubbles).
+
+<RevealEventsDemo id="on-reveal" title="Run code when the reveal starts" />
+
+The example logs the reveal event and the end of the entrance. Select Replay to see the events again.
+
+The code runs one time for each reveal, when the reveal starts. In a cascade, it gets the container.
+
+- It also runs when no entrance plays, for example with [reduced motion](https://developer.mozilla.org/en-US/docs/Web/CSS/Reference/At-rules/@media/prefers-reduced-motion), or when focus shows a waiting element.
+- In React, it runs one time also in [StrictMode](https://react.dev/reference/react/StrictMode).
+- After [`when`](/guides/manual-control/#reveal-from-your-state) becomes `false`, the next reveal runs it again. With reduced motion, the element does not reset, so the code does not run again.
 
 ## Wait for the end of the entrance
 
-- `Promise.all` of `element.getAnimations({ subtree: true })` finished promises.
-- Catch the rejection when the entrance stops early.
+The entrance is a set of [Web Animations](https://developer.mozilla.org/en-US/docs/Web/API/Web_Animations_API) on the element. To wait for its end, wait for the [`finished`](https://developer.mozilla.org/en-US/docs/Web/API/Animation/finished) promises of these animations:
+
+```js
+function entranceFinished(element) {
+  return Promise.all(
+    element
+      .getAnimations({ subtree: true })
+      .map((animation) => animation.finished),
+  );
+}
+
+// In the reveal callback:
+entranceFinished(element)
+  .then(() => element.classList.add("entered"))
+  .catch(() => {});
+```
+
+- The promise rejects when the entrance stops early, for example after `when` becomes `false` or an unmount. Catch the rejection.
+- The promise resolves immediately when no entrance plays, for example with reduced motion.
+- The promise also waits for your own animations of the element and its descendants.
+
+In the JavaScript API, a waiting entrance is a paused animation, and a paused animation does not finish. If your code waits for all of [`document.getAnimations()`](https://developer.mozilla.org/en-US/docs/Web/API/Document/getAnimations), skip the animations with `playState === "paused"`.
 
 ## Read the revealed state
 
-- React `useReveal().revealed`, Vue slot prop `revealed`, Astro host `revealed` property.
+React and Vue give a `revealed` value that is `true` after the reveal. In Astro, the `awesome-reveal` host element has a `revealed` property.
 
-## Sources
+<FrameworkTabs react={revealedReact} vue={revealedVue} astro={revealedAstro} />
 
-On the `next` branch of the packages repo:
-
-- `packages/*/README.md: Run code at the reveal`
+In React, `useReveal` animates your own element with no wrapper. Spread `getProps()` on one DOM element.

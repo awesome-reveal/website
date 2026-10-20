@@ -1,0 +1,60 @@
+---
+import { Reveal } from "@awesome-reveal/astro";
+import {
+  frameworkVariants,
+  numberOptionCode,
+} from "../../lib/snippet-variants";
+import astro from "../../snippets/timing/feature-card.astro?raw";
+import js from "../../snippets/timing/feature-card.js?raw";
+import react from "../../snippets/timing/feature-card.jsx?raw";
+import vue from "../../snippets/timing/feature-card.vue?raw";
+import DemoFrame from "./DemoFrame.astro";
+import FrameworkTabs from "./FrameworkTabs.astro";
+
+interface Props {
+  id: string;
+  title: string;
+  durations: number[];
+}
+
+const { id, title, durations } = Astro.props;
+
+// The snippet files show this duration, and each choice replaces it.
+const SNIPPET_DURATION = "600";
+
+const values = durations.map(String);
+---
+
+<DemoFrame
+  id={id}
+  title={title}
+  name="duration"
+  options={values}
+  selected={SNIPPET_DURATION}
+>
+  {values.map((value) => (
+    <div
+      data-choice={value}
+      data-selected={value === SNIPPET_DURATION ? "" : undefined}
+    >
+      <Reveal class="tile demo-tile" duration={Number(value)} threshold={0.5} />
+    </div>
+  ))}
+  <FrameworkTabs
+    slot="code"
+    selected={SNIPPET_DURATION}
+    {...frameworkVariants(
+      { react, vue, astro, js },
+      numberOptionCode("duration"),
+      SNIPPET_DURATION,
+      values,
+    )}
+  />
+</DemoFrame>
+
+<style>
+  .tile {
+    inline-size: 8rem;
+    aspect-ratio: 1;
+  }
+</style>

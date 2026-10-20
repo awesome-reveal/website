@@ -17,9 +17,7 @@ const control = {
   selected,
   options: tiles.map(({ name, from }) => ({
     value: name,
-    code: `<Reveal
-  from={${objectLiteral(from)}}
->
+    code: `<Reveal from={${objectLiteral(from)}}>
   <Card />
 </Reveal>`,
   })),

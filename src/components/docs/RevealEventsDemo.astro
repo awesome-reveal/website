@@ -1,0 +1,102 @@
+---
+import { Reveal } from "@awesome-reveal/astro";
+import astro from "../../snippets/reveal-events/pricing-title.astro?raw";
+import react from "../../snippets/reveal-events/pricing-title.jsx?raw";
+import vue from "../../snippets/reveal-events/pricing-title.vue?raw";
+import DemoFrame from "./DemoFrame.astro";
+import FrameworkTabs from "./FrameworkTabs.astro";
+
+interface Props {
+  id: string;
+  title: string;
+}
+
+const { id, title } = Astro.props;
+---
+
+<DemoFrame
+  id={id}
+  title={title}
+  motionNote="The log shows the revealed state when the page loads."
+>
+  <div class="events-demo">
+    <Reveal class="tile demo-tile" threshold={0.5} />
+    <ol class="log" role="log" aria-label="Reveal events">
+      <li>Waiting for the reveal.</li>
+    </ol>
+  </div>
+  <FrameworkTabs slot="code" react={react} vue={vue} astro={astro} />
+</DemoFrame>
+
+<script>
+  import type {} from "@awesome-reveal/astro";
+
+  const entranceFinished = (element: Element) =>
+    Promise.all(
+      element
+        .getAnimations({ subtree: true })
+        .map((animation) => animation.finished),
+    );
+
+  for (const demo of document.querySelectorAll(".events-demo")) {
+    const log = demo.querySelector(".log")!;
+    const host = demo.querySelector("awesome-reveal")!;
+
+    const addEntry = (text: string) => {
+      const entry = document.createElement("li");
+      entry.textContent = text;
+      log.append(entry);
+    };
+
+    demo.addEventListener("reveal", (event) => {
+      const start = performance.now();
+      log.replaceChildren();
+      addEntry(`0 ms: reveal, revealed is ${host.revealed}`);
+      entranceFinished(event.target as Element)
+        .then(() => {
+          const elapsed = Math.round(performance.now() - start);
+          addEntry(`${elapsed} ms: entrance finished`);
+        })
+        .catch(() => {});
+    });
+
+    // With reduced motion, the element reveals when it is defined, before this script adds the listener.
+    if (host.revealed) {
+      log.replaceChildren();
+      addEntry(`On load: revealed is ${host.revealed}`);
+    }
+  }
+</script>
+
+<style>
+  .events-demo {
+    display: grid;
+    justify-items: center;
+    gap: var(--space-4);
+    inline-size: 100%;
+  }
+
+  .tile {
+    inline-size: 8rem;
+    aspect-ratio: 1;
+  }
+
+  .log {
+    display: grid;
+    gap: var(--space-1);
+    min-block-size: 3.5rem;
+    margin: 0;
+    padding: 0;
+    color: var(--sl-color-gray-2);
+    font-family: var(--sl-font-mono);
+    font-size: var(--sl-text-xs);
+    text-align: center;
+    list-style: none;
+  }
+
+  @media (scripting: none) {
+    .log {
+      display: none;
+    }
+  }
+</style>

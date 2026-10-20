@@ -8,16 +8,16 @@ head:
 
 import { Aside } from "@astrojs/starlight/components";
 import FrameworkTabs from "../../components/docs/FrameworkTabs.astro";
-import revealReact from "../../snippets/getting-started/reveal.jsx?raw";
-import revealVue from "../../snippets/getting-started/reveal.vue?raw";
-import revealAstro from "../../snippets/getting-started/reveal.astro?raw";
-import revealJs from "../../snippets/getting-started/reveal.js?raw";
-import cascadeReact from "../../snippets/getting-started/cascade.jsx?raw";
-import cascadeVue from "../../snippets/getting-started/cascade.vue?raw";
-import cascadeAstro from "../../snippets/getting-started/cascade.astro?raw";
-import cascadeJs from "../../snippets/getting-started/cascade.js?raw";
+import revealReact from "../../snippets/getting-started/hero-title.jsx?raw";
+import revealVue from "../../snippets/getting-started/hero-title.vue?raw";
+import revealAstro from "../../snippets/getting-started/hero-title.astro?raw";
+import revealJs from "../../snippets/getting-started/hero-title.js?raw";
+import cascadeReact from "../../snippets/getting-started/feature-list.jsx?raw";
+import cascadeVue from "../../snippets/getting-started/feature-list.vue?raw";
+import cascadeAstro from "../../snippets/getting-started/feature-list.astro?raw";
+import cascadeJs from "../../snippets/getting-started/feature-list.js?raw";
 
-Awesome Reveal animates elements when they scroll into view. Each framework package uses the same core. The core uses the Intersection Observer API and the Web Animations API of the browser, and it has no dependencies.
+Awesome Reveal animates elements when they scroll into view. Each framework package uses the same core. The core uses the [Intersection Observer API](https://developer.mozilla.org/en-US/docs/Web/API/Intersection_Observer_API) and the [Web Animations API](https://developer.mozilla.org/en-US/docs/Web/API/Web_Animations_API) of the browser, and it has no dependencies.
 
 ## Requirements
 
@@ -49,11 +49,11 @@ Wrap the element in `Reveal`. With `@awesome-reveal/core`, call `reveal()` with 
   js={revealJs}
 />
 
-When the element enters the viewport, it fades in and moves up 24 pixels. The entrance plays one time. You do not import a stylesheet.
+When the element enters the viewport, it [fades in and moves up 24 pixels](/guides/entrances/#slide-in-from-a-side). The entrance [plays one time](/guides/manual-control/#play-the-entrance-again). You do not import a stylesheet.
 
 ## Animate a list
 
-`Cascade` reveals its direct children one after the other. The `interval` option sets the time between the start of two children, in milliseconds. The default is 80.
+[`Cascade`](/guides/lists/) reveals its direct children one after the other. The [`interval`](/reference/options/#interval) option sets the time between the start of two children, in milliseconds. The default is 80.
 
 <FrameworkTabs
   react={cascadeReact}
@@ -67,7 +67,7 @@ When the element enters the viewport, it fades in and moves up 24 pixels. The en
 - The React, Vue and Astro packages render the element as hidden in the server HTML, so the element does not flash before the script runs. If the script does not run in 5 seconds, the content shows.
 - Hydrate the reveal content eagerly. With lazy hydration, the script can run after 5 seconds. Then the content shows, and hides again until it reveals.
 - `@awesome-reveal/core` does not hide content before your script calls `reveal()`.
-- If the user asks for reduced motion, the content shows at once, with no animation.
+- If the user asks for [reduced motion](https://developer.mozilla.org/en-US/docs/Web/CSS/Reference/At-rules/@media/prefers-reduced-motion), the content shows at once, with no animation.
 - If the browser does not support the Intersection Observer API or the Web Animations API, the content shows at once.
 
 <Aside type="caution" title="React or Vue in an Astro island">
