@@ -41,7 +41,7 @@ The entrance does not keep its last keyframe after it ends. The element then ret
 
 ## Keep the element's own values
 
-While the element waits and while the entrance plays, the keyframes replace the element's own values of the properties that they animate. To end at the element's own value, end with a neutral [additive keyframe](https://developer.mozilla.org/en-US/docs/Web/API/KeyframeEffect/composite). For example, this entrance ends at the `opacity` of the element, also when the CSS sets `opacity: 0.8`:
+While the entrance plays, the keyframes replace the element's own values of the properties that they animate. In the JavaScript API, they also replace them while the element waits. To end at the element's own value, end with a neutral [additive keyframe](https://developer.mozilla.org/en-US/docs/Web/API/KeyframeEffect/composite). For example, this entrance ends at the `opacity` of the element, also when the CSS sets `opacity: 0.8`:
 
 ```js
 const keyframes = [{ opacity: 0 }, { opacity: 0, composite: "add" }];

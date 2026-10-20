@@ -57,7 +57,7 @@ entranceFinished(element)
 - The promise resolves immediately when no entrance plays, for example with reduced motion.
 - The promise also waits for your own animations of the element and its descendants.
 
-A waiting entrance is a paused animation, and a paused animation does not finish. If your code waits for all of [`document.getAnimations()`](https://developer.mozilla.org/en-US/docs/Web/API/Document/getAnimations), skip the animations with `playState === "paused"`.
+In the JavaScript API, a waiting entrance is a paused animation, and a paused animation does not finish. If your code waits for all of [`document.getAnimations()`](https://developer.mozilla.org/en-US/docs/Web/API/Document/getAnimations), skip the animations with `playState === "paused"`.
 
 ## Read the revealed state
 
