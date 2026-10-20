@@ -1,43 +1,122 @@
 ---
 title: Next.js
-description: "Use Awesome Reveal in Next.js: render Reveal and Cascade from Server Components, use the hooks in Client Components, and set up the Pages Router with webpack."
+description: "Add scroll animations to Next.js: render Reveal from Server Components, use the hooks in Client Components, and set up the Pages Router with webpack."
 head:
   - tag: title
-    content: "Scroll Animations in Next.js | Awesome Reveal"
+    content: "Next.js Scroll Animations | Awesome Reveal"
 sidebar:
   order: 1
-draft: true
 ---
 
-## Server Components
+Use `@awesome-reveal/react` to add scroll animations to a Next.js app. [Install the package](/getting-started/#install-the-package), and import it in your components. The App Router needs no setup, with Turbopack or webpack. The Pages Router with webpack needs one line of config.
 
-- `Reveal` and `Cascade` are Client Components. Server Components pass serializable props, keyframes included.
-- No `onReveal` or callback `ref` from a Server Component.
+## Render a reveal from a Server Component
 
-## Client Components
+`Reveal` and [`Cascade`](/guides/lists/) are [Client Components](https://react.dev/reference/rsc/use-client). A Server Component can render them, and pass them props that React can serialize:
 
-- The hooks, `when` and `onReveal`.
+```tsx
+// app/page.tsx
+import { Cascade, Reveal } from "@awesome-reveal/react";
 
-## App Router
+export default function Page() {
+  return (
+    <>
+      <Reveal as="h1">Reveal from a Server Component</Reveal>
+      <Reveal
+        keyframes={[
+          { opacity: 0, transform: "scale(.8)", easing: "ease-out" },
+          { opacity: 1, transform: "scale(1)" },
+        ]}
+      >
+        Native keyframes from the server
+      </Reveal>
+      <Cascade as="ul" from={{ opacity: 0, y: 16 }}>
+        <li>Fast</li>
+        <li>Small</li>
+        <li>Accessible</li>
+      </Cascade>
+    </>
+  );
+}
+```
 
-- No setup with Turbopack.
+A Server Component can pass all the [options](/reference/options/) except `onReveal`, [`keyframes`](/guides/keyframes/) included. It cannot pass a function, such as `onReveal` or a callback `ref`.
 
-## Pages Router with webpack
+## Use the hooks in a Client Component
 
-- Add `transpilePackages: ["@awesome-reveal/react"]`.
+`useReveal` and `useCascade` need a Client Component. Add `"use client"` at the top of the file:
 
-## Hydration
+```tsx
+// app/card.tsx
+"use client";
 
-- Hydrate eagerly. After 5 seconds the content shows, then hides until it reveals.
+import { useReveal } from "@awesome-reveal/react";
 
-## Open questions
+export function Card() {
+  const { getProps } = useReveal<HTMLElement>({ from: "left" });
 
-- Does the `moduleResolution: node` fix of 1.0.0-next.11 cover the default Next.js tsconfig? The smoke test still forces `bundler`.
+  return <article {...getProps({ className: "card" })}>A card</article>;
+}
+```
 
-## Sources
+Then render `Card` from a Server Component.
 
-On the `next` branch of the packages repo:
+## Control the reveal from state
 
-- `packages/react/README.md: Server rendering`
-- `examples/next`
-- `scripts/smoke.mjs`
+[`when`](/guides/manual-control/) and [`onReveal`](/guides/reveal-events/) use the state of a Client Component:
+
+```tsx
+// app/manual-reveal.tsx
+"use client";
+
+import { Reveal } from "@awesome-reveal/react";
+import { useState } from "react";
+
+export function ManualReveal() {
+  const [shown, setShown] = useState(false);
+  const [count, setCount] = useState(0);
+
+  return (
+    <>
+      <button
+        type="button"
+        aria-expanded={shown}
+        onClick={() => setShown((value) => !value)}
+      >
+        Show the details
+      </button>
+      <output>{count}</output> reveals
+      <Reveal
+        when={shown}
+        hidden={!shown}
+        onReveal={() => setCount((value) => value + 1)}
+      >
+        <p>The details</p>
+      </Reveal>
+    </>
+  );
+}
+```
+
+Then render `ManualReveal` from a Server Component.
+
+## Set up the Pages Router with webpack
+
+The package imports its stylesheet. With webpack, the Pages Router does not let a package in `node_modules` import global CSS, and the build fails with "Global CSS cannot be imported from within node_modules". Add the package to [`transpilePackages`](https://nextjs.org/docs/pages/api-reference/config/next-config-js/transpilePackages):
+
+```js
+// next.config.mjs
+export default {
+  transpilePackages: ["@awesome-reveal/react"],
+};
+```
+
+## Before hydration
+
+The server HTML hides each waiting element until hydration attaches it, for at most 5 seconds. See [What happens when the page loads](/getting-started/#what-happens-when-the-page-loads).
+
+With `when={true}`, the server still renders the element hidden. The entrance plays after hydration.
+
+## Content Security Policy
+
+The package writes no `style` attribute and no inline script. Next.js adds its own inline scripts, so a strict policy needs a nonce, or the experimental hashes with Subresource Integrity. See [Content Security Policy](https://nextjs.org/docs/app/guides/content-security-policy) in the Next.js docs.

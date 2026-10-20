@@ -1,0 +1,60 @@
+---
+title: React or Vue in Astro
+description: "Add scroll animations to React and Vue islands in Astro: import the reveal.css stylesheet in the page, hydrate with client:load, and wrap islands in a Cascade."
+head:
+  - tag: title
+    content: "React and Vue Scroll Animations in Astro | Awesome Reveal"
+sidebar:
+  order: 4
+---
+
+import { Code, TabItem, Tabs } from "@astrojs/starlight/components";
+import islandReact from "../../../snippets/astro-islands/components/FeatureList.jsx?raw";
+import islandVue from "../../../snippets/astro-islands/FeatureList.vue?raw";
+import pageReact from "../../../snippets/astro-islands/pages/index-react.astro?raw";
+import pageVue from "../../../snippets/astro-islands/pages/index-vue.astro?raw";
+
+To add scroll animations inside a [React or Vue island](https://docs.astro.build/en/guides/framework-components/) of an Astro site, [install](/getting-started/#install-the-package) `@awesome-reveal/react` or `@awesome-reveal/vue`. These packages need two steps in Astro. For the markup of `.astro` files, use [`@awesome-reveal/astro`](/frameworks/astro/).
+
+## Import the stylesheet
+
+In the island, use the package as in any React or Vue app. In the page or in the layout, import the `reveal.css` of the package. Then hydrate the island with `client:load`:
+
+<Tabs syncKey="framework">
+  <TabItem label="React">
+    <Code code={islandReact} lang="jsx" />
+    <Code code={pageReact} lang="astro" />
+  </TabItem>
+  <TabItem label="Vue">
+    <Code code={islandVue} lang="vue" />
+    <Code code={pageVue} lang="astro" />
+  </TabItem>
+</Tabs>
+
+The stylesheet hides the waiting elements in the server HTML. The package imports it only in the browser build. Astro gets the CSS of a page from the server build, so it does not add the stylesheet of an island. Without the import, the content shows before the reveal.
+
+## Hydrate the island with client:load
+
+The server HTML hides each waiting element until the island hydrates, for at most 5 seconds. If the island hydrates later, the content shows, then hides again until it reveals. See [What happens when the page loads](/getting-started/#what-happens-when-the-page-loads).
+
+[`client:visible`](https://docs.astro.build/en/reference/directives-reference/#clientvisible) hydrates the island when it enters the viewport. That is often after 5 seconds, so the content shows, then hides. Use [`client:load`](https://docs.astro.build/en/reference/directives-reference/#clientload).
+
+## Islands in a Cascade
+
+The [`Cascade`](/guides/lists/) of `@awesome-reveal/astro` does not animate an island that is its direct child. An island has `display: contents`. Wrap each island in an element:
+
+```astro
+---
+import { Cascade } from "@awesome-reveal/astro";
+import Card from "../components/Card.jsx";
+---
+
+<Cascade as="ul">
+  <li>
+    <Card client:load title="Fast" />
+  </li>
+  <li>
+    <Card client:load title="Small" />
+  </li>
+</Cascade>
+```
