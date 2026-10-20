@@ -21,7 +21,7 @@ Use the Node version in `.nvmrc` and the pnpm version in `packageManager`. A she
 - `pnpm check`: run `astro check`, ESLint and Prettier `--check`. A warning fails it.
 - `pnpm exec prettier --write .` to format.
 
-The repo has no tests. The `Check` workflow in `.github/workflows/` runs `pnpm check` and `pnpm build` on each PR and on each push to `main`. Before a PR, run both, and look at the changed pages in the dev server, on a narrow (about 400 px) and a wide viewport.
+The repo has no tests. The `Check` workflow in `.github/workflows/` runs `pnpm check` on each PR and on each push to `main`. Workers Builds runs `pnpm build` on each push. Before a PR, run both, and look at the changed pages in the dev server, on a narrow (about 400 px) and a wide viewport.
 
 ## Docs lookup
 
