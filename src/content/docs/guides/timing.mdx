@@ -58,8 +58,10 @@ A change to `threshold` applies immediately in React, Vue and Astro. A change to
 
 Keep the default threshold for tall elements and for [long cascades](/guides/lists/#reveal-a-long-list-or-a-tall-grid).
 
-### The start state moves the box in the JavaScript API
+### The start state moves the box of `reveal()`
 
 React, Vue and Astro hide a waiting element with CSS at its resting position. They create the entrance at the reveal, so the start state does not change the box that the viewport check uses.
 
-The JavaScript API, `reveal()` and `cascade()`, holds a waiting element at the first keyframe of a paused entrance. A [start state](/guides/entrances/) with `opacity: 0`, such as each side, waits at the resting position of the element. Other start states and [your own keyframes](/guides/keyframes/) wait at their first keyframe. Their offset, scale and rotation change the box that the viewport check uses. For example, with the start state `{ y: 80 }`, the element waits 80 pixels lower, so it reveals later.
+`reveal()` of the JavaScript API holds a waiting element at the first keyframe of a paused entrance. A [start state](/guides/entrances/) with `opacity: 0`, such as each side, waits at the resting position of the element. Other start states and [your own keyframes](/guides/keyframes/) wait at their first keyframe. Their offset, scale and rotation change the box that the viewport check uses. For example, with the start state `{ y: 80 }`, the element waits 80 pixels lower, so it reveals later.
+
+`cascade()` holds each child at its first keyframe, but the viewport check uses the box of the container. So the start state of the children does not change when the cascade reveals.
