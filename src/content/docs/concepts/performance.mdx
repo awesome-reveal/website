@@ -1,32 +1,25 @@
 ---
 title: Scroll animation performance
-description: "Why Awesome Reveal animations stay smooth: compositor animations and a small core with no dependencies, plus advice for keyframes, blur and long lists."
+description: "Why Awesome Reveal animations stay smooth: compositor animations, no scroll listeners and a core of less than 2 kB gzipped, plus advice on will-change."
 sidebar:
   order: 4
   label: Performance
-draft: true
 ---
+
+Awesome Reveal gives the work to the browser. The browser runs the viewport check and the animation, so the library runs no code on each scroll or on each frame.
 
 ## Animations on the compositor
 
-- The generated entrance. `blur` and additive keyframes run on the main thread in Chromium.
+Without `blur`, the generated entrance animates only `opacity`, `translate`, `scale` and `rotate`. These are [the properties that the compositor runs](/guides/keyframes/#animate-the-properties-that-the-compositor-runs). For the cases that run on the main thread, see [a start state with `blur`](/guides/entrances/#things-to-know) and [an additive keyframe](/guides/keyframes/#keep-the-elements-own-values).
 
-## Properties for your keyframes
+## No scroll listeners
 
-- Animate `opacity`, `transform`, `translate`, `scale` and `rotate`. Avoid layout properties.
-- Do not add `will-change`.
+Core adds no `scroll` event listener. The browser runs the viewport check, and the [Intersection Observer API](https://developer.mozilla.org/en-US/docs/Web/API/Intersection_Observer_API) calls core only when the visible fraction of an element crosses a threshold.
+
+## Do not add `will-change`
+
+Do not add [`will-change`](https://developer.mozilla.org/en-US/docs/Web/CSS/Reference/Properties/will-change) for a reveal. The browser treats an animated property as if `will-change` already names it.
 
 ## Bundle size
 
-- Core has no dependencies. Check the size claim against the tree-shaking test.
-
-## Long lists
-
-- Use one `Reveal` for each item, not a long cascade.
-
-## Sources
-
-On the `next` branch of the packages repo:
-
-- `packages/core/README.md: Performance`
-- `packages/core/test/package/tree-shaking.test.ts`
+`@awesome-reveal/core` has no dependencies. With `reveal()` and `cascade()`, it adds less than 2 kB gzipped to your bundle. A test in the packages repo checks the size.

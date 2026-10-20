@@ -1,42 +1,55 @@
 ---
 title: How scroll reveal animations work
-description: "How Awesome Reveal animates elements on scroll with the Intersection Observer and Web Animations APIs: paused animations, one-time entrances and cleanup."
+description: "How Awesome Reveal animates elements on scroll with the Intersection Observer and Web Animations APIs: paused entrances, one-time reveals and errors."
 sidebar:
   order: 1
   label: How it works
-draft: true
 ---
 
-## A paused animation
+Awesome Reveal uses two APIs of the browser. The [Intersection Observer API](https://developer.mozilla.org/en-US/docs/Web/API/Intersection_Observer_API) tells when an element enters the viewport. The [Web Animations API](https://developer.mozilla.org/en-US/docs/Web/API/Web_Animations_API) plays the entrance. For the cost of this work, see [Performance](/concepts/performance/).
 
-- `element.animate()` with `fill: "backwards"`, paused at its start.
+## Two code paths
+
+All packages use `@awesome-reveal/core`. A waiting element works in one of two ways:
+
+- **React, Vue and Astro**: the stylesheet of the package hides the waiting element with `opacity: 0`, at its resting position. The package creates the entrance at the reveal. See [No flash on load](/concepts/server-rendering/).
+- **The JavaScript API**: `reveal()` and `cascade()` create the entrance when you call them, and pause it at its start. Until the reveal, `reveal()` holds the element, and `cascade()` holds each direct child, at the first keyframe.
+
+## The entrance is a native animation
+
+Each entrance is one call to [`element.animate()`](https://developer.mozilla.org/en-US/docs/Web/API/Element/animate), with the `duration` and the `delay` of the options. The call also sets `fill: "backwards"`, so the element keeps its first keyframe during the delay.
+
+The `from` option gives two keyframes: the start state and the resting state. The keyframes set only the properties of the start state. The [`keyframes`](/guides/keyframes/) option replaces the generated keyframes.
+
+A start state with `opacity: 0` and a movement, such as each side, gives a third keyframe. The first keyframe has `opacity: 0` at the resting position, and the movement starts immediately after it. For the effect on the viewport check, see [The start state moves the box of `reveal()`](/guides/timing/#the-start-state-moves-the-box-of-reveal).
 
 ## The viewport check
 
-- One observer per element, or per cascade container. Thresholds `[0, threshold]`.
-- A start state with `opacity: 0` waits at the resting position.
+Each element has its own observer. `cascade()` and `Cascade` observe the container, and animate its direct children.
 
-## One entrance
+The observer reports two thresholds: `0` and the value of the [`threshold`](/guides/timing/#reveal-later-with-a-threshold) option. The report at `0` tells that the element entered the viewport, also when it cannot reach the threshold. Thus [tall elements and small scroll containers](/guides/timing/#tall-elements-and-small-scroll-containers) still reveal.
 
-- The observation stops at the reveal. No exit animation. Finished reveals release themselves.
+Focus in a waiting element also reveals it. See [Accessibility](/concepts/accessibility/#focus).
 
-## The framework packages
+## One entrance for each element
 
-- Core holds the behavior. The packages bind it to the render lifecycle and add `when` and `onReveal`.
+At the reveal, the observer stops. The entrance plays one time, and it has no exit animation. In React, Vue and Astro, [use `when`](/guides/manual-control/#play-the-entrance-again) to play it again.
 
-## Fallbacks
+In the JavaScript API, each element releases its observer and its event listeners when its entrances finish. The element keeps its resting style. To stop all the elements of a call before that, call `dispose()` on the handle that `reveal()` or `cascade()` returns.
 
-- No Intersection Observer: plays at once. No `Element.animate`: shows at once.
-- Browser errors are reported, and the content shows.
+In React, Vue and Astro, the observer stops also when the element leaves the page.
 
-## Things to know
+## Errors
 
-- Do not reveal one element in two calls.
-- Skip paused animations when you wait for `document.getAnimations()`.
+`reveal()` and `cascade()` do not throw for an invalid option. The browser validates the options:
 
-## Sources
+- If the browser rejects an easing or a duration, the element shows with no animation.
+- If the browser rejects the threshold, the entrance plays immediately.
+- The browser ignores an invalid CSS value in a keyframe, and reports nothing.
+- An invalid CSS selector throws the `SyntaxError` of [`querySelectorAll()`](https://developer.mozilla.org/en-US/docs/Web/API/Document/querySelectorAll).
 
-On the `next` branch of the packages repo:
+Core reports the errors of the browser from a microtask. Thus the console and your error tracker get them, but they do not stop your code. Core reports each message one time on a page. WebKit gives the same message to different easing and duration errors. Fix the first error, then reload the page to see the next error.
 
-- `packages/core/README.md: How the entrance works, Errors`
-- `packages/core/src/{animation,observe,reveal}.ts`
+## Do not reveal one element two times
+
+Give each element to one call only. If two calls reveal the same element, the later entrance replaces the earlier entrance.

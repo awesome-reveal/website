@@ -33,7 +33,7 @@ The stylesheet hides the waiting elements in the server HTML. The package import
 
 ## Hydrate the island with client:load
 
-The server HTML hides each waiting element until the island hydrates, for at most 5 seconds. If the island hydrates later, the content shows, then hides again until it reveals. See [What happens when the page loads](/getting-started/#what-happens-when-the-page-loads).
+The server HTML hides each waiting element until the island hydrates, for at most 5 seconds. See [The 5 second hold](/concepts/server-rendering/#the-5-second-hold).
 
 [`client:visible`](https://docs.astro.build/en/reference/directives-reference/#clientvisible) hydrates the island when it enters the viewport. That is often after 5 seconds, so the content shows, then hides. Use [`client:load`](https://docs.astro.build/en/reference/directives-reference/#clientload).
 

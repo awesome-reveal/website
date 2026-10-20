@@ -1,30 +1,43 @@
 ---
 title: Accessible scroll animations
-description: "How Awesome Reveal respects prefers-reduced-motion, reveals focused content at once, keeps waiting content for screen readers, and shows all content in print."
+description: "How Awesome Reveal respects prefers-reduced-motion, reveals focused content immediately, keeps waiting content for screen readers, and prints all content."
 sidebar:
   order: 3
   label: Accessibility
-draft: true
 ---
+
+An entrance is decorative motion. All content must work without it. Awesome Reveal never removes content from the page, and it shows the content immediately when the motion can cause a problem.
 
 ## Reduced motion
 
-- At call time, no animations. A change to reduce shows waiting content.
+If the user asks for [reduced motion](https://developer.mozilla.org/en-US/docs/Web/CSS/Reference/At-rules/@media/prefers-reduced-motion), all the content shows immediately, with no animation and no delay:
+
+- In React, Vue and Astro, the stylesheet does not hide the content, and the package reveals each element when it attaches it.
+- In the JavaScript API, `reveal()` and `cascade()` create no animations.
+
+If the preference changes to reduced motion while the page is open, core cancels the waiting and the running entrances, and the content shows. For reduced motion and `when`, see [Hide the content](/guides/manual-control/#hide-the-content). For `onReveal` and the `reveal` event with reduced motion, see [Run code when the reveal starts](/guides/reveal-events/#run-code-when-the-reveal-starts).
+
+To test, emulate `prefers-reduced-motion` in the developer tools of your browser.
 
 ## Focus
 
-- Focus in a waiting element shows it at once, with no entrance.
+Focus in a waiting element reveals it immediately, with no entrance. Thus a keyboard user does not focus invisible content. Focus in a waiting cascade container reveals all its children.
+
+Focus does not shorten an entrance that already started, or its [delay](/guides/timing/#delay-the-entrance). Thus keep `delay` and `interval` short.
+
+In React, Vue and Astro, focus does not reveal an element while `when` is `false`.
 
 ## Screen readers
 
-- Waiting content stays in the accessibility tree. `when={false}` does not hide content.
+A waiting element stays in the accessibility tree, so screen readers read it, and the keyboard can focus its controls. Do not put information in the motion only.
+
+To hide content from all users, see [Hide the content](/guides/manual-control/#hide-the-content).
 
 ## Print
 
-- Waiting content shows in print. DevTools print emulation does not fire the print events.
+Waiting content shows in print:
 
-## Sources
+- In React, Vue and Astro, the stylesheet hides content only on screens.
+- In the JavaScript API, core moves each waiting entrance to its end before the print. After the print, the entrance waits again.
 
-On the `next` branch of the packages repo:
-
-- `packages/core/README.md: Accessibility`
+Core uses the [`beforeprint`](https://developer.mozilla.org/en-US/docs/Web/API/Window/beforeprint_event) and [`afterprint`](https://developer.mozilla.org/en-US/docs/Web/API/Window/afterprint_event) events. The print emulation in developer tools does not fire these events. To test the JavaScript API, open the print preview of your browser.

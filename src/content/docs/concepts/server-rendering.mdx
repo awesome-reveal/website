@@ -1,32 +1,56 @@
 ---
 title: Server rendering without a flash
-description: "How Awesome Reveal hides content in the server HTML so that it does not flash before the script runs, and how a 5 second fallback keeps the content visible."
+description: "How the React, Vue and Astro packages of Awesome Reveal hide content in the server HTML, and how a 5 second hold shows the content when no script runs."
 sidebar:
   order: 2
   label: No flash on load
-draft: true
 ---
+
+A server-rendered page shows its HTML before the scripts run. If a script hides the content, the content shows, then hides, then animates. The React, Vue and Astro packages hide the waiting content in the server HTML, so it does not flash.
 
 ## Hidden in the server HTML
 
-- `data-awesome-reveal="hidden"` and `"cascade"`, and the `reveal.css` stylesheet.
+Each waiting element has the `data-awesome-reveal` attribute in the server HTML:
 
-## The 5 second fallback
+- `Reveal` and the other reveal APIs set `data-awesome-reveal="hidden"` on the element.
+- `Cascade` and the other cascade APIs set `data-awesome-reveal="cascade"` on the container.
 
-- The `awesome-reveal-hold` animation. Unattached content shows after 5 seconds.
-- No hold with `scripting: none` or reduced motion.
+The `reveal.css` stylesheet of the package gives `opacity: 0` to each hidden element and to the direct children of each cascade container. The element keeps its size and its place, so the layout does not move at the reveal. At the reveal, the package removes the attribute, and the entrance starts.
 
-## Core does not hide content
+The modules of each package import the stylesheet, so your bundler or Astro adds it to the page. Two setups need a step:
 
-- The server markup shows, then animates when `reveal()` runs.
+- [React or Vue in an Astro island](/frameworks/react-vue-astro/#import-the-stylesheet)
+- [The Next.js Pages Router with webpack](/frameworks/nextjs/#set-up-the-pages-router-with-webpack)
+
+## The 5 second hold
+
+The stylesheet does not hide a waiting element with a static rule. It plays the `awesome-reveal-hold` CSS animation, which holds `opacity: 0` for 5 seconds. When the script of the package attaches the element, it adds the `data-awesome-reveal-attached` attribute. A static `opacity: 0` rule then hides the element until the reveal.
+
+If no script attaches the element in 5 seconds, the hold ends, and the content shows. Thus the content does not stay hidden when a script fails to load or throws.
+
+If the script attaches the element after 5 seconds, the content shows, then hides again until it reveals. Lazy hydration often attaches the element that late. Hydrate the reveal content eagerly.
+
+## When the stylesheet does not hide content
+
+The stylesheet hides content only for the `screen` media type, and only with [`prefers-reduced-motion: no-preference`](https://developer.mozilla.org/en-US/docs/Web/CSS/Reference/At-rules/@media/prefers-reduced-motion). Thus the content shows immediately in these cases:
+
+- The user asks for [reduced motion](/concepts/accessibility/#reduced-motion).
+- The user [prints the page](/concepts/accessibility/#print).
+- JavaScript is off. A [`scripting: none`](https://developer.mozilla.org/en-US/docs/Web/CSS/Reference/At-rules/@media/scripting) rule stops the hold. In browsers without the `scripting` media feature, such as Safari 16, the content shows after 5 seconds.
+
+## Things to know
+
+- **The hold replaces your own `animation` until the reveal.** Put your own animation on an inner element. The hold also fires `animationstart` and `animationend` events, and shows in `getAnimations()`.
+- **`!important` styles can show the element too early.** An inline `opacity` or your own `animation` with `!important` can show the element before the reveal.
+- **The packages reserve two attributes.** Do not set `data-awesome-reveal` or `data-awesome-reveal-attached` yourself.
+- **The stylesheet does not reach a shadow root.** It cannot hide an element in a shadow root.
+
+## The JavaScript API
+
+`@awesome-reveal/core` has no stylesheet, and it does not hide content before your script calls `reveal()` or `cascade()`. Server-rendered content can show, then animate. For server-rendered pages, use the React, Vue or Astro package.
+
+You can import core on the server. Call `reveal()` and `cascade()` only in the browser.
 
 ## Search engines
 
-- The content is in the HTML.
-
-## Sources
-
-On the `next` branch of the packages repo:
-
-- `packages/react/src/reveal.css`
-- `packages/core/README.md: Server-side rendering`
+The content is in the server HTML. The stylesheet changes only the `opacity` of the content, not the text or the layout. Thus a search engine or a tool that reads the HTML gets all the content.
