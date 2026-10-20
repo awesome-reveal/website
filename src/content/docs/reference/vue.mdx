@@ -4,28 +4,64 @@ description: "API reference of @awesome-reveal/vue: the Reveal and Cascade compo
 sidebar:
   order: 3
   label: Vue API
-draft: true
 ---
 
-## Reveal and Cascade
+`@awesome-reveal/vue` exports two components and two directives. They take the same [options](/reference/options/), as props or as an object. For the supported versions, see [Requirements](/getting-started/#requirements).
 
-- Props, the `reveal` event, the `revealed` slot prop. `when` defaults to `undefined`, not `false`.
+```js
+import { Cascade, Reveal, vCascade, vReveal } from "@awesome-reveal/vue";
+```
 
-## v-reveal and v-cascade
+## Reveal
 
-- Options object, `onReveal`, deep watch, SSR props.
+Renders an element around its default slot, and reveals the element when it enters the viewport.
 
-## Types
+```vue
+<Reveal as="section" from="left" class="hero">Hello</Reveal>
+```
 
-- `RevealProps`, `CascadeProps`, `RevealOptions`, `CascadeOptions`, `Side`, `StartState`.
+- **Props**: `as`, `from`, `keyframes`, `duration`, `delay`, `threshold` and `when`. See [Options](/reference/options/).
+- **Other attributes**: the component gives them to the rendered element, for example `class` and `id`.
+- **`reveal` event**: the component emits it with the element when the reveal starts. See [Run code when the reveal starts](/guides/reveal-events/#run-code-when-the-reveal-starts).
+- **`revealed` slot prop**: `true` after the reveal. See [Read the revealed state](/guides/reveal-events/#read-the-revealed-state).
+
+Vue does not change an absent [`when`](/reference/options/#when) to `false`.
+
+## Cascade
+
+Renders an element around its default slot. When the element enters the viewport, it reveals the direct element children one after the other. See [Animate a list](/guides/lists/).
+
+`Cascade` accepts the props of `Reveal`, and [`interval`](/reference/options/#interval). It has the same event and slot prop.
+
+## v-reveal
+
+Reveals the element that has the directive.
+
+```vue
+<article v-reveal="{ from: 'left', onReveal: entered }">A card</article>
+```
+
+- **Value**: an object with the options of `Reveal`, except `as`. It also accepts `onReveal`. With no value, the directive uses the default options.
+- **Updates**: the directive watches the object deeply, so it also sees a change to a nested value. For the time when a change applies, see [Change the timing](/guides/timing/#reveal-later-with-a-threshold).
+- **Server rendering**: the directive renders the element hidden in the server HTML. See [Vue SSR and Nuxt](/frameworks/vue-ssr-nuxt/).
+
+## v-cascade
+
+Reveals the direct element children of the element that has the directive. It accepts the options of `v-reveal`, and [`interval`](/reference/options/#interval).
+
+To use the directives with no import, register them globally. See [Vue SSR and Nuxt](/frameworks/vue-ssr-nuxt/).
 
 ## Stylesheet
 
-- `@awesome-reveal/vue/reveal.css` for Astro islands.
+The package imports its stylesheet. It also exports the stylesheet as `@awesome-reveal/vue/reveal.css`, for the [setups that need an import](/concepts/server-rendering/#hidden-in-the-server-html).
 
-## Sources
+## Types
 
-On the `next` branch of the packages repo:
-
-- `packages/vue/src`
-- `packages/vue/README.md: API`
+| Type             | Description                                             |
+| ---------------- | ------------------------------------------------------- |
+| `RevealProps`    | The props of `Reveal`.                                  |
+| `CascadeProps`   | The props of `Cascade`.                                 |
+| `RevealOptions`  | The value of `v-reveal`.                                |
+| `CascadeOptions` | The value of `v-cascade`.                               |
+| `Side`           | The sides of [`from`](/reference/options/#from).        |
+| `StartState`     | The [start state](/guides/entrances/) object of `from`. |

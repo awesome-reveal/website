@@ -4,32 +4,68 @@ description: "API reference of @awesome-reveal/core: the reveal and cascade func
 sidebar:
   order: 5
   label: JavaScript API
-draft: true
 ---
+
+`@awesome-reveal/core` exports two functions. They work with no framework, and they need no stylesheet.
+
+```js
+import { cascade, reveal } from "@awesome-reveal/core";
+```
+
+For server rendering, see [The JavaScript API](/concepts/server-rendering/#the-javascript-api).
 
 ## reveal()
 
-- Signature, options, return value.
+```ts
+reveal(target: RevealTarget, options?: RevealOptions): RevealHandle
+```
+
+Reveals each [target](#targets) when it enters the viewport.
+
+- **`options`**: `from`, `keyframes`, `duration`, `delay` and `threshold`. See [Options](/reference/options/).
+- **Return value**: a [`RevealHandle`](#revealhandle).
 
 ## cascade()
 
-- Signature, options with `interval`.
+```ts
+cascade(target: RevealTarget, options?: CascadeOptions): RevealHandle
+```
+
+Reveals the direct element children of each [target](#targets), one after the other, when the target enters the viewport. See [Animate a list](/guides/lists/).
+
+- **`options`**: the options of `reveal()`, and [`interval`](/reference/options/#interval).
+- **Return value**: a [`RevealHandle`](#revealhandle).
 
 ## Targets
 
-- A selector, an element, an iterable or an array-like. Read one time, at call time.
+`target` is one of these values:
+
+- an element
+- a CSS selector, such as `".card"`
+- an iterable of elements, such as an array or a `NodeList`
+- an array-like collection, such as `element.children`
+
+The function finds the targets, and the children of a cascade, one time, when you call it. It does not see elements that you add later. Call it again for new elements.
+
+For a selector that is not valid, see [Errors](/concepts/how-it-works/#errors).
 
 ## RevealHandle
 
-- `dispose()` stops the observation and the animations. Finished reveals need no dispose.
+The return value of `reveal()` and `cascade()`. It has one method.
+
+### dispose()
+
+Stops the observation and the animations of the call. Each element returns to its resting style. Call it when you remove the elements, for example when your component unmounts.
+
+A finished entrance needs no `dispose()`. See [One entrance for each element](/concepts/how-it-works/#one-entrance-for-each-element).
 
 ## Types
 
-- `Side`, `StartState`, `RevealOptions`, `CascadeOptions`, `RevealTarget`, `RevealHandle`.
-
-## Sources
-
-On the `next` branch of the packages repo:
-
-- `packages/core/src`
-- `packages/core/README.md: API`
+| Type             | Description                                             |
+| ---------------- | ------------------------------------------------------- |
+| `RevealOptions`  | The options of `reveal()`.                              |
+| `CascadeOptions` | The options of `cascade()`.                             |
+| `RevealTarget`   | The [targets](#targets) that the functions accept.      |
+| `RevealHandle`   | The return value of the functions.                      |
+| `Side`           | The sides of [`from`](/reference/options/#from).        |
+| `StartState`     | The [start state](/guides/entrances/) object of `from`. |
