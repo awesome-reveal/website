@@ -18,15 +18,15 @@ export const onRequest = defineRouteMiddleware(async (context, next) => {
   route.sidebar = removeEmptyGroups(route.sidebar);
   if (route.id === "404") return;
   const archivedVersion = findArchivedVersion(route.id);
-  const searchTitle = getSearchTitle(route.entry);
+  const headTitle = getHeadTitle(route.entry);
 
   if (archivedVersion) {
-    setArchivedSiteTitle(route, archivedVersion.slug, searchTitle);
-  } else if (searchTitle !== undefined) {
-    setOgTitle(route, searchTitle);
+    setArchivedSiteTitle(route, archivedVersion.slug, headTitle);
+  } else if (headTitle !== undefined) {
+    setOgTitle(route, headTitle);
   }
   addMarkdownLinks(route.head, route.id);
-  if (!archivedVersion) addStructuredData(route, context, searchTitle);
+  if (!archivedVersion) addStructuredData(route, context, headTitle);
 });
 
 // Production builds skip draft pages, so a group of drafts has no entries.
@@ -36,12 +36,12 @@ function removeEmptyGroups(sidebar: Sidebar): Sidebar {
   );
 }
 
-function getSearchTitle(entry: Entry) {
+function getHeadTitle(entry: Entry) {
   const content = entry.data.head.find((tag) => tag.tag === "title")?.content;
   return typeof content === "string" ? content : undefined;
 }
 
-// The search title is a better headline than the short sidebar title.
+// A head title entry replaces <title>, so og:title must show the same text.
 function setOgTitle({ head, entry }: StarlightRouteData, title: string) {
   const ogTitle = head.find((tag) => tag.attrs?.property === "og:title");
   if (!ogTitle?.attrs) return;
@@ -59,12 +59,12 @@ function countFrontmatterMetas(entry: Entry) {
 function setArchivedSiteTitle(
   { head, siteTitle }: StarlightRouteData,
   versionSlug: string,
-  searchTitle: string | undefined,
+  headTitle: string | undefined,
 ) {
   const newSiteTitle = getArchivedSiteTitle(versionSlug);
   if (!newSiteTitle) return;
   setOgSiteName(head, newSiteTitle);
-  if (searchTitle === undefined) {
+  if (headTitle === undefined) {
     replaceTitleSuffix(head, siteTitle, newSiteTitle);
   }
 }
@@ -98,7 +98,7 @@ function addMarkdownLinks(head: Head, id: string) {
 function addStructuredData(
   { id, head, entry }: StarlightRouteData,
   { url, site }: APIContext,
-  searchTitle: string | undefined,
+  headTitle: string | undefined,
 ) {
   head.push({
     tag: "script",
@@ -106,7 +106,7 @@ function addStructuredData(
     content: JSON.stringify(
       buildStructuredData({
         id: getMarkdownSlug(id),
-        title: searchTitle ?? entry.data.title,
+        title: headTitle ?? entry.data.title,
         description: entry.data.description,
         url: new URL(url.pathname, site).href,
         siteUrl: new URL("/", site).href,
