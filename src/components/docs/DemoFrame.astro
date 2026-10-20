@@ -93,7 +93,7 @@ const hasToolbar = options.length > 0 || replay;
       replay();
     });
 
-    demo.querySelector(".replay")?.addEventListener("click", replay);
+    demo.querySelector("[data-replay]")?.addEventListener("click", replay);
   }
 </script>
 

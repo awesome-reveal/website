@@ -11,15 +11,16 @@ const { title, class: className } = Astro.props;
 
 <button
   type="button"
-  class:list={["replay", className]}
+  class={className}
   aria-label={`Replay ${title}`}
+  data-replay
 >
   <RotateCcw aria-hidden="true" />
-  <span class="label">Replay</span>
+  <span>Replay</span>
 </button>
 
 <style>
-  .replay {
+  button {
     display: inline-flex;
     align-items: center;
     gap: var(--space-2);
@@ -48,14 +49,14 @@ const { title, class: className } = Astro.props;
 
   /* On a narrow container, the button shares one row with a choice control, so its label is only for screen readers. */
   @container (max-width: 30rem) {
-    .replay {
+    button {
       flex: none;
       justify-content: center;
       inline-size: var(--control-size);
       padding: 0;
     }
 
-    .label {
+    span {
       position: absolute;
       inline-size: 1px;
       block-size: 1px;
@@ -67,7 +68,7 @@ const { title, class: className } = Astro.props;
 
   /* With reduced motion, `when: false` does not reset the entrance, so there is nothing to replay. */
   @media (prefers-reduced-motion: reduce) {
-    .replay {
+    button {
       display: none;
     }
   }

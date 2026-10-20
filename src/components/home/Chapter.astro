@@ -121,7 +121,7 @@ const hasToolbar = control || replay || Astro.slots.has("controls");
       }
     });
 
-    chapter.querySelector(".replay")?.addEventListener("click", () => {
+    chapter.querySelector("[data-replay]")?.addEventListener("click", () => {
       // A host plays and fires `reveal` also when its content is not displayed.
       // All checks run before the first replay, so the style recalculates only once.
       const shownHosts = [
