@@ -8,26 +8,6 @@ const { id } = Astro.locals.starlightRoute;
 ---
 
 <VersionNotice />
-{hasMarkdownVersion(id) ? (
-  <div class="title">
-    <Default />
-    <PageActions class="actions" />
-  </div>
-) : (
-  <Default />
-)}
-
-<style>
-  /* The actions show above the h1 but follow it in the DOM, so the skip link to the h1 does not pass over them. */
-  .title {
-    display: flex;
-    flex-direction: column;
-    gap: var(--space-6);
-  }
-  .actions {
-    order: -1;
-  }
-  .title > :global(h1) {
-    margin-block-start: 0;
-  }
-</style>
+{/* Before the h1, so that the tab order matches the screen. The skip link to the h1 passes over the actions. */}
+{hasMarkdownVersion(id) && <PageActions />}
+<Default />

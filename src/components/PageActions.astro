@@ -9,7 +9,6 @@ import OpenaiLogo from "../assets/openai.svg";
 import { getMarkdownPath } from "../lib/markdown-slug";
 import { isArchived } from "../lib/versions";
 
-const { class: className } = Astro.props;
 const { id } = Astro.locals.starlightRoute;
 const markdown = getMarkdownPath(id);
 const prompt = encodeURIComponent(
@@ -24,11 +23,7 @@ const askLinks = isArchived(id)
     ];
 ---
 
-<div
-  class:list={["page-actions", className]}
-  data-markdown-ignore
-  data-pagefind-ignore
->
+<div class="page-actions" data-markdown-ignore data-pagefind-ignore>
   <div class="split">
     <button type="button" class="copy" data-copy={markdown} data-state="idle">
       <span class="icon">
