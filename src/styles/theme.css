@@ -342,9 +342,7 @@ code:not(pre *, .sl-markdown-content *) {
   font-weight: 700;
   outline-offset: 2px;
   translate: 0;
-  transition:
-    translate var(--hover-duration) ease,
-    border-color var(--hover-duration) ease;
+  transition: translate var(--hover-duration) ease;
 
   svg {
     font-size: 1.5rem;
@@ -352,6 +350,9 @@ code:not(pre *, .sl-markdown-content *) {
 
   &.secondary {
     outline-offset: -1px;
+    transition:
+      translate var(--hover-duration) ease,
+      border-color var(--hover-duration) ease;
 
     @media (hover: hover) {
       &:hover {
@@ -382,6 +383,10 @@ starlight-tabs {
   }
 }
 
+.expressive-code pre {
+  outline-offset: -1px;
+}
+
 .expressive-code .copy {
   /* A device with no mouse or trackpad is not one to write code on, and there the button always covers the code. */
   @media (any-hover: none) {
@@ -396,8 +401,10 @@ starlight-tabs {
       background-color: var(--sl-color-text-accent);
     }
 
-    &:hover::before {
-      border-color: var(--sl-color-text-accent);
+    @media (hover: hover) {
+      &:hover::before {
+        border-color: var(--sl-color-text-accent);
+      }
     }
   }
 

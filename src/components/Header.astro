@@ -59,8 +59,10 @@ import ThemeToggle from "./ThemeToggle.astro";
       font-size: var(--header-icon-size);
     }
 
-    .search :global(button[data-open-modal]:hover) {
-      color: var(--sl-color-white);
+    @media (hover: hover) {
+      .search :global(button[data-open-modal]:hover) {
+        color: var(--sl-color-white);
+      }
     }
   }
 
@@ -153,8 +155,10 @@ import ThemeToggle from "./ThemeToggle.astro";
       transition: border-color var(--hover-duration) ease;
     }
 
-    .search :global(button[data-open-modal]:hover) {
-      border-color: var(--sl-color-text-accent);
+    @media (hover: hover) {
+      .search :global(button[data-open-modal]:hover) {
+        border-color: var(--sl-color-text-accent);
+      }
     }
 
     .search :global(dialog) {

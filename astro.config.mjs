@@ -100,7 +100,6 @@ export default defineConfig({
         styleOverrides: {
           borderRadius: "var(--radius-md)",
           borderColor: "var(--sl-color-hairline-light)",
-          focusBorder: "var(--sl-color-text-accent)",
           textMarkers: {
             markBackground,
             markBorderColor: "var(--sl-color-text-accent)",

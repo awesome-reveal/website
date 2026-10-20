@@ -45,8 +45,10 @@ const selectedHref = archived ? `/${archived.slug}/` : "/";
     gap: var(--space-1);
     color: var(--sl-color-gray-2);
 
-    &:hover {
-      color: var(--sl-color-white);
+    @media (hover: hover) {
+      &:hover {
+        color: var(--sl-color-white);
+      }
     }
   }
 
@@ -86,8 +88,10 @@ const selectedHref = archived ? `/${archived.slug}/` : "/";
     outline-offset: -1px;
     transition: border-color var(--hover-duration) ease;
 
-    &:hover {
-      border-color: var(--sl-color-text-accent);
+    @media (hover: hover) {
+      &:hover {
+        border-color: var(--sl-color-text-accent);
+      }
     }
   }
 
