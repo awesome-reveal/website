@@ -1,9 +1,9 @@
 ---
 import { Cascade } from "@awesome-reveal/astro";
-import { Code } from "@astrojs/starlight/components";
 import { snippetVariants } from "../../lib/snippet-variants";
 import css from "../../snippets/lists/heading-words.css?raw";
 import DemoFrame from "./DemoFrame.astro";
+import SnippetVariants from "./SnippetVariants.astro";
 
 interface Props {
   id: string;
@@ -46,17 +46,12 @@ const variants = snippetVariants(
       </Cascade>
     </div>
   ))}
-  <div slot="code" class="snippet-variants">
-    {variants.map(({ value, code, mark }) => (
-      <div
-        data-snippet={value}
-        data-current={value === SNIPPET_DISPLAY ? "" : undefined}
-        data-markdown-ignore={value !== SNIPPET_DISPLAY ? "" : undefined}
-      >
-        <Code code={code} lang="css" mark={mark} />
-      </div>
-    ))}
-  </div>
+  <SnippetVariants
+    slot="code"
+    variants={variants}
+    lang="css"
+    selected={SNIPPET_DISPLAY}
+  />
 </DemoFrame>
 
 <style>

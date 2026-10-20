@@ -1,6 +1,7 @@
 ---
 import { Code, TabItem, Tabs } from "@astrojs/starlight/components";
 import type { Framework, SnippetVariant } from "../../lib/snippet-variants";
+import SnippetVariants from "./SnippetVariants.astro";
 
 type Props = Partial<Record<Framework, string | SnippetVariant[]>> & {
   install?: boolean;
@@ -35,17 +36,7 @@ const tabs = frameworks
           <Code code={code} lang={lang} mark={mark} />
         ))
       ) : (
-        <div class="snippet-variants">
-          {variants.map(({ value, code, mark }) => (
-            <div
-              data-snippet={value}
-              data-current={value === selected ? "" : undefined}
-              data-markdown-ignore={value !== selected ? "" : undefined}
-            >
-              <Code code={code} lang={lang} mark={mark} />
-            </div>
-          ))}
-        </div>
+        <SnippetVariants variants={variants} lang={lang} selected={selected} />
       )}
     </TabItem>
   ))}

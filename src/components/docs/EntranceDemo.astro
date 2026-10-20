@@ -74,7 +74,7 @@ const snippets: Record<
 // The snippet files show this side, and each choice replaces it.
 const SNIPPET_FROM = "bottom";
 
-function frameworkVariants(framework: Framework) {
+function entranceVariants(framework: Framework) {
   const { code, from: fromCode } = snippets[framework];
   return snippetVariants(
     code,
@@ -114,10 +114,10 @@ const choices = options.map(({ label, from }) => ({
   <FrameworkTabs
     slot="code"
     selected={selected}
-    react={frameworkVariants("react")}
-    vue={frameworkVariants("vue")}
-    astro={frameworkVariants("astro")}
-    js={frameworkVariants("js")}
+    react={entranceVariants("react")}
+    vue={entranceVariants("vue")}
+    astro={entranceVariants("astro")}
+    js={entranceVariants("js")}
   />
 </DemoFrame>
 

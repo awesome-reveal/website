@@ -15,10 +15,9 @@ interface Props {
   id: string;
   title: string;
   intervals: number[];
-  selected: number;
 }
 
-const { id, title, intervals, selected } = Astro.props;
+const { id, title, intervals } = Astro.props;
 
 // The snippet files show this interval, and each choice replaces it.
 const SNIPPET_INTERVAL = "80";
@@ -32,18 +31,18 @@ const CARD_COUNT = 6;
   title={title}
   name="interval"
   options={values}
-  selected={String(selected)}
+  selected={SNIPPET_INTERVAL}
 >
-  {intervals.map((interval) => (
+  {values.map((value) => (
     <div
-      data-choice={String(interval)}
-      data-selected={interval === selected ? "" : undefined}
+      data-choice={value}
+      data-selected={value === SNIPPET_INTERVAL ? "" : undefined}
     >
       <Cascade
         as="ul"
         class="cards"
         aria-hidden="true"
-        interval={interval}
+        interval={Number(value)}
         threshold={0.5}
       >
         {Array.from({ length: CARD_COUNT }, () => (
@@ -54,7 +53,7 @@ const CARD_COUNT = 6;
   ))}
   <FrameworkTabs
     slot="code"
-    selected={String(selected)}
+    selected={SNIPPET_INTERVAL}
     {...frameworkVariants(
       { react, vue, astro, js },
       numberOptionCode("interval"),

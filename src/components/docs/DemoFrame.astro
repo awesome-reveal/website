@@ -123,22 +123,14 @@ const hasToolbar = options.length > 0 || replay;
     padding: var(--space-8) var(--space-4);
   }
 
-  /* All choices and snippet variants share one grid cell, so the frame keeps the size of the largest one when the choice changes. */
-  .stage > :global([data-choice]),
-  .demo-frame :global(.snippet-variants > [data-snippet]) {
+  /* All choices share one grid cell, so the frame keeps the size of the largest one when the choice changes. */
+  .stage > :global([data-choice]) {
     grid-area: 1 / 1;
     margin: 0;
   }
 
-  .stage > :global([data-choice]:not([data-selected])),
-  .demo-frame :global(.snippet-variants > [data-snippet]:not([data-current])) {
+  .stage > :global([data-choice]:not([data-selected])) {
     visibility: hidden;
-  }
-
-  /* Without `minmax(0, 1fr)`, the column grows to the longest code line, so the page scrolls instead of the code block. */
-  .demo-frame :global(.snippet-variants) {
-    display: grid;
-    grid-template-columns: minmax(0, 1fr);
   }
 
   :where(.stage) :global(.demo-tile) {

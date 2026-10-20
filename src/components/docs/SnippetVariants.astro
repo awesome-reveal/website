@@ -1,0 +1,41 @@
+---
+import { Code } from "@astrojs/starlight/components";
+import type { SnippetVariant } from "../../lib/snippet-variants";
+
+interface Props {
+  variants: SnippetVariant[];
+  lang: string;
+  selected: string;
+}
+
+const { variants, lang, selected } = Astro.props;
+---
+
+<div class="snippet-variants">
+  {variants.map(({ value, code, mark }) => (
+    <div
+      data-snippet={value}
+      data-current={value === selected ? "" : undefined}
+      data-markdown-ignore={value !== selected ? "" : undefined}
+    >
+      <Code code={code} lang={lang} mark={mark} />
+    </div>
+  ))}
+</div>
+
+<style>
+  /* Without `minmax(0, 1fr)`, the column grows to the longest code line, so the page scrolls instead of the code block. */
+  .snippet-variants {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  /* All variants share one grid cell, so the code area keeps the size of the largest one when the choice changes. */
+  [data-snippet] {
+    grid-area: 1 / 1;
+  }
+
+  [data-snippet]:not([data-current]) {
+    visibility: hidden;
+  }
+</style>
