@@ -30,7 +30,7 @@ import ThemeToggle from "./ThemeToggle.astro";
     display: flex;
     align-items: center;
     justify-content: space-between;
-    gap: var(--space-2);
+    gap: var(--space-1);
     height: 100%;
   }
 
@@ -46,6 +46,22 @@ import ThemeToggle from "./ThemeToggle.astro";
   .search {
     display: flex;
     margin-inline-start: auto;
+  }
+
+  @media (max-width: 49.99rem) {
+    .search :global(button[data-open-modal]) {
+      justify-content: center;
+      width: var(--header-button-size);
+      height: var(--header-button-size);
+      padding: 0;
+      border-radius: 999px;
+      color: var(--sl-color-gray-2);
+      font-size: var(--header-icon-size);
+    }
+
+    .search :global(button[data-open-modal]:hover) {
+      color: var(--sl-color-white);
+    }
   }
 
   .search :global(button > kbd) {
@@ -78,10 +94,14 @@ import ThemeToggle from "./ThemeToggle.astro";
   }
 
   .social-icons :global(a) {
+    align-items: center;
+    justify-content: center;
+    width: var(--header-button-size);
+    height: var(--header-button-size);
     margin: 0;
-    padding: var(--space-2);
+    padding: 0;
     border-radius: 999px;
-    font-size: 1.125rem;
+    font-size: var(--header-icon-size);
   }
 
   .versions {
@@ -90,10 +110,6 @@ import ThemeToggle from "./ThemeToggle.astro";
 
   /* With the menu button, the title needs this space on narrow phones. The menu footer shows the icons there. */
   @media (max-width: 24.99rem) {
-    .header {
-      gap: var(--space-1);
-    }
-
     :global(:root[data-has-sidebar]) .social-icons {
       display: none;
     }

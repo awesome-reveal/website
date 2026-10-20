@@ -17,6 +17,15 @@
   --radius-sm: 0.5rem;
   --radius-md: 0.75rem;
 
+  --header-button-size: 2.25rem;
+  --header-icon-size: 1.25rem;
+  --sl-menu-button-size: var(--header-button-size);
+
+  @media (min-width: 50rem) {
+    --header-button-size: 2.125rem;
+    --header-icon-size: 1.125rem;
+  }
+
   /* The scale skips steps above 6. Round an off-scale value to the nearest step. */
   --space: 0.25rem;
   --space-1: var(--space);
@@ -403,8 +412,23 @@ starlight-tabs {
   outline-offset: 2px;
 }
 
+/* The gap before the menu button matches the gap between the other header buttons. */
+@media (max-width: 49.99rem) {
+  :root[data-has-sidebar] header.header {
+    padding-inline-end: calc(
+      var(--space-1) + var(--sl-nav-pad-x) + var(--sl-menu-button-size)
+    );
+  }
+}
+
 .sl-menu-button {
+  /* The 1px bottom border of the nav moves the center of the header row up. */
+  top: calc((var(--sl-nav-height) - 1px - var(--sl-menu-button-size)) / 2);
+  align-items: center;
+  justify-content: center;
+  padding: 0;
   border: 1px solid var(--sl-color-hairline-light);
+  font-size: var(--header-icon-size);
   background-color: var(--sl-color-bg-nav);
   color: var(--sl-color-white);
 
