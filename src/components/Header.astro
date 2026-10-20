@@ -19,7 +19,7 @@ import ThemeToggle from "./ThemeToggle.astro";
       <VersionSelect />
     </div>
     <div class="social-icons">
-      <SocialIcons />
+      <SocialIcons variant="header-button" />
     </div>
     <ThemeToggle />
   </div>
@@ -91,17 +91,6 @@ import ThemeToggle from "./ThemeToggle.astro";
 
   .social-icons {
     display: flex;
-  }
-
-  .social-icons :global(a) {
-    align-items: center;
-    justify-content: center;
-    width: var(--header-button-size);
-    height: var(--header-button-size);
-    margin: 0;
-    padding: 0;
-    border-radius: 999px;
-    font-size: var(--header-icon-size);
   }
 
   .versions {

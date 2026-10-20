@@ -3,7 +3,11 @@ import {
   type StarlightRouteData,
 } from "@astrojs/starlight/route-data";
 import type { APIContext } from "astro";
-import { getMarkdownPath, getMarkdownSlug } from "./lib/markdown-slug";
+import {
+  getMarkdownPath,
+  getMarkdownSlug,
+  hasMarkdownVersion,
+} from "./lib/markdown-slug";
 import { buildStructuredData } from "./lib/structured-data";
 import { findArchivedVersion, getArchivedSiteTitle } from "./lib/versions";
 
@@ -16,7 +20,7 @@ export const onRequest = defineRouteMiddleware(async (context, next) => {
   // starlight-versions runs later and replaces the sidebar with the one of the current version.
   await next();
   route.sidebar = removeEmptyGroups(route.sidebar);
-  if (route.id === "404") return;
+  if (!hasMarkdownVersion(route.id)) return;
   const archivedVersion = findArchivedVersion(route.id);
   const headTitle = getHeadTitle(route.entry);
 

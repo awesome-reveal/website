@@ -1,9 +1,15 @@
 ---
 import Github from "../assets/github.svg";
 import { siteConfig } from "../site.config";
+
+interface Props {
+  variant?: "link" | "header-button";
+}
+
+const { variant = "link" } = Astro.props;
 ---
 
-<a href={siteConfig.repoUrl} rel="me">
+<a class={variant} href={siteConfig.repoUrl} rel="me">
   <span class="sr-only">GitHub</span>
   <Github aria-hidden="true" width="1em" height="1em" />
 </a>
@@ -11,12 +17,24 @@ import { siteConfig } from "../site.config";
 <style>
   a {
     display: flex;
-    padding: 0.5em;
-    margin: -0.5em;
     color: var(--sl-color-gray-2);
 
     &:hover {
       color: var(--sl-color-white);
     }
+  }
+
+  .link {
+    padding: 0.5em;
+    margin: -0.5em;
+  }
+
+  .header-button {
+    align-items: center;
+    justify-content: center;
+    width: var(--header-button-size);
+    height: var(--header-button-size);
+    border-radius: 999px;
+    font-size: var(--header-icon-size);
   }
 </style>
