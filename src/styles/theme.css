@@ -17,12 +17,21 @@
   --radius-sm: 0.5rem;
   --radius-md: 0.75rem;
 
-  --space-1: 0.25rem;
-  --space-2: 0.5rem;
-  --space-3: 0.75rem;
-  --space-4: 1rem;
-  --space-6: 1.5rem;
-  --space-8: 2rem;
+  /* The scale skips steps above 6. Round an off-scale value to the nearest step. */
+  --space: 0.25rem;
+  --space-1: var(--space);
+  --space-2: calc(var(--space) * 2);
+  --space-3: calc(var(--space) * 3);
+  --space-4: calc(var(--space) * 4);
+  --space-5: calc(var(--space) * 5);
+  --space-6: calc(var(--space) * 6);
+  --space-8: calc(var(--space) * 8);
+  --space-10: calc(var(--space) * 10);
+  --space-12: calc(var(--space) * 12);
+  --space-16: calc(var(--space) * 16);
+  --space-20: calc(var(--space) * 20);
+  --space-24: calc(var(--space) * 24);
+  --space-32: calc(var(--space) * 32);
 }
 
 /* Paper is the base, and the ink palette applies only on screen, so print always gets the light palette. */
@@ -204,7 +213,7 @@
   font-family: var(--sl-font);
   font-weight: 600;
   letter-spacing: 0.01em;
-  padding-inline: 0.55em;
+  padding-inline: 0.5em;
 }
 
 ::selection {
@@ -261,11 +270,11 @@
 }
 
 .card-grid {
-  gap: 2.5rem 2rem;
+  gap: var(--space-10) var(--space-8);
 }
 
 .card {
-  padding: 1.25rem 0 0;
+  padding: var(--space-5) 0 0;
   border: 0;
   border-top: 2px solid var(--sl-color-white);
   background: none;
@@ -387,7 +396,7 @@ starlight-tabs {
   top: calc(var(--sl-nav-height) / 2);
   inset-inline-start: var(--sl-nav-pad-x);
   translate: 0 -50%;
-  padding: 0.5rem 1rem;
+  padding: var(--space-2) var(--space-4);
   border-radius: 999px;
   font-size: var(--sl-text-sm);
   font-weight: 700;
@@ -408,7 +417,7 @@ mobile-starlight-toc {
   .toggle {
     border-color: var(--sl-color-hairline-light);
     border-radius: 999px;
-    padding-inline-start: 1rem;
+    padding-inline-start: var(--space-4);
   }
 
   /* `details` outweighs the unlayered hover rule of starlight-heading-badges, which loads later. */

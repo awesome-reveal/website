@@ -102,20 +102,20 @@ reveal("h1", { from: "left" });`,
   .get-started {
     display: flex;
     flex-direction: column;
-    gap: 4.5rem;
-    padding-block: 3.5rem 2rem;
+    gap: var(--space-20);
+    padding-block: var(--space-16) var(--space-8);
   }
 
   .get-started > section {
     display: grid;
     grid-template-columns: minmax(0, 1fr);
-    gap: 2.5rem;
+    gap: var(--space-10);
   }
 
   @media (min-width: 56rem) {
     .get-started {
       min-block-size: calc(100svh - var(--sl-nav-height));
-      padding-block-start: 4rem;
+      padding-block-start: var(--space-16);
     }
 
     /* The auto margins center the content above the credits. */
@@ -125,7 +125,7 @@ reveal("h1", { from: "left" });`,
       /* The code also spans the empty last row, which takes its extra height, so the button stays under the lead. */
       grid-template-rows: min-content min-content auto;
       align-items: start;
-      gap: 2rem 4rem;
+      gap: var(--space-8) var(--space-16);
     }
 
     .code {
@@ -143,17 +143,17 @@ reveal("h1", { from: "left" });`,
     display: flex;
     flex-wrap: wrap;
     align-items: center;
-    gap: 1rem 1.5rem;
+    gap: var(--space-4) var(--space-6);
   }
 
   .intro {
     display: flex;
     flex-direction: column;
-    gap: 1.25rem;
+    gap: var(--space-5);
   }
 
   .code :global(.expressive-code + .expressive-code) {
-    margin-block-start: 1rem;
+    margin-block-start: var(--space-4);
   }
 
   /* The panels share one cell, so the tallest sets the height and a tab change does not move the centered section.

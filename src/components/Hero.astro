@@ -102,15 +102,19 @@ const heroActions =
     display: flex;
     flex-direction: column;
     align-items: flex-start;
-    gap: 1.5rem;
-    padding-block: 0.5rem 1rem;
+    gap: var(--space-6);
+    padding-block: var(--space-2) var(--space-4);
   }
 
   @media (min-width: 50rem) {
     .hero {
-      gap: 1.75rem;
-      padding-block: clamp(3rem, 2rem + 12vmin, 9rem)
-        clamp(2rem, 1rem + 6vmin, 5rem);
+      gap: var(--space-8);
+      padding-block: clamp(
+          var(--space-12),
+          var(--space-8) + 12vmin,
+          var(--space-32)
+        )
+        clamp(var(--space-8), var(--space-4) + 6vmin, var(--space-20));
     }
   }
 
@@ -125,7 +129,7 @@ const heroActions =
   /* The space above is on the paragraph, so the focus ring of the link fits its text. */
   .scroll-cue {
     margin-block-start: auto;
-    padding-block-start: 2rem;
+    padding-block-start: var(--space-8);
     font-size: var(--sl-text-sm);
     font-weight: 600;
   }
@@ -147,7 +151,7 @@ const heroActions =
   }
 
   kbd {
-    padding: 0.05em 0.4em;
+    padding: 0 0.5em;
     border: 1px solid var(--sl-color-hairline-light);
     border-radius: var(--radius-sm);
     font-family: var(--sl-font-mono);
@@ -177,6 +181,6 @@ const heroActions =
     display: flex;
     flex-wrap: wrap;
     align-items: center;
-    gap: 1rem 1.5rem;
+    gap: var(--space-4) var(--space-6);
   }
 </style>
