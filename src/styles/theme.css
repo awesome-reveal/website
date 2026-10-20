@@ -231,7 +231,7 @@
   .sl-markdown-content :is(h1, h2, h3),
   .card .title,
   .pagination-links .link-title,
-  .sidebar-content .group-label .large,
+  .sidebar-content :is(.group-label .large, a.large),
   .right-sidebar-panel h2,
   .starlight-aside__title
 ) {
