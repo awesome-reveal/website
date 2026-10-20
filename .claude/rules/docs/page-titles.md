@@ -24,4 +24,6 @@ A `title` entry in the frontmatter `head` replaces `<title>`. On current pages, 
 - On the home page, the `<h1>` is the hero text, and the `title` is the product name.
 - On archived pages, such as `src/content/docs/v4/`, use the entry only to keep the old `<title>` of the page, as the v4 index does. Without the entry, the `<title>` is the `title` and the product name of the version.
 
+The `archiving-docs-versions` skill (step 7 and its checks) and the head title logic in `src/routeData.ts` depend on this convention. When you change the convention, update them in the same change.
+
 To check, run `pnpm build`. Then compare `<h1>`, `<title>` and `og:title` in `dist/<page>/index.html`.
