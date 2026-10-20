@@ -8,7 +8,7 @@ sidebar:
   order: 7
 ---
 
-Version 5 of `react-awesome-reveal` changes the API on purpose. It replaces the effect components and Emotion with the `Reveal` and `Cascade` components and native Web Animations. Do the steps on this page to migrate your code.
+Version 5 of `react-awesome-reveal` changes the API on purpose. It replaces the effect components and Emotion with the `Reveal` and `Cascade` components and native [Web Animations](https://developer.mozilla.org/en-US/docs/Web/API/Web_Animations_API). Do the steps on this page to migrate your code.
 
 ## Choose the package
 
@@ -37,7 +37,7 @@ pnpm add react-awesome-reveal@next
 import { Reveal } from "@awesome-reveal/react";
 ```
 
-Replace each effect component with `Reveal`, and set `from`. `from` names the side where the element starts. In v4, `left` and `right` also name that side, but `up` and `down` name the movement. So `up` becomes a start on the bottom side.
+Replace each effect component with `Reveal`, and set [`from`](/guides/entrances/). `from` names the side where the element starts. In v4, `left` and `right` also name that side, but `up` and `down` name the movement. So `up` becomes a start on the bottom side.
 
 A side in `from` moves the element 24 pixels. The v4 effects moved it by its full size, so this table gives the v4 start position. To use the shorter v5 motion, set `from` to the side, for example `from="bottom"`.
 
@@ -69,10 +69,10 @@ For `Bounce`, `Flip`, `Hinge`, `JackInTheBox`, `Roll` and `AttentionSeeker`, and
 
 ## Change Emotion keyframes into native keyframes
 
-Version 4 took Emotion `keyframes`. Version 5 takes an array of native keyframe objects. Change each step of the CSS animation into an object:
+Version 4 took Emotion `keyframes`. Version 5 takes an array of native [keyframe objects](https://developer.mozilla.org/en-US/docs/Web/API/Web_Animations_API/Keyframe_Formats). Change each step of the CSS animation into an object:
 
 - Put the percentage of the step in `offset`, from 0 to 1.
-- Put the `animation-timing-function` of the step in `easing`. v4 used `ease` for each step with no timing function of its own. A keyframe with no `easing` is linear.
+- Put the [`animation-timing-function`](https://developer.mozilla.org/en-US/docs/Web/CSS/Reference/Properties/animation-timing-function) of the step in `easing`. v4 used `ease` for each step with no timing function of its own. A keyframe with no `easing` is linear.
 - Make the last keyframe agree with the resting style of the element.
 
 ```jsx
@@ -93,20 +93,20 @@ These keyframes give the exact v4 `Zoom` entrance, which reaches full opacity at
 
 ## Update the props
 
-| v4                             | v5                                                                                                    |
-| ------------------------------ | ----------------------------------------------------------------------------------------------------- |
-| `cascade`                      | The `Cascade` component. For a list, render the list with `Cascade`, for example `<Cascade as="ul">`. |
-| `damping`                      | `interval` on `Cascade`. Set it to the v4 `duration * damping`, in milliseconds.                      |
-| `duration`                     | `duration`. The default is 600 milliseconds. The v4 default was 1000.                                 |
-| `delay`                        | `delay`, in milliseconds. In a cascade, it moves the start of the whole sequence.                     |
-| `fraction`                     | `threshold`.                                                                                          |
-| `triggerOnce`                  | Remove it. The entrance plays one time. To play it again, set `when` to `false`, then to `true`.      |
-| `direction`, `big`             | `from`. See the table above.                                                                          |
-| `keyframes`                    | `keyframes`, with native keyframes.                                                                   |
-| `className`, `style`           | They apply to the one element that `Reveal` renders.                                                  |
-| `childClassName`, `childStyle` | Style the children directly.                                                                          |
-| `onVisibilityChange`           | `onReveal`. It gets the element, one time for each reveal.                                            |
-| `reverse`                      | No replacement. Version 5 has no exit animations.                                                     |
+| v4                             | v5                                                                                                                     |
+| ------------------------------ | ---------------------------------------------------------------------------------------------------------------------- |
+| `cascade`                      | The `Cascade` component. For a list, render the list with `Cascade`, for example `<Cascade as="ul">`.                  |
+| `damping`                      | [`interval`](/guides/lists/#change-the-interval) on `Cascade`. Set it to the v4 `duration * damping`, in milliseconds. |
+| `duration`                     | `duration`. The default is 600 milliseconds. The v4 default was 1000.                                                  |
+| `delay`                        | `delay`, in milliseconds. In a cascade, it moves the start of the whole sequence.                                      |
+| `fraction`                     | [`threshold`](/guides/timing/#reveal-later-with-a-threshold).                                                          |
+| `triggerOnce`                  | Remove it. The entrance plays one time. To play it again, set `when` to `false`, then to `true`.                       |
+| `direction`, `big`             | `from`. See the table above.                                                                                           |
+| `keyframes`                    | `keyframes`, with native keyframes.                                                                                    |
+| `className`, `style`           | They apply to the one element that `Reveal` renders.                                                                   |
+| `childClassName`, `childStyle` | Style the children directly.                                                                                           |
+| `onVisibilityChange`           | [`onReveal`](/guides/reveal-events/). It gets the element, one time for each reveal.                                   |
+| `reverse`                      | No replacement. Version 5 has no exit animations.                                                                      |
 
 This example shows a v4 cascade and its v5 version:
 
@@ -144,7 +144,7 @@ Also check the refs, the hydration, reduced motion and the teardown.
 
 The package loads its stylesheet automatically. Two setups need a step:
 
-- **Next.js Pages Router with webpack.** Add `@awesome-reveal/react` to `transpilePackages`. Add it also when you install only `react-awesome-reveal`.
+- **Next.js Pages Router with webpack.** Add `@awesome-reveal/react` to [`transpilePackages`](https://nextjs.org/docs/pages/api-reference/config/next-config-js/transpilePackages). Add it also when you install only `react-awesome-reveal`.
 
   ```js title="next.config.mjs"
   export default { transpilePackages: ["@awesome-reveal/react"] };

@@ -16,7 +16,7 @@ import thresholdVue from "../../../snippets/timing/downloads-chart.vue?raw";
 import thresholdAstro from "../../../snippets/timing/downloads-chart.astro?raw";
 import thresholdJs from "../../../snippets/timing/downloads-chart.js?raw";
 
-Three options set when the entrance plays and how long it takes: `duration`, `delay` and `threshold`.
+Three options set when the entrance plays and how long it takes: [`duration`](/reference/options/#duration), [`delay`](/reference/options/#delay) and [`threshold`](/reference/options/#threshold).
 
 ## Change the duration
 
@@ -40,7 +40,7 @@ Keep `delay` below about 300 milliseconds. A long delay makes content appear lat
 
 ## Reveal later with a threshold
 
-`threshold` sets the visible fraction of the element that reveals it, from 0 to 1. The default is 0, so the element reveals when its first pixel enters the viewport. With 0.5, the element reveals when half of it is visible:
+`threshold` sets the [visible fraction](https://developer.mozilla.org/en-US/docs/Web/API/Intersection_Observer_API#thresholds) of the element that reveals it, from 0 to 1. The default is 0, so the element reveals when its first pixel enters the viewport. With 0.5, the element reveals when half of it is visible:
 
 <FrameworkTabs
   react={thresholdReact}
@@ -54,10 +54,10 @@ A change to `threshold` applies immediately in React, Vue and Astro. A change to
 ### Tall elements and small scroll containers
 
 - If the viewport is too small to show the threshold fraction of the element, the element reveals when it enters the viewport.
-- In a scroll container that is too small, the element reveals when it leaves the visible area of the container.
+- In a [scroll container](https://developer.mozilla.org/en-US/docs/Glossary/Scroll_container) that is too small, the element reveals when it leaves the visible area of the container.
 
-Keep the default threshold for tall elements and for long cascades.
+Keep the default threshold for tall elements and for [long cascades](/guides/lists/#reveal-a-long-list-or-a-tall-grid).
 
 ### The start state moves the box that the threshold uses
 
-A start state with `opacity: 0`, such as each side, waits at the resting position of the element. Other start states and your own keyframes wait at their first keyframe. Their offset, scale and rotation change the box that the viewport check uses. For example, with the start state `{ y: 80 }`, the element waits 80 pixels lower, so it reveals later.
+A [start state](/guides/entrances/) with `opacity: 0`, such as each side, waits at the resting position of the element. Other start states and [your own keyframes](/guides/keyframes/) wait at their first keyframe. Their offset, scale and rotation change the box that the viewport check uses. For example, with the start state `{ y: 80 }`, the element waits 80 pixels lower, so it reveals later.

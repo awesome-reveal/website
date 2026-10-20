@@ -54,7 +54,7 @@ You cannot use `from` and `keyframes` together. See [Choose the entrance](/guide
 
 **Type:** `Keyframe[]`. **No default.**
 
-Replaces the generated entrance with native [Web Animations keyframes](https://developer.mozilla.org/en-US/docs/Web/API/Web_Animations_API/Keyframe_Formats). Use it for a different easing or for properties that `from` does not animate.
+Replaces the generated entrance with native [Web Animations keyframes](https://developer.mozilla.org/en-US/docs/Web/API/Web_Animations_API/Keyframe_Formats). Use it for a [different easing](/guides/keyframes/#set-the-easing) or for properties that `from` does not animate.
 
 - End the keyframes at the resting style of the element. The entrance does not keep its last keyframe.
 - Give explicit values to the first keyframe.
@@ -78,7 +78,7 @@ The time between the reveal and the start of the entrance, in milliseconds. The 
 
 **Type:** `number`, from `0` to `1`. **Default:** `0`.
 
-The visible fraction of the element that reveals it. With `0`, the element reveals when its first pixel enters the viewport. With `0.5`, it reveals when half of it is visible.
+The [visible fraction](/guides/timing/#reveal-later-with-a-threshold) of the element that reveals it. With `0`, the element reveals when its first pixel enters the viewport. With `0.5`, it reveals when half of it is visible.
 
 If the viewport is too small to show this fraction of the element, the element reveals when it enters the viewport. Keep the default for tall elements and long cascades.
 
@@ -88,7 +88,7 @@ If the viewport is too small to show this fraction of the element, the element r
 
 **Type:** `number`. **Default:** `80`.
 
-The time between the entrances of two direct element children, in milliseconds. The child at position `index` waits `delay + index * interval`. A negative value starts each later child further into its entrance.
+The time between the entrances of two [direct element children](/guides/lists/#reveal-the-items-one-after-the-other), in milliseconds. The child at position `index` waits `delay + index * interval`. A negative value starts each later child further into its entrance.
 
 Only `Cascade`, `useCascade`, `v-cascade` and `cascade()` accept `interval`.
 
@@ -100,9 +100,9 @@ Only `Cascade`, `useCascade`, `v-cascade` and `cascade()` accept `interval`.
 
 **Type:** `boolean | null`. **No default.**
 
-Controls the entrance manually. `true` reveals the element, and `false` resets the entrance, with no exit animation. With no value or `null`, the viewport controls the entrance. To play the entrance again, set `when` to `false`, then to `true`.
+Controls the entrance [manually](/guides/manual-control/). `true` reveals the element, and `false` resets the entrance, with no exit animation. With no value or `null`, the viewport controls the entrance. To play the entrance again, set `when` to `false`, then to `true`.
 
-`when` does not show or hide content. With `false`, the element is transparent, but screen readers read it and the keyboard can focus its controls. To hide content, also set `hidden`, or do not render it. If the user asks for reduced motion, the element reveals also when `when` is `false`.
+`when` does not show or hide content. With `false`, the element is transparent, but screen readers read it and the keyboard can focus its controls. To hide content, also set [`hidden`](https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Global_attributes/hidden), or do not render it. If the user asks for [reduced motion](https://developer.mozilla.org/en-US/docs/Web/CSS/Reference/At-rules/@media/prefers-reduced-motion), the element reveals also when `when` is `false`.
 
 In Astro, set the `when` property of the `awesome-reveal` host element after the page loads.
 
@@ -110,7 +110,7 @@ In Astro, set the `when` property of the `awesome-reveal` host element after the
 
 **Type:** `(element: Element) => void`. **No default.**
 
-Runs one time for each reveal, when the reveal starts. It also runs when no entrance plays, for example with reduced motion. It gets the revealed element.
+Runs [one time for each reveal](/guides/reveal-events/), when the reveal starts. It also runs when no entrance plays, for example with reduced motion. It gets the revealed element.
 
 - In Vue, the `Reveal` and `Cascade` components emit a `reveal` event. The `v-reveal` and `v-cascade` directives accept `onReveal`.
 - In Astro, the rendered tag dispatches a `reveal` event that bubbles.
@@ -123,4 +123,4 @@ Runs one time for each reveal, when the reveal starts. It also runs when no entr
 
 Sets the tag that `Reveal` and `Cascade` render, for example `"section"` or `"ul"`. The other attributes of the component go to this tag.
 
-In Astro, `as` cannot be a document tag (`html`, `head` or `body`), a table part (such as `tr` or `td`) or a tag that exists only in SVG. The HTML parser moves these tags out of the custom element.
+In Astro, `as` cannot be a document tag (`html`, `head` or `body`), a table part (such as `tr` or `td`) or a tag that exists only in SVG. The HTML parser moves these tags out of the [custom element](https://developer.mozilla.org/en-US/docs/Web/API/Web_components/Using_custom_elements).

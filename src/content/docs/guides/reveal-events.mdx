@@ -20,9 +20,9 @@ React, Vue and Astro tell your code when an element reveals. `@awesome-reveal/co
 
 Each package gives the revealed element in a different way:
 
-- React: the `onReveal` prop.
+- React: the [`onReveal`](/reference/options/#onreveal) prop.
 - Vue: the `reveal` event of `Reveal` and `Cascade`, and the `onReveal` option of `v-reveal` and `v-cascade`.
-- Astro: a `reveal` DOM event. It comes from the rendered tag and bubbles.
+- Astro: a `reveal` DOM event. It comes from the rendered tag and [bubbles](https://developer.mozilla.org/en-US/docs/Web/API/Event/bubbles).
 
 <RevealEventsDemo id="on-reveal" title="Run code when the reveal starts" />
 
@@ -30,13 +30,13 @@ The example logs the reveal event and the end of the entrance. Select Replay to 
 
 The code runs one time for each reveal, when the reveal starts. In a cascade, it gets the container.
 
-- It also runs when no entrance plays, for example with reduced motion, or when focus shows a waiting element.
-- In React, it runs one time also in StrictMode.
-- After `when` becomes `false`, the next reveal runs it again. With reduced motion, the element does not reset, so the code does not run again.
+- It also runs when no entrance plays, for example with [reduced motion](https://developer.mozilla.org/en-US/docs/Web/CSS/Reference/At-rules/@media/prefers-reduced-motion), or when focus shows a waiting element.
+- In React, it runs one time also in [StrictMode](https://react.dev/reference/react/StrictMode).
+- After [`when`](/guides/manual-control/#reveal-from-your-state) becomes `false`, the next reveal runs it again. With reduced motion, the element does not reset, so the code does not run again.
 
 ## Wait for the end of the entrance
 
-The entrance is a set of Web Animations on the element. To wait for its end, wait for the `finished` promises of these animations:
+The entrance is a set of [Web Animations](https://developer.mozilla.org/en-US/docs/Web/API/Web_Animations_API) on the element. To wait for its end, wait for the [`finished`](https://developer.mozilla.org/en-US/docs/Web/API/Animation/finished) promises of these animations:
 
 ```js
 function entranceFinished(element) {
@@ -57,7 +57,7 @@ entranceFinished(element)
 - The promise resolves immediately when no entrance plays, for example with reduced motion.
 - The promise also waits for your own animations of the element and its descendants.
 
-A waiting entrance is a paused animation, and a paused animation does not finish. If your code waits for all of `document.getAnimations()`, skip the animations with `playState === "paused"`.
+A waiting entrance is a paused animation, and a paused animation does not finish. If your code waits for all of [`document.getAnimations()`](https://developer.mozilla.org/en-US/docs/Web/API/Document/getAnimations), skip the animations with `playState === "paused"`.
 
 ## Read the revealed state
 
