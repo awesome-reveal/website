@@ -21,6 +21,12 @@ const {
   replay = true,
   motionNote = "",
 } = Astro.props;
+// The replay and the snippet switch find the shown choice by `selected`.
+if (options.length > 0 && !options.includes(selected)) {
+  throw new Error(
+    `DemoFrame "${id}": selected "${selected}" is not in options ${options.join(", ")}`,
+  );
+}
 const hasToolbar = options.length > 0 || replay;
 ---
 
@@ -48,8 +54,8 @@ const hasToolbar = options.length > 0 || replay;
       </div>
     )}
     <p class="motion-note">
-      Your device asks for reduced motion, so the content shows immediately,
-      with no animation. {motionNote}
+      Your device asks for reduced motion, so the content shows with no
+      animation. {motionNote}
     </p>
   </figure>
   <slot name="code" />

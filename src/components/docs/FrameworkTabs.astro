@@ -31,7 +31,9 @@ const tabs = frameworks
     <TabItem label={label}>
       {install && <Code code={`pnpm add ${pkg}`} lang="shell" />}
       {variants.length <= 1 ? (
-        variants.map(({ code }) => <Code code={code} lang={lang} />)
+        variants.map(({ code, mark }) => (
+          <Code code={code} lang={lang} mark={mark} />
+        ))
       ) : (
         <div class="snippet-variants">
           {variants.map(({ value, code, mark }) => (

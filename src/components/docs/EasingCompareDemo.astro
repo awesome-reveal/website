@@ -59,7 +59,7 @@ function smoothPath(points: Point[]) {
   return `M${formatPoints([start.point])} ${segments.join(" ")}`;
 }
 
-// A damped spring (damping ratio 0.6), sampled every 10% of the time until it settles, as in the snippets.
+// A damped spring, sampled every 10% of the time until it settles, as in the snippets.
 const springProgress = [0, 0.62, 1.01, 1.12, 1.09, 1.03, 1];
 const settledAt = (springProgress.length - 1) * 10;
 const spring = `linear(${springProgress.join(", ")} ${settledAt}%, 1)`;
