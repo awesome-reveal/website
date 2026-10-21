@@ -13,7 +13,7 @@ A coding agent can learn Awesome Reveal from two sources: the agent skills of th
 Each package includes agent skills. A skill teaches a coding agent how to use the package:
 
 - **`adding-reveal-animations`** teaches the components, hooks, directives or functions of the package. `@awesome-reveal/react`, `@awesome-reveal/vue`, `@awesome-reveal/astro` and `@awesome-reveal/core` include it.
-- **`migrating-from-v4`** teaches the changes from `react-awesome-reveal` v4. `@awesome-reveal/react` and `react-awesome-reveal` include it. See [Migrate from v4](/guides/migrate-from-v4/).
+- **`migrating-from-v4`** teaches the changes from `react-awesome-reveal` v4. `@awesome-reveal/react` and `react-awesome-reveal` v5 include it. `react-awesome-reveal` v4 has no skills. See [Migrate from v4](/guides/migrate-from-v4/).
 
 The skills are in the `skills` directory of each package.
 
@@ -36,11 +36,11 @@ permissions:
     skills: true
 ```
 
-pnpm links the skills into the agent skill directories that exist in the root of your workspace, such as `.claude/skills`. When a coding agent runs pnpm, pnpm also creates the skill directory of that agent. To choose the directories, set [`skills.dirs`](https://pnpm.io/settings/build#skillsdirs). If pnpm finds no directory for an approved skill, the install fails.
+pnpm links the skills into the agent skill directories that exist in the root of your workspace, such as `.claude/skills`. When an agent that pnpm recognizes runs pnpm, pnpm also creates the skill directory of that agent. pnpm recognizes an agent from the environment variables that the agent sets. To choose the directories, set [`skills.dirs`](https://pnpm.io/settings/build#skillsdirs). If pnpm finds no directory for an approved skill, the install fails.
 
 ### Install the skills with the skills CLI
 
-The [`skills`](https://github.com/vercel-labs/skills) CLI gets the skills of a package from [npmx.dev](https://npmx.dev/). Thus it works with each package manager, also before you install the package:
+The [`skills`](https://github.com/vercel-labs/skills) CLI gets the skills of a package from [npmx.dev](https://npmx.dev/). Thus it works with each package manager, also before you install the package. The CLI needs Node.js 22.20 or later:
 
 ```sh wrap
 pnpm dlx skills add https://npmx.dev/@awesome-reveal/react
@@ -48,7 +48,7 @@ pnpm dlx skills add https://npmx.dev/@awesome-reveal/react
 
 In the URL, use the name of your package: `@awesome-reveal/react`, `@awesome-reveal/vue`, `@awesome-reveal/astro` or `@awesome-reveal/core`. The CLI asks which skills to install, and for which agents.
 
-npmx.dev gives the skills of the `latest` version of the package on npm. The installed skills do not change when you update the package. To update them, run the command again.
+npmx.dev gives the skills of the `latest` version of the package on npm. For `react-awesome-reveal`, that version is v4, so use the URL of `@awesome-reveal/react` to get `migrating-from-v4`. The installed skills do not change when you update the package. To update them, run the command again.
 
 ## llms.txt
 
@@ -64,7 +64,7 @@ The files contain the current docs only. They do not contain the [v4 docs](/v4/)
 
 Each docs page has a Markdown version. To get it, remove the last slash of the URL, and add `.md`. For example, the Markdown version of `/guides/timing/` is `/guides/timing.md`. The Markdown version of the home page is `/index.md`.
 
-The actions at the top of each docs page also give the Markdown version:
+The actions at the top of each page, except the home page, also give the Markdown version:
 
 - **Copy page** copies the Markdown to the clipboard.
 - **View as Markdown** opens the Markdown version.

@@ -17,10 +17,11 @@ Each waiting element has the `data-awesome-reveal` attribute in the server HTML:
 
 The `reveal.css` stylesheet of the package gives `opacity: 0` to each hidden element and to the direct children of each cascade container. The element keeps its size and its place, so the layout does not move at the reveal. At the reveal, the package removes the attribute, and the entrance starts.
 
-The modules of each package import the stylesheet, so your bundler or Astro adds it to the page. Two setups need a step:
+The modules of each package import the stylesheet, so your bundler or Astro adds it to the page. Three setups need a step:
 
 - [React or Vue in an Astro island](/frameworks/react-vue-astro/#import-the-stylesheet)
 - [The Next.js Pages Router with webpack](/frameworks/nextjs/#set-up-the-pages-router-with-webpack)
+- [The Nuxt development server](/frameworks/vue-ssr-nuxt/#add-the-stylesheet-in-development)
 
 ## The 5 second hold
 

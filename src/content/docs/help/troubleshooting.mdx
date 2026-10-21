@@ -1,6 +1,6 @@
 ---
 title: Troubleshoot scroll reveal animations
-description: "Fix common Awesome Reveal problems: content that never shows, shows too early, hides again or has no animation, lost own styles and errors in the console."
+description: "Fix common Awesome Reveal problems: content that never shows, shows early, hides again or has no animation, elements that lose their styles, and console errors."
 sidebar:
   order: 1
   label: Troubleshooting
@@ -11,13 +11,14 @@ Find the symptom in the list. Each section gives the possible causes, and links 
 ## The content never shows
 
 - **An ancestor with `overflow` clips the element fully.** The element never enters the visible area, so it does not reveal. [Play the entrance by hand](/guides/manual-control/#play-clipped-content-by-hand).
+- **In `reveal()`, the start state moves the element out of the visible area.** The element waits at its start state. If an ancestor clips that box fully, the element does not reveal. See [The start state moves the box of `reveal()`](/guides/timing/#the-start-state-moves-the-box-of-reveal).
 - **In React, Vue and Astro, `when` is `false`.** The element stays transparent until `when` becomes `true`. See [Reveal from your state](/guides/manual-control/#reveal-from-your-state).
 
 If no script attaches the element, the content shows after 5 seconds. See [The 5 second hold](/concepts/server-rendering/#the-5-second-hold).
 
-## The content reveals late
+## The content reveals too late or too early
 
-- **In `reveal()`, the start state moves the element.** A start state without `opacity: 0`, or your own keyframes with a transform, change the box that the viewport check uses. See [The start state moves the box of `reveal()`](/guides/timing/#the-start-state-moves-the-box-of-reveal).
+- **In `reveal()`, the start state moves the element.** A start state with `x`, `y`, `scale` or `rotate` and no `opacity: 0` changes the box that the viewport check uses. Your own keyframes change it when the first keyframe has a transform. See [The start state moves the box of `reveal()`](/guides/timing/#the-start-state-moves-the-box-of-reveal).
 - **A cascade has many children.** The last children start late or out of view. [Reveal each item](/guides/lists/#reveal-a-long-list-or-a-tall-grid).
 - **The `delay` is long.** Keep it short. See [Delay the entrance](/guides/timing/#delay-the-entrance).
 
@@ -33,7 +34,7 @@ Hydrate the reveal content eagerly:
 ## The content shows before the entrance
 
 - **The JavaScript API does not hide content before your script runs.** Server-rendered content shows, then animates. See [The JavaScript API](/concepts/server-rendering/#the-javascript-api).
-- **The page does not load the stylesheet.** Two setups need a step: [React or Vue in an Astro island](/frameworks/react-vue-astro/#import-the-stylesheet) and [the Nuxt development server](/frameworks/vue-ssr-nuxt/#add-the-stylesheet-in-development).
+- **The page does not load the stylesheet.** Some setups need a step. See [Hidden in the server HTML](/concepts/server-rendering/#hidden-in-the-server-html).
 - **A Content Security Policy blocks the stylesheet in Astro.** See [Content Security Policy](/frameworks/astro/#content-security-policy).
 - **Your styles use `!important`.** An inline `opacity` or an `animation` with `!important` can show the element too early. See [Things to know](/concepts/server-rendering/#things-to-know).
 
@@ -44,7 +45,7 @@ The content also shows immediately when the user asks for reduced motion, prints
 - **The user asks for reduced motion.** See [Reduced motion](/concepts/accessibility/#reduced-motion).
 - **Focus moved into the waiting element.** Focus reveals it immediately. See [Focus](/concepts/accessibility/#focus).
 - **The browser rejected an option.** An invalid easing or duration shows the element with no animation. See [Errors](/concepts/how-it-works/#errors).
-- **A cascade child cannot animate.** In React, Vue and Astro, a child that you add after the reveal shows with no animation. An Astro island also shows with no animation. See [Things to know](/guides/lists/#things-to-know). In the JavaScript API, a child that you add after the `cascade()` call shows with no animation. See [Targets](/reference/javascript/#targets).
+- **A cascade child cannot animate.** In React, Vue and Astro, a child that you add after the reveal shows with no animation. An Astro island or an Astro `Reveal` as a direct child of a cascade does not get the entrance of the cascade. See [Things to know](/guides/lists/#things-to-know). In the JavaScript API, a child that you add after the `cascade()` call shows with no animation. See [Targets](/reference/javascript/#targets).
 - **In Astro, the HTML parser moved the element.** See [Where to place a reveal](/frameworks/astro/#where-to-place-a-reveal).
 - **The browser is too old.** See [Older browsers](/reference/browser-support/#older-browsers).
 
