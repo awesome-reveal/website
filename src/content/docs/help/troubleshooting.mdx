@@ -1,39 +1,77 @@
 ---
 title: Troubleshoot scroll reveal animations
-description: "Fix common problems with Awesome Reveal: content that never shows, a flash after lazy hydration, overridden transforms, and animations that never finish."
+description: "Fix common Awesome Reveal problems: content that never shows, shows too early, hides again or has no animation, lost own styles and errors in the console."
 sidebar:
   order: 1
   label: Troubleshooting
-draft: true
 ---
+
+Find the symptom in the list. Each section gives the possible causes, and links to the page with the fix.
 
 ## The content never shows
 
-- An ancestor with `overflow` clips the element. Play the entrance by hand.
+- **An ancestor with `overflow` clips the element fully.** The element never enters the visible area, so it does not reveal. [Play the entrance by hand](/guides/manual-control/#play-clipped-content-by-hand).
+- **In React, Vue and Astro, `when` is `false`.** The element stays transparent until `when` becomes `true`. See [Reveal from your state](/guides/manual-control/#reveal-from-your-state).
+
+If no script attaches the element, the content shows after 5 seconds. See [The 5 second hold](/concepts/server-rendering/#the-5-second-hold).
+
+## The content reveals late
+
+- **In `reveal()`, the start state moves the element.** A start state without `opacity: 0`, or your own keyframes with a transform, change the box that the viewport check uses. See [The start state moves the box of `reveal()`](/guides/timing/#the-start-state-moves-the-box-of-reveal).
+- **A cascade has many children.** The last children start late or out of view. [Reveal each item](/guides/lists/#reveal-a-long-list-or-a-tall-grid).
+- **The `delay` is long.** Keep it short. See [Delay the entrance](/guides/timing/#delay-the-entrance).
 
 ## The content shows, then hides again
 
-- Lazy hydration: `client:visible`, `hydrateOnVisible()`, slow hydration.
+The script attached the element after the 5 second hold of the stylesheet. Lazy hydration is the usual cause. See [The 5 second hold](/concepts/server-rendering/#the-5-second-hold).
 
-## The element loses its own transform
+Hydrate the reveal content eagerly:
 
-- The entrance replaces the own values of the animated properties.
+- **React or Vue in an Astro island:** use [`client:load`](/frameworks/react-vue-astro/#hydrate-the-island-with-clientload), not `client:visible`.
+- **Vue and Nuxt:** do not use [lazy hydration](/frameworks/vue-ssr-nuxt/#hydrate-the-reveals-eagerly) for components with a reveal.
 
-## My code waits for animations that never finish
+## The content shows before the entrance
 
-- Skip paused animations in `document.getAnimations()`.
+- **The JavaScript API does not hide content before your script runs.** Server-rendered content shows, then animates. See [The JavaScript API](/concepts/server-rendering/#the-javascript-api).
+- **The page does not load the stylesheet.** Two setups need a step: [React or Vue in an Astro island](/frameworks/react-vue-astro/#import-the-stylesheet) and [the Nuxt development server](/frameworks/vue-ssr-nuxt/#add-the-stylesheet-in-development).
+- **A Content Security Policy blocks the stylesheet in Astro.** See [Content Security Policy](/frameworks/astro/#content-security-policy).
+- **Your styles use `!important`.** An inline `opacity` or an `animation` with `!important` can show the element too early. See [Things to know](/concepts/server-rendering/#things-to-know).
 
-## Astro: The HTML parser moved the element
+The content also shows immediately when the user asks for reduced motion, prints the page or turns off JavaScript. This is on purpose. See [When the stylesheet does not hide content](/concepts/server-rendering/#when-the-stylesheet-does-not-hide-content).
 
-- Placement inside tables, `<select>` and `<p>`.
+## The content shows with no animation
+
+- **The user asks for reduced motion.** See [Reduced motion](/concepts/accessibility/#reduced-motion).
+- **Focus moved into the waiting element.** Focus reveals it immediately. See [Focus](/concepts/accessibility/#focus).
+- **The browser rejected an option.** An invalid easing or duration shows the element with no animation. See [Errors](/concepts/how-it-works/#errors).
+- **A cascade child cannot animate.** In React, Vue and Astro, a child that you add after the reveal shows with no animation. An Astro island also shows with no animation. See [Things to know](/guides/lists/#things-to-know). In the JavaScript API, a child that you add after the `cascade()` call shows with no animation. See [Targets](/reference/javascript/#targets).
+- **In Astro, the HTML parser moved the element.** See [Where to place a reveal](/frameworks/astro/#where-to-place-a-reveal).
+- **The browser is too old.** See [Older browsers](/reference/browser-support/#older-browsers).
+
+## The element loses its own styles
+
+- **The entrance replaces the element's own values of the animated properties.** An example is a `rotate` or an `opacity` that your CSS sets. [Put the value on an inner element](/guides/entrances/#things-to-know), or [use an additive keyframe](/guides/keyframes/#keep-the-elements-own-values).
+- **In React, Vue and Astro, the stylesheet replaces your own `animation` until the reveal.** Put your animation on an inner element. See [Things to know](/concepts/server-rendering/#things-to-know).
+- **Two calls reveal the same element.** The later entrance replaces the earlier entrance. See [Do not reveal one element two times](/concepts/how-it-works/#do-not-reveal-one-element-two-times).
+
+## The element jumps at the end of the entrance
+
+The last keyframe is different from the resting style of the element. See [End at the resting style](/guides/keyframes/#end-at-the-resting-style).
+
+## Your code waits for animations that never finish
+
+A waiting entrance of `reveal()` or `cascade()` never finishes. See [Wait for the end of the entrance](/guides/reveal-events/#wait-for-the-end-of-the-entrance).
+
+## The build fails
+
+**`Global CSS cannot be imported from within node_modules`.** The Next.js Pages Router with webpack needs a step. See [Set up the Pages Router with webpack](/frameworks/nextjs/#set-up-the-pages-router-with-webpack).
 
 ## Errors in the console
 
-- Invalid easing, duration or threshold. Invalid selectors throw.
+- **An invalid easing, duration or threshold.** The browser rejects the option, and core reports the error of the browser. See [Errors](/concepts/how-it-works/#errors).
+- **An invalid CSS selector.** `reveal()` and `cascade()` throw a `SyntaxError`. See [Errors](/concepts/how-it-works/#errors).
+- **`The HTML parser moved the element out of <awesome-reveal>`.** In Astro, the reveal is in a place that the HTML parser does not accept. See [Where to place a reveal](/frameworks/astro/#where-to-place-a-reveal).
 
-## Sources
+## Get help
 
-On the `next` branch of the packages repo:
-
-- `packages/*/README.md`
-- `packages/core/README.md: Errors`
+If this page does not solve your problem, search the [issues](https://github.com/awesome-reveal/awesome-reveal/issues) of the packages repo. To ask a question, open a [discussion](https://github.com/awesome-reveal/awesome-reveal/discussions). To report a bug, open an issue with a minimal example.
