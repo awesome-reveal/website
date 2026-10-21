@@ -3,7 +3,7 @@
   "type": "module",
   "version": "0.0.1",
   "private": true,
-  "packageManager": "pnpm@12.11.2+sha512.25a51652a196785af5f28bda6dfe8dc582ebefa4ac1d180221ce1390231c5fb76637822ea4b6e4633ce74acdcb0a77f725af11bad38177fdeddaee818a955cb9",
+  "packageManager": "pnpm@12.14.0+sha512.c18ba6d87993d3d164cb5e8948f32b2c06ee854487e06cd8d86781342fb3e5bb4634367034711e86802baa9c37bea906ce1929ad08d70884c97d801df13389a6",
   "scripts": {
     "dev": "astro dev",
     "start": "astro dev",
@@ -13,11 +13,11 @@
     "astro": "astro"
   },
   "dependencies": {
-    "@astrojs/check": "^0.9.10",
+    "@astrojs/check": "^0.9.11",
     "@astrojs/mdx": "^8.1.0",
     "@astrojs/starlight": "^0.42.6",
     "@awesome-reveal/astro": "1.0.0-next.11",
-    "astro": "^7.4.0",
+    "astro": "^7.4.1",
     "hast-util-select": "^6.0.4",
     "hast-util-to-string": "^3.0.1",
     "rehype-parse": "^9.0.1",
@@ -32,11 +32,11 @@
     "unist-util-remove": "^4.0.0"
   },
   "devDependencies": {
-    "@eslint-react/eslint-plugin": "^5.28.1",
+    "@eslint-react/eslint-plugin": "^5.28.2",
     "@eslint/js": "^10.0.1",
-    "@lucide/astro": "^1.58.0",
+    "@lucide/astro": "^1.60.0",
     "@types/hast": "^3.0.5",
-    "eslint": "^10.12.0",
+    "eslint": "^10.13.0",
     "eslint-plugin-astro": "^3.2.1",
     "eslint-plugin-react-hooks": "^7.1.1",
     "eslint-plugin-vue": "^10.11.1",
@@ -45,8 +45,8 @@
     "prettier-plugin-astro": "^1.1.1",
     "starlight-links-validator": "^0.27.0",
     "typescript": "^6.0.3",
-    "typescript-eslint": "^8.71.2",
+    "typescript-eslint": "^8.72.0",
     "vue-eslint-parser": "^10.4.1",
-    "wrangler": "^4.151.0"
+    "wrangler": "^4.151.2"
   }
 }

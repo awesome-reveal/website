@@ -1,11 +1,18 @@
 allowBuilds:
   esbuild: true
   sharp: true
+
 minimumReleaseAgeExclude:
-  - "@awesome-reveal/astro@1.0.0-next.10"
-  - "@awesome-reveal/core@1.0.0-next.10"
+  - "@awesome-reveal/astro"
+  - "@awesome-reveal/core"
+
 permissions:
   "@awesome-reveal/astro":
     skills: true
   workerd:
     build: true
+
+autoDedupe: true
+
+lockfile:
+  includeResolutionSettings: true

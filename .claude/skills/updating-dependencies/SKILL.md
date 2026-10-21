@@ -26,7 +26,7 @@ Do the update on a branch, for example `build/update-dependencies`.
 
 3. Update the other packages with `pnpm update --latest <package>...`, and keep the TypeScript limit above. Do not edit the versions in `package.json` by hand.
 4. pnpm runs no build script that `allowBuilds` in `pnpm-workspace.yaml` does not list, and the install fails with `ERR_PNPM_IGNORED_BUILDS`. Approve a new one with `pnpm approve-builds <package>` only when the package needs it, such as `esbuild` and `sharp`.
-5. Run `pnpm dedupe`. The updates can keep old versions of transitive packages in the lockfile next to the new versions. `pnpm dedupe --check` must then pass.
+5. Run `pnpm dedupe`. The updates can keep old versions of transitive packages in the lockfile next to the new versions. Do this step also with `autoDedupe` on: its docs name only `pnpm install` and `pnpm add`. `pnpm dedupe --check` must then pass.
 
 ## Check
 
