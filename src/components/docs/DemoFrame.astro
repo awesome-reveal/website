@@ -103,7 +103,7 @@ const hasToolbar = options.length > 0 || replay;
     margin-block: var(--space-6);
     border: 1px solid var(--sl-color-hairline-light);
     border-radius: var(--radius-md);
-    /* Not overflow: hidden. Under an overflow clip, WebKit does not paint the fade of an inline element until it ends. */
+    /* With overflow: hidden, WebKit does not paint the fade of an inline child. */
     clip-path: inset(0 round var(--radius-md));
     background-color: color-mix(
       in oklab,
