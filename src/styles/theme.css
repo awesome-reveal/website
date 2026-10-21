@@ -85,7 +85,12 @@
   --sl-color-hairline-light: color-mix(in oklab, var(--ink) 12%, var(--paper));
   --sl-color-hairline: color-mix(in oklab, var(--ink) 16%, var(--paper));
   --sl-color-hairline-shade: var(--sl-color-hairline);
-  --sl-color-backdrop-overlay: color-mix(in oklab, var(--ink) 45%, transparent);
+  --backdrop-opacity: 45%;
+  --sl-color-backdrop-overlay: color-mix(
+    in oklab,
+    var(--ink) var(--backdrop-opacity),
+    transparent
+  );
 
   --grid: color-mix(in oklab, var(--ink) 5%, transparent);
 }
@@ -145,11 +150,7 @@
       var(--pencil) 10%,
       var(--ink)
     );
-    --sl-color-backdrop-overlay: color-mix(
-      in oklab,
-      var(--ink) 70%,
-      transparent
-    );
+    --backdrop-opacity: 70%;
 
     --grid: color-mix(in oklab, var(--pencil) 7%, transparent);
   }
@@ -235,6 +236,25 @@
    A control with a 1px border sets `outline-offset: -1px`: the ring covers the border, so it stays 2px wide. */
 :root :focus-visible {
   outline: 2px solid var(--sl-color-text-accent);
+}
+
+/* The search modal and the mobile menu set `overflow: hidden` on body, which removes the scrollbar and shifts the layout. */
+:root {
+  scrollbar-gutter: stable;
+}
+
+/* The modal does not cover the gutter, so it gets the backdrop color, or the dialog color below 50rem.
+   Chrome paints the gutter with the root background color only. */
+:root:has(body[data-search-modal-open]) {
+  background-color: color-mix(
+    in srgb,
+    var(--ink) var(--backdrop-opacity),
+    var(--sl-color-bg)
+  );
+
+  @media (max-width: 49.99rem) {
+    background-color: var(--sl-color-gray-6);
+  }
 }
 
 :root[data-has-hero] body {
