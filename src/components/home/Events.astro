@@ -39,9 +39,9 @@ const code = `<Reveal onReveal={() => track("pricing_seen")}>
   const motion = matchMedia("(prefers-reduced-motion: no-preference)");
 
   // The hero can reveal before this script runs, so the count starts from the elements that already revealed.
-  let count = [...document.querySelectorAll("awesome-reveal > *")].filter(
-    (element) => getReveal(element).revealed,
-  ).length;
+  let count = [
+    ...document.querySelectorAll("awesome-reveal > :first-child"),
+  ].filter((element) => getReveal(element).revealed).length;
 
   function describe(element: Element) {
     const className = [...element.classList].find(

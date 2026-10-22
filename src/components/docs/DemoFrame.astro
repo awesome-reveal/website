@@ -68,7 +68,7 @@ const hasToolbar = options.length > 0 || replay;
         ...(choices.length > 0
           ? stage.querySelector("[data-choice][data-selected]")!
           : stage
-        ).querySelectorAll("awesome-reveal > *"),
+        ).querySelectorAll("awesome-reveal > :first-child"),
       ].map(getReveal);
 
     const replay = () => {

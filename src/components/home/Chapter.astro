@@ -125,7 +125,7 @@ const hasToolbar = control || replay || Astro.slots.has("controls");
       // A reveal plays and fires `reveal` also when its element is not displayed.
       // All checks run before the first replay, so the style recalculates only once.
       const shownElements = [
-        ...(stage?.querySelectorAll("awesome-reveal > *") ?? []),
+        ...(stage?.querySelectorAll("awesome-reveal > :first-child") ?? []),
       ].filter((element) => element.checkVisibility());
       for (const element of shownElements) replay(element);
     });
