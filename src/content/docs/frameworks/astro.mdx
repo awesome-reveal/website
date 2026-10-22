@@ -70,7 +70,7 @@ An element with [`transition:persist`](https://docs.astro.build/en/guides/view-t
 </Reveal>
 ```
 
-The package does not need the `astro:page-load` event. Your own scripts that call [`getReveal`](/reference/astro/#getreveal) need it, because the `<ClientRouter />` does not run a module script again after a navigation. Each navigation renders new elements, except the elements with `transition:persist`. Get the elements and call `getReveal` again in the listener:
+The package does not need the `astro:page-load` event. Your own scripts that call [`getReveal`](/reference/astro/#getreveal) need it, because the `<ClientRouter />` does not run a [processed `<script>`](https://docs.astro.build/en/guides/view-transitions/#script-re-execution) again after a navigation. Each navigation renders new elements, except the elements with `transition:persist`. Get the elements and call `getReveal` again in the listener:
 
 ```astro
 <script>
