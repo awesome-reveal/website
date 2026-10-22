@@ -29,7 +29,7 @@ const { id, title } = Astro.props;
 </DemoFrame>
 
 <script>
-  import type {} from "@awesome-reveal/astro";
+  import { getReveal } from "@awesome-reveal/astro";
 
   const entranceFinished = (element: Element) =>
     Promise.all(
@@ -40,7 +40,7 @@ const { id, title } = Astro.props;
 
   for (const demo of document.querySelectorAll(".events-demo")) {
     const log = demo.querySelector(".log")!;
-    const host = demo.querySelector("awesome-reveal")!;
+    const reveal = getReveal(demo.querySelector(".demo-tile")!);
 
     const addEntry = (text: string) => {
       const entry = document.createElement("li");
@@ -51,7 +51,7 @@ const { id, title } = Astro.props;
     demo.addEventListener("reveal", (event) => {
       const start = performance.now();
       log.replaceChildren();
-      addEntry(`0 ms: reveal, revealed is ${host.revealed}`);
+      addEntry(`0 ms: reveal, revealed is ${reveal.revealed}`);
       entranceFinished(event.target as Element)
         .then(() => {
           const elapsed = Math.round(performance.now() - start);
@@ -61,9 +61,9 @@ const { id, title } = Astro.props;
     });
 
     // With reduced motion, the element reveals when it is defined, before this script adds the listener.
-    if (host.revealed) {
+    if (reveal.revealed) {
       log.replaceChildren();
-      addEntry(`On load: revealed is ${host.revealed}`);
+      addEntry(`On load: revealed is ${reveal.revealed}`);
     }
   }
 </script>

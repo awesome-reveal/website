@@ -112,16 +112,16 @@ const easings = [
 </DemoFrame>
 
 <script>
-  import type {} from "@awesome-reveal/astro";
+  import { getReveal } from "@awesome-reveal/astro";
 
   // The cards must start together, so one observer starts them all instead of a viewport check for each card.
   for (const list of document.querySelectorAll(".easings")) {
-    const hosts = list.querySelectorAll("awesome-reveal");
+    const reveals = [...list.querySelectorAll(".zoom-card")].map(getReveal);
     const observer = new IntersectionObserver(
       ([entry]) => {
         if (!entry?.isIntersecting) return;
         observer.disconnect();
-        for (const host of hosts) host.when = true;
+        for (const reveal of reveals) reveal.when = true;
       },
       { threshold: 0.5 },
     );

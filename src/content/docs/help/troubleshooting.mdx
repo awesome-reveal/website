@@ -72,6 +72,7 @@ A waiting entrance of `reveal()` or `cascade()` never finishes. See [Wait for th
 - **An invalid easing, duration or threshold.** The browser rejects the option, and core reports the error of the browser. See [Errors](/concepts/how-it-works/#errors).
 - **An invalid CSS selector.** `reveal()` and `cascade()` throw a `SyntaxError`. See [Errors](/concepts/how-it-works/#errors).
 - **`The HTML parser moved the element out of <awesome-reveal>`.** In Astro, the reveal is in a place that the HTML parser does not accept. See [Where to place a reveal](/frameworks/astro/#where-to-place-a-reveal).
+- **`getReveal() needs the element that Reveal or Cascade rendered`.** In Astro, the element is not the tag that `Reveal` or `Cascade` rendered, or the HTML parser moved the tag. Pass the rendered tag, not an ancestor or a child. See [`getReveal`](/reference/astro/#getreveal).
 
 ## Get help
 

@@ -25,7 +25,7 @@ import { Cascade, Reveal } from "@awesome-reveal/astro";
 
 ## How it works in Astro
 
-Each `Reveal` and `Cascade` renders its tag inside an `awesome-reveal` [custom element](https://developer.mozilla.org/en-US/docs/Web/API/Web_components/Using_custom_elements). The custom element has `display: contents`, so it does not change the layout. To control the entrance from a script, set the [`when` property](/guides/manual-control/#reveal-from-your-state) of the custom element.
+Each `Reveal` and `Cascade` renders its tag inside an `awesome-reveal` [custom element](https://developer.mozilla.org/en-US/docs/Web/API/Web_components/Using_custom_elements). The custom element has `display: contents`, so it does not change the layout. But the child combinator (`>`), `:nth-child()` and `parentElement` see it. To control the entrance from a client script, use [`getReveal`](/reference/astro/#getreveal).
 
 Astro adds the stylesheet and a small module script of the package to the page. The stylesheet hides the waiting elements in the server HTML. The script defines the custom element, and the custom element attaches its tag to the viewport observer. Without JavaScript, the content shows.
 
@@ -70,7 +70,18 @@ An element with [`transition:persist`](https://docs.astro.build/en/guides/view-t
 </Reveal>
 ```
 
-The package does not need the `astro:page-load` event. Your own scripts that find `awesome-reveal` elements need it, because the `<ClientRouter />` does not run a module script again after a navigation.
+The package does not need the `astro:page-load` event. Your own scripts that call [`getReveal`](/reference/astro/#getreveal) need it, because the `<ClientRouter />` does not run a module script again after a navigation. Each navigation renders new elements, so get the elements and call `getReveal` again in the listener:
+
+```astro
+<script>
+  import { getReveal } from "@awesome-reveal/astro";
+
+  document.addEventListener("astro:page-load", () => {
+    const details = document.querySelector("#details");
+    if (details) getReveal(details).when = true;
+  });
+</script>
+```
 
 A [prerendered page](https://developer.mozilla.org/en-US/docs/Web/API/Speculation_Rules_API) does not animate until the browser activates it.
 

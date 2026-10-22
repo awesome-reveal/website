@@ -8,11 +8,11 @@ import { Reveal } from "@awesome-reveal/astro";
 <button id="check">Check</button>
 
 <script>
-  import type {} from "@awesome-reveal/astro";
+  import { getReveal } from "@awesome-reveal/astro";
 
-  const host = document.querySelector("#card")!.closest("awesome-reveal")!;
+  const reveal = getReveal(document.querySelector("#card")!);
 
   document.querySelector("#check")!.addEventListener("click", () => {
-    console.log(host.revealed ? "Revealed" : "Waiting");
+    console.log(reveal.revealed ? "Revealed" : "Waiting");
   });
 </script>

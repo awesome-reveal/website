@@ -93,11 +93,12 @@ const hasToolbar = control || replay || Astro.slots.has("controls");
 </section>
 
 <script>
-  import type { RevealElement } from "@awesome-reveal/astro";
+  import { getReveal } from "@awesome-reveal/astro";
 
-  function replay(host: RevealElement) {
-    host.when = false;
-    host.when = true;
+  function replay(element: Element) {
+    const reveal = getReveal(element);
+    reveal.when = false;
+    reveal.when = true;
   }
 
   // One script runs all the demos, so the page loads no module per chapter.
@@ -116,18 +117,17 @@ const hasToolbar = control || replay || Astro.slots.has("controls");
       for (const choice of choices) {
         const selected = choice.dataset.choice === value;
         choice.toggleAttribute("data-selected", selected);
-        const host = choice.closest("awesome-reveal");
-        if (selected && host) replay(host);
+        if (selected) replay(choice);
       }
     });
 
     chapter.querySelector("[data-replay]")?.addEventListener("click", () => {
-      // A host plays and fires `reveal` also when its content is not displayed.
+      // A reveal plays and fires `reveal` also when its element is not displayed.
       // All checks run before the first replay, so the style recalculates only once.
-      const shownHosts = [
-        ...(stage?.querySelectorAll("awesome-reveal") ?? []),
-      ].filter((host) => host.firstElementChild?.checkVisibility());
-      for (const host of shownHosts) replay(host);
+      const shownElements = [
+        ...(stage?.querySelectorAll("awesome-reveal > *") ?? []),
+      ].filter((element) => element.checkVisibility());
+      for (const element of shownElements) replay(element);
     });
   }
 </script>
