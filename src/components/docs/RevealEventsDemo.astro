@@ -32,11 +32,7 @@ const { id, title } = Astro.props;
   import { getReveal } from "@awesome-reveal/astro";
 
   const entranceFinished = (element: Element) =>
-    Promise.all(
-      element
-        .getAnimations({ subtree: true })
-        .map((animation) => animation.finished),
-    );
+    Promise.all(element.getAnimations().map((animation) => animation.finished));
 
   for (const demo of document.querySelectorAll(".events-demo")) {
     const log = demo.querySelector(".log")!;

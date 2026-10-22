@@ -64,10 +64,10 @@ import { Reveal } from "@awesome-reveal/astro";
 - **Errors**: `getReveal` throws an `Error` for any other element. The HTML parser can move the tag out of its place, for example out of a `<p>`. See [Where to place a reveal](/frameworks/astro/#where-to-place-a-reveal).
 - **Navigations**: with the `<ClientRouter />`, call `getReveal` again after each navigation, because the new page has new elements. See [View transitions](/frameworks/astro/#view-transitions).
 
-| Member     | Type              | Description                                                                                           |
-| ---------- | ----------------- | ----------------------------------------------------------------------------------------------------- |
-| `when`     | `boolean \| null` | Gets or sets the [manual control](/guides/manual-control/). `null` gives the control to the viewport. |
-| `revealed` | `boolean`         | `true` after the reveal. Read only. It is `false` until the client script attaches the element.       |
+| Member     | Type              | Description                                                                                                                                 |
+| ---------- | ----------------- | ------------------------------------------------------------------------------------------------------------------------------------------- |
+| `when`     | `boolean \| null` | Gets or sets the [manual control](/guides/manual-control/). `null` gives the control to the viewport and keeps a revealed element revealed. |
+| `revealed` | `boolean`         | `true` after the reveal. Read only. It is `false` until the client script attaches the element.                                             |
 
 ## The reveal event
 
