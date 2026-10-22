@@ -31,15 +31,17 @@ const code = `<Reveal onReveal={() => track("pricing_seen")}>
 </Chapter>
 
 <script>
+  import { getReveal } from "@awesome-reveal/astro";
+
   const counter = document.querySelector(".counter");
   const output = counter?.querySelector("output");
   const logRows = [...(counter?.querySelectorAll(".log li") ?? [])];
   const motion = matchMedia("(prefers-reduced-motion: no-preference)");
 
-  // The hero can reveal before this script runs, so the count starts from the hosts that already revealed.
-  let count = [...document.querySelectorAll("awesome-reveal")].filter(
-    (host) => host.revealed,
-  ).length;
+  // The hero can reveal before this script runs, so the count starts from the elements that already revealed.
+  let count = [
+    ...document.querySelectorAll("awesome-reveal > :first-child"),
+  ].filter((element) => getReveal(element).revealed).length;
 
   function describe(element: Element) {
     const className = [...element.classList].find(

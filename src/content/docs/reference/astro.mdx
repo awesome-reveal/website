@@ -1,15 +1,15 @@
 ---
 title: "Astro reveal API: Reveal and Cascade"
-description: "API reference of @awesome-reveal/astro: the Reveal and Cascade components, the RevealTag type, and the awesome-reveal custom element and its reveal event."
+description: "API reference of @awesome-reveal/astro: the Reveal and Cascade components, the getReveal function for client scripts, the reveal event and the RevealTag type."
 sidebar:
   order: 4
   label: Astro API
 ---
 
-`@awesome-reveal/astro` exports two components. They take the same [options](/reference/options/) as props. For the supported versions, see [Requirements](/getting-started/#requirements).
+`@awesome-reveal/astro` exports two components and the [`getReveal`](#getreveal) function. The components take the same [options](/reference/options/) as props. For the supported versions, see [Requirements](/getting-started/#requirements).
 
 ```js
-import { Cascade, Reveal } from "@awesome-reveal/astro";
+import { Cascade, getReveal, Reveal } from "@awesome-reveal/astro";
 ```
 
 ## Reveal
@@ -34,23 +34,40 @@ Renders a tag around its children. When the tag enters the viewport, it reveals 
 
 `Cascade` accepts the props of `Reveal`, and [`interval`](/reference/options/#interval).
 
-## The awesome-reveal element
+## getReveal
 
-For the role of the custom element, see [How it works in Astro](/frameworks/astro/#how-it-works-in-astro).
+Gives the control of the reveal of a tag that `Reveal` or `Cascade` rendered. Call it in a [processed `<script>`](https://docs.astro.build/en/guides/client-side-scripts/#script-processing). A `<script is:inline>` cannot import the package:
 
-To get the custom element, call `closest("awesome-reveal")` on the rendered tag. Import the types of the package in your script, so that TypeScript knows the custom element:
+```astro
+---
+import { Reveal } from "@awesome-reveal/astro";
+---
 
-```ts
-import type {} from "@awesome-reveal/astro";
+<button id="show">Show</button>
+<Reveal id="details" when={false}>
+  Details
+</Reveal>
 
-const host = document.querySelector("#details")!.closest("awesome-reveal")!;
-host.when = true;
+<script>
+  import { getReveal } from "@awesome-reveal/astro";
+
+  const reveal = getReveal(document.querySelector("#details")!);
+
+  document.querySelector("#show")!.addEventListener("click", () => {
+    reveal.when = true;
+  });
+</script>
 ```
+
+- **Argument**: the rendered tag, for example the element with the `id` of the component.
+- **Return value**: a `RevealControl` object with the members in the table below.
+- **Errors**: `getReveal` throws an `Error` for any other element. The HTML parser can move the tag out of its place, for example out of a `<p>`. See [Where to place a reveal](/frameworks/astro/#where-to-place-a-reveal).
+- **Navigations**: with the `<ClientRouter />`, call `getReveal` again after each navigation, because the new page has new elements. See [View transitions](/frameworks/astro/#view-transitions).
 
 | Member     | Type              | Description                                                                                           |
 | ---------- | ----------------- | ----------------------------------------------------------------------------------------------------- |
 | `when`     | `boolean \| null` | Gets or sets the [manual control](/guides/manual-control/). `null` gives the control to the viewport. |
-| `revealed` | `boolean`         | `true` after the reveal. Read only.                                                                   |
+| `revealed` | `boolean`         | `true` after the reveal. Read only. It is `false` until the client script attaches the element.       |
 
 ## The reveal event
 
@@ -63,7 +80,7 @@ The rendered tag dispatches a `reveal` event when the reveal starts. The event [
 | `RevealProps`    | The props of `Reveal`.                                          |
 | `CascadeProps`   | The props of `Cascade`.                                         |
 | `RevealTag`      | The tags that `as` accepts. See [`as`](/reference/options/#as). |
-| `RevealElement`  | The type of the `awesome-reveal` custom element.                |
+| `RevealControl`  | The object that [`getReveal`](#getreveal) returns.              |
 | `RevealOptions`  | The reveal options.                                             |
 | `CascadeOptions` | The cascade options.                                            |
 | `Side`           | The sides of [`from`](/reference/options/#from).                |

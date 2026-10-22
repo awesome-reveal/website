@@ -18,7 +18,7 @@ In this example, a button shows and hides the details:
 
 <DetailsDemo id="details" title="Show and hide the details" />
 
-In Astro, the `when` prop sets the value in the server HTML. After the page loads, set the `when` property of the `awesome-reveal` host element. The type import adds the `awesome-reveal` element to the DOM types.
+In Astro, the `when` prop sets the value in the server HTML. In a client script, pass the rendered tag to [`getReveal`](/reference/astro/#getreveal), and set the `when` property of the result.
 
 A change to `when` applies immediately. If `when` becomes `false` during the [`delay`](/guides/timing/#delay-the-entrance), the entrance resets and does not play.
 

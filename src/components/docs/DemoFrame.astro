@@ -57,22 +57,24 @@ const hasToolbar = options.length > 0 || replay;
 </div>
 
 <script>
-  import type { RevealElement } from "@awesome-reveal/astro";
+  import { getReveal } from "@awesome-reveal/astro";
 
   for (const demo of document.querySelectorAll(".demo-frame")) {
     const stage = demo.querySelector(".stage")!;
     const choices = stage.querySelectorAll<HTMLElement>("[data-choice]");
     const snippets = demo.querySelectorAll<HTMLElement>("[data-snippet]");
-    const shownHosts = () =>
-      (choices.length > 0
-        ? stage.querySelector("[data-choice][data-selected]")!
-        : stage
-      ).querySelectorAll<RevealElement>("awesome-reveal");
+    const shownReveals = () =>
+      [
+        ...(choices.length > 0
+          ? stage.querySelector("[data-choice][data-selected]")!
+          : stage
+        ).querySelectorAll("awesome-reveal > :first-child"),
+      ].map(getReveal);
 
     const replay = () => {
-      const hosts = shownHosts();
-      for (const host of hosts) host.when = false;
-      for (const host of hosts) host.when = true;
+      const reveals = shownReveals();
+      for (const reveal of reveals) reveal.when = false;
+      for (const reveal of reveals) reveal.when = true;
     };
 
     demo.querySelector(".options")?.addEventListener("change", (event) => {

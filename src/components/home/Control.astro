@@ -52,16 +52,18 @@ const code = `<Reveal when={saved} hidden={!saved}>
 </Chapter>
 
 <script>
+  import { getReveal } from "@awesome-reveal/astro";
+
   const chapter = document.getElementById("triggers");
   const input = chapter?.querySelector<HTMLInputElement>(".switch input");
   const state = chapter?.querySelector(".switch .state");
   const toast = chapter?.querySelector<HTMLElement>(".toast");
-  const host = toast?.closest("awesome-reveal");
+  const reveal = toast && getReveal(toast);
 
   function showToast() {
-    if (!input || !state || !toast || !host) return;
+    if (!input || !state || !toast || !reveal) return;
     toast.hidden = !input.checked;
-    host.when = input.checked;
+    reveal.when = input.checked;
     state.textContent = String(input.checked);
   }
 

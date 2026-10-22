@@ -36,16 +36,16 @@ const { id, title } = Astro.props;
 </DemoFrame>
 
 <script>
-  import type {} from "@awesome-reveal/astro";
+  import { getReveal } from "@awesome-reveal/astro";
 
   for (const demo of document.querySelectorAll(".details-demo")) {
     const button = demo.querySelector(".toggle")!;
     const details = demo.querySelector(".details")!;
-    const host = details.closest("awesome-reveal")!;
+    const reveal = getReveal(details);
 
     button.addEventListener("click", () => {
-      const open = !host.when;
-      host.when = open;
+      const open = !reveal.when;
+      reveal.when = open;
       details.toggleAttribute("hidden", !open);
       button.setAttribute("aria-expanded", String(open));
     });

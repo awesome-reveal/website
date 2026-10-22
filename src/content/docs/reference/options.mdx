@@ -102,7 +102,7 @@ Controls the entrance [manually](/guides/manual-control/). `true` reveals the el
 
 `when` does not show or hide content. With `false`, the element is transparent, but screen readers read it and the keyboard can focus its controls. To hide content, also set [`hidden`](https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Global_attributes/hidden), or do not render it. If the user asks for [reduced motion](https://developer.mozilla.org/en-US/docs/Web/CSS/Reference/At-rules/@media/prefers-reduced-motion), the element reveals also when `when` is `false`.
 
-In Astro, set the `when` property of the `awesome-reveal` host element after the page loads.
+In Astro, to change `when` in a client script, use [`getReveal`](/reference/astro/#getreveal).
 
 ### onReveal
 
