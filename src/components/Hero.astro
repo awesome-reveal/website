@@ -4,13 +4,13 @@ import DraftContentNotice from "@astrojs/starlight/components/DraftContentNotice
 import { Cascade, Reveal } from "@awesome-reveal/astro";
 import ArrowRight from "@lucide/astro/icons/arrow-right";
 import ExternalLink from "@lucide/astro/icons/external-link";
-import Github from "../assets/github.svg";
 import { getMarkdownSlug } from "../lib/markdown-slug";
+import { getPrompt } from "../lib/prompts";
+import CopyButton from "./CopyButton.astro";
 
 // The hero schema of Starlight accepts only its own icon names, so the frontmatter name picks the icon here.
 const icons = {
   external: ExternalLink,
-  github: Github,
   "right-arrow": ArrowRight,
 };
 
@@ -33,6 +33,12 @@ const heroActions =
         },
       ]
     : actions;
+const actionsWithPromptText = await Promise.all(
+  heroActions.map(async (action) => ({
+    ...action,
+    promptText: action.prompt && (await getPrompt(action.prompt.id)).text,
+  })),
+);
 ---
 
 <div
@@ -61,15 +67,27 @@ const heroActions =
       <Fragment set:html={tagline} />
     </Reveal>
   )}
-  {heroActions.length > 0 && (
+  {actionsWithPromptText.length > 0 && (
     <Reveal class="actions" delay={350} from={{ opacity: 0, y: 12 }}>
-      {heroActions.map(({ attrs, icon, link, text, variant }) => {
+      {actionsWithPromptText.map((action) => {
+        if (action.promptText) {
+          return (
+            <CopyButton
+              class:list={["action", "sl-link-button", action.variant]}
+              text={action.promptText}
+              copiedMessage="Prompt copied"
+            >
+              {action.text}
+            </CopyButton>
+          );
+        }
+        const { attrs, icon, link, text, variant } = action;
         const Icon =
           icon?.type === "icon"
             ? icons[icon.name as keyof typeof icons]
             : undefined;
         return (
-          <LinkButton href={link} variant={variant} {...attrs}>
+          <LinkButton class="action" href={link} variant={variant} {...attrs}>
             {text}
             {Icon && <Icon aria-hidden="true" width="1em" height="1em" />}
           </LinkButton>
@@ -175,6 +193,47 @@ const heroActions =
     font-size: clamp(1.125rem, 1rem + 0.5vw, 1.375rem);
     line-height: 1.5;
     text-wrap: pretty;
+  }
+
+  /* theme.css sets the weight, icon size and hover of .sl-link-button. */
+  .action {
+    gap: var(--space-2);
+    padding-block: var(--space-2);
+    padding-inline: var(--space-5);
+    border-radius: 999rem;
+    font-size: var(--sl-text-sm);
+    line-height: 1.1875;
+  }
+
+  @media (min-width: 50rem) {
+    .action {
+      padding-block: var(--space-4);
+      font-size: var(--sl-text-base);
+    }
+  }
+
+  .action.minimal {
+    padding-inline: 0;
+  }
+
+  /* LinkButton scopes its border and variant colors. */
+  button.action {
+    border: 1px solid transparent;
+  }
+
+  button.action.primary {
+    border-color: var(--sl-color-text-accent);
+    background: var(--sl-color-text-accent);
+    color: var(--sl-color-black);
+  }
+
+  button.action.secondary {
+    border-color: inherit;
+    color: var(--sl-color-white);
+  }
+
+  button.action.minimal {
+    color: var(--sl-color-white);
   }
 
   .actions {

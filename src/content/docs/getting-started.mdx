@@ -6,6 +6,7 @@ sidebar:
 ---
 
 import { Aside } from "@astrojs/starlight/components";
+import AgentPrompt from "../../components/docs/AgentPrompt.astro";
 import FrameworkTabs from "../../components/docs/FrameworkTabs.astro";
 import revealReact from "../../snippets/getting-started/hero-title.jsx?raw";
 import revealVue from "../../snippets/getting-started/hero-title.vue?raw";
@@ -15,6 +16,8 @@ import cascadeReact from "../../snippets/getting-started/feature-list.jsx?raw";
 import cascadeVue from "../../snippets/getting-started/feature-list.vue?raw";
 import cascadeAstro from "../../snippets/getting-started/feature-list.astro?raw";
 import cascadeJs from "../../snippets/getting-started/feature-list.js?raw";
+
+<AgentPrompt promptId="get-started" />
 
 Awesome Reveal animates elements when they scroll into view. Each framework package uses the same core. The core uses the [Intersection Observer API](https://developer.mozilla.org/en-US/docs/Web/API/Intersection_Observer_API) and the [Web Animations API](https://developer.mozilla.org/en-US/docs/Web/API/Web_Animations_API) of the browser, and it has no dependencies.
 
