@@ -20,25 +20,12 @@ import revealJs from "../../../snippets/getting-started/hero-title.js?raw";
 Awesome Reveal 1.0 is out as a release candidate. It animates elements as they scroll into view: wrap an element in `Reveal`, and it fades in when it enters the viewport. It now works in React, Vue, Astro and plain JavaScript, and its core has no dependencies.
 
 <Aside type="note" title="Release candidate">
-  The `@awesome-reveal/*` packages are at the release candidate, and that's the
-  version `pnpm add` installs. The API is frozen, so only fixes will change the
-  packages before the stable release.
+  The `@awesome-reveal/*` packages are a release candidate. The API is frozen,
+  so only fixes will change the packages before the stable release.
 </Aside>
 
 - **New to Awesome Reveal?** [Try the demos](#scroll-reveal-demos), then [add it to your project](#add-scroll-animations-in-react-vue-astro-or-javascript).
 - **Coming from `react-awesome-reveal` v4?** Read [what changed](#what-changed-from-react-awesome-reveal-v4), then follow the [migration guide](/guides/migrate-from-v4/).
-
-## Why Awesome Reveal 1.0 is a rewrite
-
-`react-awesome-reveal` v4 worked only in React. It built its CSS animations with Emotion and had one component per effect: `Fade`, `Slide`, `Zoom` and more. It already used the Intersection Observer API to find elements that enter the viewport. Today, the Web Animations API can play the entrance too, so the library doesn't need CSS-in-JS anymore.
-
-So I rewrote it on these two browser APIs:
-
-- **One core for every framework.** The React, Vue and Astro packages share the same core, so the options and the animations behave the same everywhere.
-- **A smaller API.** `Reveal` and `Cascade` replace the effect components, and the `from` option picks the entrance.
-- **No dependencies.** The core doesn't use Emotion or any other package.
-
-The new packages are published as `@awesome-reveal/*`, and `react-awesome-reveal` v5 re-exports `@awesome-reveal/react`.
 
 ## Scroll reveal demos
 
@@ -79,11 +66,23 @@ Then wrap an element in `Reveal`. With `@awesome-reveal/core`, call `reveal()` i
 
 When the element enters the viewport, it fades in and moves up 24 pixels. The [getting started guide](/getting-started/) covers every step and the [requirements](/getting-started/#requirements). For framework setup, see the [Next.js](/frameworks/nextjs/), [Nuxt](/frameworks/vue-ssr-nuxt/) and [Astro](/frameworks/astro/) pages.
 
+## Why Awesome Reveal 1.0 is a rewrite
+
+`react-awesome-reveal` v4 worked only in React. It built its CSS animations with Emotion and had one component per effect: `Fade`, `Slide`, `Zoom` and more. It already used the Intersection Observer API to find elements that enter the viewport. Today, the Web Animations API can play the entrance too, so the library doesn't need CSS-in-JS anymore.
+
+So I rewrote it on these two browser APIs:
+
+- **One core for every framework.** The React, Vue and Astro packages share the same core, so the options and the animations behave the same everywhere.
+- **A smaller API.** `Reveal` and `Cascade` replace the effect components, and the `from` option picks the entrance.
+- **No dependencies.** The core doesn't use Emotion or any other package.
+
+The new packages are published as `@awesome-reveal/*`, and `react-awesome-reveal` v5 re-exports `@awesome-reveal/react`.
+
 ## Why choose Awesome Reveal
 
 ### A small core with no dependencies
 
-With `reveal()` and `cascade()`, `@awesome-reveal/core` adds less than 2 kB gzipped to your bundle. That number covers only `@awesome-reveal/core`: the React, Vue and Astro packages use a different entry point of core. Here's [how I measure the size](/concepts/performance/#bundle-size).
+With `reveal()` and `cascade()`, `@awesome-reveal/core` adds less than 2 kB gzipped to your bundle. The measurement doesn't include the React, Vue and Astro packages. Here's [how I measure the size](/concepts/performance/#bundle-size).
 
 ### The same API in React, Vue and Astro
 
@@ -118,7 +117,7 @@ Need another effect? Pass an array of [native keyframes](/guides/keyframes/). Th
 
 ## When to choose Awesome Reveal
 
-Awesome Reveal fits a page that needs entrance animations and staggered lists, and nothing more. Each entrance plays once, when the element scrolls into view. There are no exit animations, and no animations linked to the scroll position. For those, use [CSS scroll-driven animations](https://developer.mozilla.org/en-US/docs/Web/CSS/Guides/Scroll-driven_animations) or a general animation library.
+Awesome Reveal fits landing pages, marketing sites, docs and other content pages that need entrance animations and staggered lists. Each entrance plays once, when the element scrolls into view. For animations linked to the scroll position, use [CSS scroll-driven animations](https://developer.mozilla.org/en-US/docs/Web/CSS/Guides/Scroll-driven_animations). For exit animations and timelines of many steps, use a general animation library.
 
 ## What changed from react-awesome-reveal v4
 
