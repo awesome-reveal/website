@@ -1,6 +1,6 @@
 import { docsLoader, i18nLoader } from "@astrojs/starlight/loaders";
 import { docsSchema, i18nSchema } from "@astrojs/starlight/schema";
-import { defineCollection, reference } from "astro:content";
+import { defineCollection } from "astro:content";
 import { glob } from "astro/loaders";
 import { z } from "astro/zod";
 import { docsVersionsLoader } from "starlight-versions/loader";
@@ -22,20 +22,6 @@ export const collections = {
           .describe(
             "Show the page footer: the edit link, the last-updated date, the pagination and the site credits.",
           ),
-        hero: z
-          .object({
-            actions: z
-              .object({
-                prompt: reference("prompts")
-                  .optional()
-                  .describe(
-                    "The agent prompt that the action copies. Starlight and its plugins still need `link`.",
-                  ),
-              })
-              .array()
-              .default([]),
-          })
-          .optional(),
       }),
     }),
   }),

@@ -122,13 +122,11 @@ export async function entryToMarkdown(
   const html = await container.renderToString(Content, { request, locals });
   const body = String(await pipeline.process(html)).trim();
   const { title, description, hero } = entry.data;
-  const actionLinks = hero?.actions
-    .filter(({ prompt }) => !prompt)
-    .map(({ text, link }) => `- [${text}](${link})`);
+  const actions = hero?.actions.map(({ text, link }) => `- [${text}](${link})`);
   return `${[
     `# ${hero?.title ?? title}`,
     `> ${hero?.tagline ?? description}`,
-    actionLinks?.join("\n"),
+    actions?.join("\n"),
     body,
   ]
     .filter(Boolean)
