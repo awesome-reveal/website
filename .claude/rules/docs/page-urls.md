@@ -7,7 +7,7 @@ paths:
 
 The path of a file under `src/content/docs/` gives the URL of the page: `guides/lists.mdx` gives `/guides/lists/`. Name a new file in this way:
 
-- Use one to four readable English words, with hyphens between them. The [Google URL guide](https://developers.google.com/search/docs/crawling-indexing/url-structure) recommends readable words and hyphens. The word count is a convention of this site.
+- Use one to four readable, lowercase English words, with hyphens between them. The [Google URL guide](https://developers.google.com/search/docs/crawling-indexing/url-structure) recommends readable words and hyphens. The word count is a convention of this site.
 - Use the name that the reader knows for the topic, such as `nextjs` or `manual-control`. The directory gives the group, so do not repeat the group in the file name.
 - Put the search keywords in the `title` and the `description`, not in the file name. See `page-titles.md`. The [Google SEO starter guide](https://developers.google.com/search/docs/fundamentals/seo-starter-guide) says that keywords in the URL path "alone have hardly any effect" on ranking.
 

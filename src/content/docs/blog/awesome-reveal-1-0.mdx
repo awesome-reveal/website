@@ -1,14 +1,11 @@
 ---
 title: "Awesome Reveal 1.0 RC: scroll animations for React, Vue and Astro"
-head:
-  - tag: title
-    content: "Awesome Reveal 1.0 RC: scroll animations for React, Vue and Astro"
-description: Awesome Reveal 1.0 RC adds scroll reveal animations to React, Vue, Astro and JavaScript, with native browser APIs, no dependencies and reduced motion.
+description: Awesome Reveal 1.0 RC adds scroll reveal animations to React, Vue, Astro and JavaScript, with native browser APIs, no dependencies and reduced motion support.
 date: 2026-10-23
 authors: dennis
 tags:
   - Release
-excerpt: Awesome Reveal 1.0 brings scroll reveal animations to React, Vue, Astro and plain JavaScript. It's built on native browser APIs, has no dependencies and respects reduced motion. The release candidate is on npm now.
+excerpt: Awesome Reveal 1.0 brings scroll reveal animations to React, Vue, Astro and plain JavaScript. It's built on native browser APIs, has no dependencies and supports reduced motion. The release candidate is on npm now.
 ---
 
 import { Aside } from "@astrojs/starlight/components";
@@ -23,9 +20,9 @@ import revealJs from "../../../snippets/getting-started/hero-title.js?raw";
 Awesome Reveal 1.0 is out as a release candidate. It animates elements as they scroll into view: wrap an element in `Reveal`, and it fades in when it enters the viewport. It now works in React, Vue, Astro and plain JavaScript, and its core has no dependencies.
 
 <Aside type="note" title="Release candidate">
-  The `@awesome-reveal/*` packages are at `1.0.0-rc.0`, and that's the version
-  `pnpm add` installs. The API is frozen, so only fixes will change the packages
-  before the stable release.
+  The `@awesome-reveal/*` packages are at the release candidate, and that's the
+  version `pnpm add` installs. The API is frozen, so only fixes will change the
+  packages before the stable release.
 </Aside>
 
 - **New to Awesome Reveal?** [Try the demos](#scroll-reveal-demos), then [add it to your project](#add-scroll-animations-in-react-vue-astro-or-javascript).
@@ -41,7 +38,7 @@ So I rewrote it on these two browser APIs:
 - **A smaller API.** `Reveal` and `Cascade` replace the effect components, and the `from` option picks the entrance.
 - **No dependencies.** The core doesn't use Emotion or any other package.
 
-The new packages are published as `@awesome-reveal/*`. `react-awesome-reveal` v5 re-exports `@awesome-reveal/react`, so React projects can keep their import path.
+The new packages are published as `@awesome-reveal/*`, and `react-awesome-reveal` v5 re-exports `@awesome-reveal/react`.
 
 ## Scroll reveal demos
 
@@ -63,7 +60,7 @@ Pick an entrance. The replay button plays it again, and the tabs show the code f
 
 <CascadeDemo id="cascade" title="A staggered list" intervals={[0, 80, 160]} />
 
-If your system is set to reduce motion, the demos show the content right away, with no animation.
+If your system asks for reduced motion, the demos show the content at once, with no animation.
 
 ## Add scroll animations in React, Vue, Astro or JavaScript
 
@@ -86,11 +83,11 @@ When the element enters the viewport, it fades in and moves up 24 pixels. The [g
 
 ### A small core with no dependencies
 
-`@awesome-reveal/core` has no dependencies. With `reveal()` and `cascade()`, it adds less than 2 kB gzipped to your bundle. That number covers only `@awesome-reveal/core`: the React, Vue and Astro packages use a different entry point of core. Here's [how I measure the size](/concepts/performance/#bundle-size).
+With `reveal()` and `cascade()`, `@awesome-reveal/core` adds less than 2 kB gzipped to your bundle. That number covers only `@awesome-reveal/core`: the React, Vue and Astro packages use a different entry point of core. Here's [how I measure the size](/concepts/performance/#bundle-size).
 
 ### The same API in React, Vue and Astro
 
-Each framework package has a `Reveal` and a `Cascade`, and the JavaScript package has the `reveal()` and `cascade()` functions. The options have the same names and defaults in every package. The [React](/reference/react/), [Vue](/reference/vue/), [Astro](/reference/astro/) and [JavaScript](/reference/javascript/) references list the hooks, directives and functions of each one.
+Each framework package has a `Reveal` and a `Cascade`, and the JavaScript package has the `reveal()` and `cascade()` functions. The entrance and viewport options, such as `from`, `duration` and `threshold`, have the same names and defaults in every package. The [options reference](/reference/options/#where-you-can-use-each-option) shows where each option works. The [React](/reference/react/), [Vue](/reference/vue/), [Astro](/reference/astro/) and [JavaScript](/reference/javascript/) references list the hooks, directives and functions of each one.
 
 ### Fade, slide, zoom and blur entrances
 
@@ -109,7 +106,7 @@ Need another effect? Pass an array of [native keyframes](/guides/keyframes/). Th
 ### Server rendering, accessibility and performance
 
 - **Server rendering.** The React, Vue and Astro packages hide the content in the server HTML, so it doesn't flash before the script runs. If no script attaches the element within 5 seconds, the content shows anyway. See [Server rendering without a flash](/concepts/server-rendering/).
-- **Reduced motion.** If the user prefers reduced motion, the content shows right away, with no animation.
+- **Reduced motion.** If the user asks for reduced motion, the content shows at once, with no animation.
 - **Keyboard focus and print.** Content shows when it gets the keyboard focus, and when you print the page. See [Accessible scroll animations](/concepts/accessibility/).
 - **Smooth animations.** No code listens to scroll events, and the default entrances animate only properties that the compositor runs. See [Scroll animation performance](/concepts/performance/).
 
@@ -141,7 +138,7 @@ Version 1.0 changes the API on purpose. Here are the main changes for React code
 
 `Reveal` also renders one element around its children, and one observer watches that element. Version 4 wrapped each element child in a `div`.
 
-To upgrade, install `@awesome-reveal/react`, or `react-awesome-reveal` v5 if you want to keep the old import path. [Choose the package](/guides/migrate-from-v4/#choose-the-package) compares the two. The [migration guide](/guides/migrate-from-v4/) goes through each step, with the v4 position of each effect. The [v4 docs](/v4/) stay online.
+To upgrade, install `@awesome-reveal/react`, or `react-awesome-reveal@next` (v5) if you want to keep the old import path. [Choose the package](/guides/migrate-from-v4/#choose-the-package) compares the two. The [migration guide](/guides/migrate-from-v4/) goes through each step, with the v4 position of each effect. The [v4 docs](/v4/) stay online.
 
 ## Get started with Awesome Reveal
 

@@ -5,7 +5,7 @@ paths:
 
 # Page titles and descriptions
 
-The frontmatter `title` is the `<h1>` of the page. Put the main search keywords in it. Starlight makes `<title>` from it as `title | Awesome Reveal`, and also uses it for `og:title`. The route middleware in `src/routeData.ts` uses it for the JSON-LD headline. Put the short name of the page in `sidebar.label`, because the sidebar and the previous and next links use it:
+The frontmatter `title` is the `<h1>` of the page. Put the main search keywords in it. Starlight makes `<title>` from it as `title | Awesome Reveal`, and also uses it for `og:title`. When the `title` starts with the product name, such as in a release post, the route middleware removes the `| Awesome Reveal` suffix. Google recommends the site name one time, at the start or the end of `<title>`. The route middleware in `src/routeData.ts` uses it for the JSON-LD headline. Put the short name of the page in `sidebar.label`, because the sidebar and the previous and next links use it:
 
 ```yaml
 title: Staggered list animations with Cascade
@@ -22,7 +22,6 @@ sidebar:
 A `title` entry in the frontmatter `head` replaces `<title>`. On current pages, the route middleware also copies it into `og:title` and the JSON-LD headline. Use the entry only in these cases:
 
 - On the home page, the `<h1>` is the hero text, and the `title` is the product name.
-- On a page whose `title` starts with the product name, such as a release post, the entry removes the `| Awesome Reveal` suffix. Google recommends the site name one time, at the start or the end of `<title>`. Copy the `title` into the entry.
 - On archived pages, such as `src/content/docs/v4/`, use the entry only to keep the old `<title>` of the page, as the v4 index does. Without the entry, the `<title>` is the `title` and the product name of the version.
 
 The `archiving-docs-versions` skill (step 7 and its checks) and the head title logic in `src/routeData.ts` depend on this convention. When you change the convention, update them in the same change.

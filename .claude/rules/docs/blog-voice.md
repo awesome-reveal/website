@@ -1,6 +1,7 @@
 ---
 paths:
   - "src/content/docs/blog/**/*.mdx"
+  - "src/content/docs/blog/**/*.md"
 ---
 
 # Blog voice
@@ -13,7 +14,7 @@ A post speaks as its author to a developer. The [Google developer style guide](h
 - Use everyday words, contractions and common phrasal verbs: "once", "it's", "set up".
 - Keep most sentences short, and vary their length.
 - Start with the news. Then tell the problem, the decision and the result. Give concrete numbers, and link to the docs for the details.
-- Write each heading as a neutral topic with the search words, such as "Why Awesome Reveal 1.0 is a rewrite". Keep headings in the third person.
+- Write each heading as a neutral topic with the search words, such as "Why Awesome Reveal 1.0 is a rewrite". Write headings without the first person.
 
 Readers of the blog come from many cultures and read English at different levels. Keep these parts of STE:
 
