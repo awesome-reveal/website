@@ -123,17 +123,17 @@ Awesome Reveal fits landing pages, marketing sites, docs and other content pages
 
 Version 1.0 changes the API on purpose. Here are the main changes for React code:
 
-| react-awesome-reveal v4                       | Awesome Reveal 1.0                           |
-| --------------------------------------------- | -------------------------------------------- |
-| `Fade`, `Slide`, `Zoom` and the other effects | `Reveal`, with `from` or native `keyframes`  |
-| Emotion `keyframes`                           | Native keyframe objects                      |
-| The `cascade` prop                            | The `Cascade` component                      |
-| `damping`                                     | `interval` on `Cascade`, in milliseconds     |
-| `fraction`                                    | `threshold`                                  |
-| `triggerOnce`                                 | Removed. The entrance plays once.            |
-| `onVisibilityChange`                          | `onReveal`                                   |
-| A `duration` of 1000 milliseconds             | A `duration` of 600 milliseconds             |
-| `reverse`                                     | Removed. Version 1.0 has no exit animations. |
+| react-awesome-reveal v4                       | Awesome Reveal 1.0                            |
+| --------------------------------------------- | --------------------------------------------- |
+| `Fade`, `Slide`, `Zoom` and the other effects | `Reveal`, with `from` or native `keyframes`   |
+| Emotion `keyframes`                           | Native keyframe objects                       |
+| The `cascade` prop                            | The `Cascade` component                       |
+| `damping`                                     | `interval` on `Cascade`, in milliseconds      |
+| `fraction`                                    | `threshold`                                   |
+| `triggerOnce`                                 | Removed. By default, the entrance plays once. |
+| `onVisibilityChange`                          | `onReveal`                                    |
+| A `duration` of 1000 milliseconds             | A `duration` of 600 milliseconds              |
+| `reverse`                                     | Removed. Version 1.0 has no exit animations.  |
 
 `Reveal` also renders one element around its children, and one observer watches that element. Version 4 wrapped each element child in a `div`.
 
