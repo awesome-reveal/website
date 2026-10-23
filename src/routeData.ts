@@ -3,17 +3,19 @@ import {
   type StarlightRouteData,
 } from "@astrojs/starlight/route-data";
 import type { APIContext } from "astro";
-import {
-  type BlogPost,
-  getOgImageUrl,
-  isBlogPage,
-  isBlogPost,
-} from "./lib/blog";
+import { type BlogPost, isBlogPage, isBlogPost } from "./lib/blog";
 import {
   getMarkdownPath,
   getMarkdownSlug,
   hasMarkdownVersion,
 } from "./lib/markdown-slug";
+import {
+  getOgImage,
+  getOgImageUrl,
+  homeOgImage,
+  type OgImage,
+} from "./lib/og-card";
+import { ogImageSize } from "./lib/og-image";
 import { buildStructuredData } from "./lib/structured-data";
 import { findArchivedVersion, getArchivedSiteTitle } from "./lib/versions";
 import { siteConfig } from "./site.config";
@@ -36,7 +38,10 @@ export const onRequest = defineRouteMiddleware(async (context, next) => {
       getBlogListDescription(route),
     );
   }
-  if (!hasMarkdown) return;
+  if (!hasMarkdown) {
+    addOgImageMeta(route.head, homeOgImage, context.site);
+    return;
+  }
   const archivedVersion = findArchivedVersion(route.id);
   const headTitle = getHeadTitle(route.entry);
 
@@ -47,11 +52,14 @@ export const onRequest = defineRouteMiddleware(async (context, next) => {
   } else if (route.entry.data.title.startsWith(siteConfig.name)) {
     replaceTitleSuffix(route.head, ` | ${route.siteTitle}`, "");
   }
+  // setOgTitle moves og:title before the frontmatter metas, so the image metas come after it.
+  const ogImage = getOgImage(route.entry);
+  addOgImageMeta(route.head, ogImage, context.site);
   addMarkdownLinks(route.head, route.id);
   if (isBlogPost(route.entry)) {
-    setPostMeta(route.head, route.entry, route.lastUpdated, context.site);
+    setPostMeta(route.head, route.entry, route.lastUpdated);
   }
-  if (!archivedVersion) addStructuredData(route, context, headTitle);
+  if (!archivedVersion) addStructuredData(route, context, headTitle, ogImage);
 });
 
 // Production builds skip draft pages, so a group of drafts has no entries.
@@ -83,12 +91,8 @@ function setPostMeta(
   head: Head,
   post: BlogPost<Entry>,
   lastUpdated: Date | undefined,
-  site: URL | undefined,
 ) {
-  const { title, date, tags = [] } = post.data;
-  const image = getOgImageUrl(post, site);
-  setMetaContent(head, ["og:image", "twitter:image"], image);
-  setMetaContent(head, ["og:image:alt", "twitter:image:alt"], title);
+  const { date, tags = [] } = post.data;
   const article = [
     ["published_time", date.toISOString()],
     ["modified_time", (lastUpdated ?? date).toISOString()],
@@ -101,6 +105,30 @@ function setPostMeta(
       attrs: { property: `article:${key}`, content },
     });
   }
+}
+
+function addOgImageMeta(head: Head, image: OgImage, site: URL | undefined) {
+  // A page can set its own image with og:image in the head frontmatter.
+  if (head.some((tag) => tag.attrs?.property === "og:image")) return;
+  const url = getOgImageUrl(image, site);
+  const openGraph = {
+    "og:image": url,
+    "og:image:alt": image.alt,
+    "og:image:type": "image/png",
+    "og:image:width": String(ogImageSize.width),
+    "og:image:height": String(ogImageSize.height),
+  };
+  const twitter = { "twitter:image": url, "twitter:image:alt": image.alt };
+  head.push(
+    ...Object.entries(openGraph).map(([property, content]) => ({
+      tag: "meta" as const,
+      attrs: { property, content },
+    })),
+    ...Object.entries(twitter).map(([name, content]) => ({
+      tag: "meta" as const,
+      attrs: { name, content },
+    })),
+  );
 }
 
 function getHeadTitle(entry: Entry) {
@@ -161,6 +189,7 @@ function addStructuredData(
   route: StarlightRouteData,
   { url, site }: APIContext,
   headTitle: string | undefined,
+  ogImage: OgImage,
 ) {
   const { id, head, entry, lastUpdated } = route;
   head.push({
@@ -178,7 +207,7 @@ function addStructuredData(
               published: entry.data.date,
               modified: lastUpdated,
               tags: entry.data.tags ?? [],
-              image: getOgImageUrl(entry, site),
+              image: getOgImageUrl(ogImage, site),
             }
           : undefined,
       }),

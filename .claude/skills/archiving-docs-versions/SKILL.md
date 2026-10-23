@@ -14,7 +14,7 @@ description: Archives the current docs as a version with starlight-versions, so 
 5. Run `pnpm exec prettier --write src/content/docs/<slug>`.
 6. Run `pnpm build` again. Check that the rendered text of each archived page did not change, for example with a text diff of the built HTML against the copy.
 7. The plugin copies the frontmatter, so the archived pages have the same `<h1>` and `<title>` as the current pages. In each archived page, replace `title` with the value of `sidebar.label`, and remove `sidebar.label`. Also remove the `title` entries of `head`.
-8. If the archived version has a different product name, add it to `archivedSiteTitles` in `src/lib/versions.ts`. The route middleware then puts it in the `<title>` suffix and `og:site_name` of the archived pages.
+8. If the archived version has a different product name, add it to `archivedSiteTitles` in `src/lib/versions.ts`. The route middleware then puts it in the `<title>` suffix and `og:site_name` of the archived pages, and `src/lib/og-card.ts` puts it in the label of their OG cards.
 9. Read the notices in `src/content/i18n/en.json`. One key serves all archived versions through `{{slug}}`, so the text must fit each of them. If it names the package of one version only, rewrite it.
 
 ## Check

@@ -1,14 +1,17 @@
-import type { APIRoute, GetStaticPaths } from "astro";
-import { getBlogPosts, getOgImageSlug } from "../../lib/blog";
-import { renderPostOgImage } from "../../lib/og-image";
+import type { APIRoute, InferGetStaticPropsType } from "astro";
+import { getMarkdownEntries } from "../../lib/markdown-slug";
+import { getOgImage } from "../../lib/og-card";
+import { renderOgImage } from "../../lib/og-image";
 
-export const getStaticPaths = (async () =>
-  (await getBlogPosts()).map((post) => ({
-    params: { slug: getOgImageSlug(post) },
-    props: { title: post.data.title },
-  }))) satisfies GetStaticPaths;
+export const getStaticPaths = async () =>
+  (await getMarkdownEntries()).map(getOgImage).map(({ slug, card }) => ({
+    params: { slug },
+    props: { card },
+  }));
 
-export const GET: APIRoute = async ({ props }) =>
-  new Response(await renderPostOgImage(props.title), {
+export const GET: APIRoute<
+  InferGetStaticPropsType<typeof getStaticPaths>
+> = async ({ props }) =>
+  new Response(await renderOgImage(props.card), {
     headers: { "Content-Type": "image/png" },
   });

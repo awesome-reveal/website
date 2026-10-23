@@ -14,6 +14,14 @@ export const siteConfig = {
     name: "Dennis Morello",
     url: "https://morello.dev/",
   },
+  // The OG card of a page shows the label of its group.
+  sidebarGroups: [
+    { label: "Guides", directory: "guides" },
+    { label: "Frameworks", directory: "frameworks" },
+    { label: "Concepts", directory: "concepts" },
+    { label: "Reference", directory: "reference" },
+    { label: "Help", directory: "help" },
+  ],
   sponsorUrl: "https://github.com/sponsors/morellodev",
   blog: {
     title: "Blog",
