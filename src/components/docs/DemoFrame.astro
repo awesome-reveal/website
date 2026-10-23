@@ -28,33 +28,48 @@ if (options.length > 0 && !options.includes(selected)) {
   );
 }
 const hasToolbar = options.length > 0 || replay;
+// The RSS feed and llms-full.txt render entries outside a route, where this getter can throw.
+function hasStarlightRoute(locals: typeof Astro.locals) {
+  try {
+    return Boolean(locals.starlightRoute);
+  } catch {
+    return false;
+  }
+}
+const inFeed = !hasStarlightRoute(Astro.locals);
 ---
 
-<div class="demo-frame">
-  <figure class="not-content" aria-label={title} data-markdown-ignore>
-    <div class="stage">
-      <slot />
-    </div>
-    {hasToolbar && (
-      <div class="toolbar">
-        {options.length > 0 && (
-          <ChoiceControl
-            id={id}
-            name={name}
-            selected={selected}
-            options={options.map((value) => ({ value }))}
-          />
-        )}
-        {replay && <ReplayButton class="toolbar-end" title={title} />}
+{inFeed ? (
+  <p data-markdown-ignore>
+    <em>Open the post on the website to try the interactive demo.</em>
+  </p>
+) : (
+  <div class="demo-frame">
+    <figure class="not-content" aria-label={title} data-markdown-ignore>
+      <div class="stage">
+        <slot />
       </div>
-    )}
-    <p class="motion-note">
-      Your device asks for reduced motion, so the content shows with no
-      animation. {motionNote}
-    </p>
-  </figure>
-  <slot name="code" />
-</div>
+      {hasToolbar && (
+        <div class="toolbar">
+          {options.length > 0 && (
+            <ChoiceControl
+              id={id}
+              name={name}
+              selected={selected}
+              options={options.map((value) => ({ value }))}
+            />
+          )}
+          {replay && <ReplayButton class="toolbar-end" title={title} />}
+        </div>
+      )}
+      <p class="motion-note">
+        Your device asks for reduced motion, so the content shows with no
+        animation. {motionNote}
+      </p>
+    </figure>
+    <slot name="code" />
+  </div>
+)}
 
 <script>
   import { getReveal } from "@awesome-reveal/astro";

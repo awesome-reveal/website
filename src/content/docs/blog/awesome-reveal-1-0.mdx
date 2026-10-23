@@ -1,43 +1,61 @@
 ---
-title: Awesome Reveal 1.0 for React, Vue and Astro
-description: Awesome Reveal 1.0 adds scroll animations to React, Vue, Astro and JavaScript. Read the new features, and upgrade from react-awesome-reveal v4 to v5.
+title: "Awesome Reveal 1.0 RC: scroll animations for React, Vue and Astro"
+description: Awesome Reveal 1.0 RC adds scroll reveal animations to React, Vue, Astro and JavaScript, with native browser APIs, no dependencies and reduced motion support.
 date: 2026-10-23
 authors: dennis
 tags:
   - Release
-excerpt: Awesome Reveal 1.0 is the successor of react-awesome-reveal. One core with no dependencies runs in React, Vue, Astro and plain JavaScript. It uses native Web Animations and obeys reduced motion. The React, Vue and Astro packages do not flash with server rendering.
+excerpt: Awesome Reveal 1.0 brings scroll reveal animations to React, Vue, Astro and plain JavaScript. It's built on native browser APIs, has no dependencies and supports reduced motion. The release candidate is on npm now.
 ---
 
 import { Aside } from "@astrojs/starlight/components";
+import CascadeDemo from "../../../components/docs/CascadeDemo.astro";
+import EntranceDemo from "../../../components/docs/EntranceDemo.astro";
 import FrameworkTabs from "../../../components/docs/FrameworkTabs.astro";
 import revealReact from "../../../snippets/getting-started/hero-title.jsx?raw";
 import revealVue from "../../../snippets/getting-started/hero-title.vue?raw";
 import revealAstro from "../../../snippets/getting-started/hero-title.astro?raw";
 import revealJs from "../../../snippets/getting-started/hero-title.js?raw";
 
-Awesome Reveal 1.0 is the successor of `react-awesome-reveal`. It animates elements when they scroll into view. `react-awesome-reveal` v4 was a React library. Version 1.0 has one core with no dependencies, and a package for each of React, Vue, Astro and plain JavaScript.
-
-This post tells you what is new in 1.0 and what changed from `react-awesome-reveal` v4.
+Awesome Reveal 1.0 is out as a release candidate. It animates elements as they scroll into view: wrap an element in `Reveal`, and it fades in when it enters the viewport. It now works in React, Vue, Astro and plain JavaScript, and its core has no dependencies.
 
 <Aside type="note" title="Release candidate">
-  The `@awesome-reveal/*` packages are a release candidate of version 1.0. The
-  API is frozen. Until the stable release, only fixes change the packages. Tell
-  us what works and what does not in [GitHub
-  Discussions](https://github.com/awesome-reveal/awesome-reveal/discussions).
+  The `@awesome-reveal/*` packages are a release candidate. The API is frozen,
+  so only fixes will change the packages before the stable release.
 </Aside>
 
-## The packages
+- **New to Awesome Reveal?** [Try the demos](#scroll-reveal-demos), then [add it to your project](#add-scroll-animations-in-react-vue-astro-or-javascript).
+- **Coming from `react-awesome-reveal` v4?** Read [what changed](#what-changed-from-react-awesome-reveal-v4), then follow the [migration guide](/guides/migrate-from-v4/).
 
-- [`@awesome-reveal/react`](/reference/react/), for React 18 or 19: `Reveal`, `Cascade`, `useReveal` and `useCascade`.
-- [`@awesome-reveal/vue`](/reference/vue/), for Vue 3.5 or later: `Reveal`, `Cascade`, `vReveal` and `vCascade`.
-- [`@awesome-reveal/astro`](/reference/astro/), for Astro 6 or 7: `Reveal`, `Cascade` and `getReveal`.
-- [`@awesome-reveal/core`](/reference/javascript/), for any JavaScript: `reveal()` and `cascade()`.
+## Scroll reveal demos
 
-The framework packages use the same core, so the options and the animations are the same in each framework. The [requirements](/getting-started/#requirements) list the supported framework and Node.js versions. Install the package for your framework:
+Pick an entrance. The replay button plays it again, and the tabs show the code for each framework.
+
+<EntranceDemo
+  id="entrance"
+  title="Entrances"
+  selected="Bottom"
+  options={[
+    { label: "Bottom", from: "bottom" },
+    { label: "Left", from: "left" },
+    { label: "Zoom", from: { opacity: 0, scale: 0.8 } },
+    { label: "Blur", from: { opacity: 0, blur: 8 } },
+  ]}
+/>
+
+[`Cascade`](/guides/lists/) reveals its direct children one after another. Pick the interval between two children:
+
+<CascadeDemo id="cascade" title="A staggered list" intervals={[0, 80, 160]} />
+
+If your system asks for reduced motion, the demos show the content at once, with no animation.
+
+## Add scroll animations in React, Vue, Astro or JavaScript
+
+Install the package for your framework:
 
 <FrameworkTabs install />
 
-Then wrap an element in `Reveal`. With `@awesome-reveal/core`, call `reveal()`.
+Then wrap an element in `Reveal`. With `@awesome-reveal/core`, call `reveal()` instead.
 
 <FrameworkTabs
   react={revealReact}
@@ -46,17 +64,33 @@ Then wrap an element in `Reveal`. With `@awesome-reveal/core`, call `reveal()`.
   js={revealJs}
 />
 
-When the element enters the viewport, it fades in and moves up 24 pixels. The [getting started guide](/getting-started/) shows all the steps. For a framework setup, see the [Next.js](/frameworks/nextjs/), [Nuxt](/frameworks/vue-ssr-nuxt/) and [Astro](/frameworks/astro/) pages.
+When the element enters the viewport, it fades in and moves up 24 pixels. The [getting started guide](/getting-started/) covers every step and the [requirements](/getting-started/#requirements). For framework setup, see the [Next.js](/frameworks/nextjs/), [Nuxt](/frameworks/vue-ssr-nuxt/) and [Astro](/frameworks/astro/) pages.
 
-## What is new in 1.0
+## Why Awesome Reveal 1.0 is a rewrite
 
-### Native Web Animations
+`react-awesome-reveal` v4 worked only in React. It built its CSS animations with Emotion and had one component per effect: `Fade`, `Slide`, `Zoom` and more. It already used the Intersection Observer API to find elements that enter the viewport. Today, the Web Animations API can play the entrance too, so the library doesn't need CSS-in-JS anymore.
 
-Awesome Reveal 1.0 uses the [Web Animations API](https://developer.mozilla.org/en-US/docs/Web/API/Web_Animations_API) and the [Intersection Observer API](https://developer.mozilla.org/en-US/docs/Web/API/Intersection_Observer_API) of the browser. It does not use Emotion or other CSS-in-JS. It does not listen to scroll events. See [How it works](/concepts/how-it-works/).
+So I rewrote it on these two browser APIs:
+
+- **One core for every framework.** The React, Vue and Astro packages share the same core, so the options and the animations behave the same everywhere.
+- **A smaller API.** `Reveal` and `Cascade` replace the effect components, and the `from` option picks the entrance.
+- **No dependencies.** The core doesn't use Emotion or any other package.
+
+The new packages are published as `@awesome-reveal/*`, and `react-awesome-reveal` v5 re-exports `@awesome-reveal/react`.
+
+## Why choose Awesome Reveal
+
+### A small core with no dependencies
+
+With `reveal()` and `cascade()`, `@awesome-reveal/core` adds less than 2 kB gzipped to your bundle. The measurement doesn't include the React, Vue and Astro packages. Here's [how I measure the size](/concepts/performance/#bundle-size).
+
+### The same API in React, Vue and Astro
+
+Each framework package has a `Reveal` and a `Cascade`, and the JavaScript package has the `reveal()` and `cascade()` functions. The entrance and viewport options, such as `from`, `duration` and `threshold`, have the same names and defaults in every package. The [options reference](/reference/options/#where-you-can-use-each-option) shows where each option works. The [React](/reference/react/), [Vue](/reference/vue/), [Astro](/reference/astro/) and [JavaScript](/reference/javascript/) references list the hooks, directives and functions of each one.
 
 ### Fade, slide, zoom and blur entrances
 
-The [`from`](/reference/options/#from) option sets the start state of the entrance. A side, such as `"left"`, fades the element in and moves it 24 pixels. An object sets a zoom, a rotation or a blur:
+The [`from`](/reference/options/#from) option sets where the entrance starts. A side, such as `"left"`, fades the element in and moves it 24 pixels. An object gives you a zoom, a rotation or a blur:
 
 ```jsx
 import { Reveal } from "@awesome-reveal/react";
@@ -66,63 +100,47 @@ import { Reveal } from "@awesome-reveal/react";
 <Reveal from={{ opacity: 0, blur: 8 }}>Blur in</Reveal>;
 ```
 
-For other effects, give an array of [native keyframes](/guides/keyframes/). See [Entrance animations](/guides/entrances/).
+Need another effect? Pass an array of [native keyframes](/guides/keyframes/). The [entrance animations guide](/guides/entrances/) has more examples.
 
-### Staggered lists
+### Server rendering, accessibility and performance
 
-[`Cascade`](/guides/lists/) reveals its direct children one after the other. The `interval` option sets the time between two children. The default is 80 milliseconds.
+- **Server rendering.** The React, Vue and Astro packages hide the content in the server HTML, so it doesn't flash before the script runs. If no script attaches the element within 5 seconds, the content shows anyway. See [Server rendering without a flash](/concepts/server-rendering/).
+- **Reduced motion.** If the user asks for reduced motion, the content shows at once, with no animation.
+- **Keyboard focus and print.** Content shows when it gets the keyboard focus, and when you print the page. See [Accessible scroll animations](/concepts/accessibility/).
+- **Smooth animations.** No code listens to scroll events, and the default entrances animate only properties that the compositor runs. See [Scroll animation performance](/concepts/performance/).
 
-### No flash with server rendering
+### Manual control, agent skills and TypeScript
 
-The React, Vue and Astro packages render the content as hidden in the server HTML. The content does not show and then disappear before the script runs. If no script attaches the element in 5 seconds, the content shows. See [Server rendering without a flash](/concepts/server-rendering/).
+- **Manual control and events.** In React, Vue and Astro, the `when` option reveals an element from your own state, and a reveal event runs your code when the element reveals. See [Trigger reveal animations manually](/guides/manual-control/) and [Run code when an element reveals](/guides/reveal-events/).
+- **Skills for coding agents.** Each package includes skills for coding agents, such as Claude Code or Codex. For example, the migration skill tells the agent to replace the v4 `cascade` prop with `Cascade`, and to set `interval` to the v4 `duration * damping`. See [AI coding agent skills](/guides/ai-agents/).
+- **TypeScript and ES modules.** The packages include their own TypeScript types, and they're ES modules only.
 
-### Accessible by default
+## When to choose Awesome Reveal
 
-If the user asks for reduced motion, the content shows at once, with no animation. Content also shows when it gets the keyboard focus, and when you print the page. See [Accessible scroll animations](/concepts/accessibility/).
-
-### Small, with no dependencies
-
-`@awesome-reveal/core` has no dependencies. With `reveal()` and `cascade()`, it adds less than 2 kB gzipped to your bundle. See [Scroll animation performance](/concepts/performance/).
-
-### Manual control and events
-
-In React, Vue and Astro, the `when` option reveals an element from your own state, and a reveal event runs your code when the element reveals. See [Trigger reveal animations manually](/guides/manual-control/) and [Run code when an element reveals](/guides/reveal-events/).
-
-### Skills for coding agents
-
-Each package includes agent skills. A skill teaches a coding agent, such as Claude Code or Codex, how to add reveal animations with the package. The React packages also include a skill that teaches the migration from v4. See [AI coding agent skills](/guides/ai-agents/).
-
-### TypeScript and ES modules
-
-The packages include their TypeScript types. They are ES modules only. See the [requirements](/getting-started/#requirements).
+Awesome Reveal fits landing pages, marketing sites, docs and other content pages that need entrance animations and staggered lists. By default, each entrance plays once, when the element scrolls into view. The [`when`](/guides/manual-control/#play-the-entrance-again) option can play it again. For animations linked to the scroll position, use [CSS scroll-driven animations](https://developer.mozilla.org/en-US/docs/Web/CSS/Guides/Scroll-driven_animations). For exit animations and timelines of many steps, use a general animation library.
 
 ## What changed from react-awesome-reveal v4
 
-Version 1.0 changes the API on purpose. These are the main changes for React code:
+Version 1.0 changes the API on purpose. Here are the main changes for React code:
 
-| react-awesome-reveal v4                       | Awesome Reveal 1.0                           |
-| --------------------------------------------- | -------------------------------------------- |
-| `Fade`, `Slide`, `Zoom` and the other effects | `Reveal`, with `from` or native `keyframes`  |
-| Emotion `keyframes`                           | Native keyframe objects                      |
-| The `cascade` prop                            | The `Cascade` component                      |
-| `damping`                                     | `interval` on `Cascade`, in milliseconds     |
-| `fraction`                                    | `threshold`                                  |
-| `triggerOnce`                                 | Removed. The entrance plays one time.        |
-| `onVisibilityChange`                          | `onReveal`                                   |
-| A `duration` of 1000 milliseconds             | A `duration` of 600 milliseconds             |
-| `reverse`                                     | Removed. Version 1.0 has no exit animations. |
+| react-awesome-reveal v4                       | Awesome Reveal 1.0                            |
+| --------------------------------------------- | --------------------------------------------- |
+| `Fade`, `Slide`, `Zoom` and the other effects | `Reveal`, with `from` or native `keyframes`   |
+| Emotion `keyframes`                           | Native keyframe objects                       |
+| The `cascade` prop                            | The `Cascade` component                       |
+| `damping`                                     | `interval` on `Cascade`, in milliseconds      |
+| `fraction`                                    | `threshold`                                   |
+| `triggerOnce`                                 | Removed. By default, the entrance plays once. |
+| `onVisibilityChange`                          | `onReveal`                                    |
+| A `duration` of 1000 milliseconds             | A `duration` of 600 milliseconds              |
+| `reverse`                                     | Removed. Version 1.0 has no exit animations.  |
 
-`Reveal` also renders one element around its children, and one observer watches that element. Version 4 wrapped each child in a `div`.
+`Reveal` also renders one element around its children, and one observer watches that element. Version 4 wrapped each element child in a `div`.
 
-### Upgrade to react-awesome-reveal v5
+To upgrade, install `@awesome-reveal/react`, or `react-awesome-reveal@next` (v5) if you want to keep the old import path. [Choose the package](/guides/migrate-from-v4/#choose-the-package) compares the two. The [migration guide](/guides/migrate-from-v4/) goes through each step, with the v4 position of each effect. The [v4 docs](/v4/) stay online.
 
-Use one of these packages. The two packages give the same API:
+## Get started with Awesome Reveal
 
-- **`@awesome-reveal/react`.** Use it for a new project, and to get all future versions.
-- **`react-awesome-reveal@next`.** Version 5 re-exports `@awesome-reveal/react`, so you can keep the `react-awesome-reveal` import path. Version 5 is the last major version of `react-awesome-reveal`.
+Start with the [getting started guide](/getting-started/). It also has a prompt that you can give your coding agent, so it adds the animations for you.
 
-The [migration guide](/guides/migrate-from-v4/) gives each step, with the v4 position of each effect. The [v4 docs](/v4/) stay online.
-
-## Tell us what you think
-
-The code is on [GitHub](https://github.com/awesome-reveal/awesome-reveal), under the MIT license. Ask questions and give feedback in [GitHub Discussions](https://github.com/awesome-reveal/awesome-reveal/discussions). To follow the next updates, subscribe to the [RSS feed of this blog](/blog/rss.xml).
+The code is on [GitHub](https://github.com/awesome-reveal/awesome-reveal), under the MIT license. I'd like to hear what works and what doesn't, so tell me in [GitHub Discussions](https://github.com/awesome-reveal/awesome-reveal/discussions). To follow the next updates, subscribe to the [RSS feed of this blog](/blog/rss.xml).

@@ -15,6 +15,8 @@ Write the copy in ASD-STE100 Simplified Technical English:
 - Use one word for one meaning. Use the common word ("use", not "utilize").
 - State each fact once, in plain words. Use a contrast ("not X, but Y") only when the reader holds the belief that you correct.
 
+Blog posts use a conversational voice instead of STE. See `blog-voice.md`.
+
 Check each claim about the packages against the `next` branch. See `content-sources.md`.
 
 The archived pages in `src/content/docs/v4/` keep their text. See `archived-versions.md`.

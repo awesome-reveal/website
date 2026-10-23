@@ -44,6 +44,8 @@ export const onRequest = defineRouteMiddleware(async (context, next) => {
     setArchivedSiteTitle(route, archivedVersion.slug, headTitle);
   } else if (headTitle !== undefined) {
     setOgTitle(route, headTitle);
+  } else if (route.entry.data.title.startsWith(siteConfig.name)) {
+    replaceTitleSuffix(route.head, ` | ${route.siteTitle}`, "");
   }
   addMarkdownLinks(route.head, route.id);
   if (isBlogPost(route.entry)) {
