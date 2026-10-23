@@ -9,7 +9,7 @@ Do the update on a branch, for example `build/update-dependencies`.
 
 ## Versions to keep
 
-- Node and pnpm: use the same major versions as the packages repo. Write the versions in `devEngines.runtime` and `devEngines.packageManager` of `package.json`, then run `pnpm install`.
+- Node and pnpm: use the same major versions as the packages repo (its `.nvmrc` and `packageManager`). Write the versions in `devEngines.runtime` and `devEngines.packageManager` of `package.json`, then run `pnpm install`.
 - Workers Builds reads the Node version from `devEngines.runtime`, and Corepack downloads the pnpm version in `devEngines.packageManager`. In the build log, the line `Detected the following tools from environment` shows the Node version, and the `Done in … using pnpm v…` line of the install shows the pnpm version.
 - TypeScript: stay on the highest version that `@astrojs/check` and `typescript-eslint` support. Check their `peerDependencies` with `pnpm view <package> peerDependencies` before you update TypeScript. `typescript-eslint` often allows only some minor versions, for example `<6.1.0`.
 
