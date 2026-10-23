@@ -3,7 +3,12 @@ import {
   type StarlightRouteData,
 } from "@astrojs/starlight/route-data";
 import type { APIContext } from "astro";
-import { getOgImageUrl, isBlogPage, isBlogPost } from "./lib/blog";
+import {
+  type BlogPost,
+  getOgImageUrl,
+  isBlogPage,
+  isBlogPost,
+} from "./lib/blog";
 import {
   getMarkdownPath,
   getMarkdownSlug,
@@ -15,7 +20,6 @@ import { siteConfig } from "./site.config";
 
 type Head = StarlightRouteData["head"];
 type Entry = StarlightRouteData["entry"];
-type Post = Entry & { data: { date: Date } };
 type Sidebar = StarlightRouteData["sidebar"];
 
 export const onRequest = defineRouteMiddleware(async (context, next) => {
@@ -75,7 +79,7 @@ function setMetaContent(head: Head, keys: string[], content: string) {
 
 function setPostMeta(
   head: Head,
-  post: Post,
+  post: BlogPost<Entry>,
   lastUpdated: Date | undefined,
   site: URL | undefined,
 ) {

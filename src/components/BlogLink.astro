@@ -1,11 +1,10 @@
 ---
-import { isBlogPage } from "../lib/blog";
+import { isBlogIndex, isBlogPage } from "../lib/blog";
 import { siteConfig } from "../site.config";
 
-const id = Astro.url.pathname.replace(/^\/|\/$/g, "");
+const { id } = Astro.locals.starlightRoute;
 // "page" only on the index. A post or a tag page is in the blog, but it is not the page of the link.
-const current =
-  `/${id}/` === siteConfig.blog.path ? "page" : isBlogPage(id) || undefined;
+const current = isBlogIndex(id) ? "page" : isBlogPage(id) || undefined;
 ---
 
 <a href={siteConfig.blog.path} aria-current={current}>

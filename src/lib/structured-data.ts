@@ -6,7 +6,7 @@ interface PostData {
   published: Date;
   modified: Date | undefined;
   tags: string[];
-  image: string | undefined;
+  image: string;
 }
 
 interface PageData {

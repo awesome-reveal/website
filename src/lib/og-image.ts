@@ -66,15 +66,23 @@ const css = `
 const escapeHtml = (text: string) =>
   text.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
 
+// Takumi loads each URL once, and takes the family name from the font file.
+const fontURLs = fontVariables.flatMap((cssVariable) =>
+  fontData[cssVariable].flatMap((font) =>
+    font.src.map(({ url }) => getFontFileURL(url)),
+  ),
+);
+
+const renderOptions = { ...ogImageSize, css, fonts: fontURLs };
+
 export async function renderPostOgImage(title: string) {
-  const options = { ...ogImageSize, css, fonts: getFontURLs() };
   for (const size of headlineSizes) {
     const html = cardHtml(title, size);
-    const [, headline] = (await measure(html, options)).children;
+    const [, headline] = (await measure(html, renderOptions)).children;
     if (!headline) throw new Error("The OG card has no headline to measure.");
     const [, , , , , headlineTop] = headline.transform;
     if (headlineTop + headline.height <= maxTextBottom)
-      return render(html, options);
+      return render(html, renderOptions);
   }
   throw new Error(
     `The OG image has no room for the title "${title}". Make the title shorter.`,
@@ -87,11 +95,3 @@ const cardHtml = (title: string, headlineSize: number) => `
     <h1 style="font-size: ${headlineSize}px">${escapeHtml(title)}</h1>
     <img class="mark" src="data:image/svg+xml,${encodeURIComponent(mark)}" />
   </div>`;
-
-// Takumi loads each URL once, and takes the family name from the font file.
-const getFontURLs = () =>
-  fontVariables.flatMap((cssVariable) =>
-    fontData[cssVariable].flatMap((font) =>
-      font.src.map(({ url }) => getFontFileURL(url)),
-    ),
-  );
