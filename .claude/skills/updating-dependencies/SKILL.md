@@ -9,7 +9,7 @@ Do the update on a branch, for example `build/update-dependencies`.
 
 ## Versions to keep
 
-- Node and pnpm: use the same versions as the packages repo (its `.nvmrc` and `packageManager`). To change pnpm, copy the `packageManager` field with its hash. pnpm then downloads and runs that version.
+- Node and pnpm: use the same major versions as the packages repo. Write the versions in `devEngines.runtime` and `devEngines.packageManager` of `package.json`, then run `pnpm install`.
 - Workers Builds reads the Node version from `.nvmrc`, and `pnpm install` downloads the pnpm version in `packageManager`. The build log shows both, in the line `Detected the following tools from environment`.
 - TypeScript: stay on the highest version that `@astrojs/check` and `typescript-eslint` support. Check their `peerDependencies` with `pnpm view <package> peerDependencies` before you update TypeScript. `typescript-eslint` often allows only some minor versions, for example `<6.1.0`.
 
