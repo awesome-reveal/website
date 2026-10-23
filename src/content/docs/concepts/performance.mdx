@@ -22,4 +22,6 @@ Do not add [`will-change`](https://developer.mozilla.org/en-US/docs/Web/CSS/Refe
 
 ## Bundle size
 
-`@awesome-reveal/core` has no dependencies. With `reveal()` and `cascade()`, it adds less than 2 kB gzipped to your bundle. A test in the packages repo checks the size.
+`@awesome-reveal/core` has no dependencies. With `reveal()` and `cascade()`, it adds less than 2 kB gzipped to your bundle.
+
+A [test in the packages repo](https://github.com/awesome-reveal/awesome-reveal/blob/next/packages/core/test/package/tree-shaking.test.ts) checks this size on each change. The test bundles an import of `reveal()` and `cascade()` with a Vite production build, which minifies the code. Then it compresses the bundle with gzip. The size applies only to `@awesome-reveal/core`. The React, Vue and Astro packages use another entry of core, `@awesome-reveal/core/adapter`.

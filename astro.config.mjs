@@ -62,7 +62,7 @@ export default defineConfig({
           description:
             "Awesome Reveal is an open source TypeScript library for scroll reveal animations in React, Vue, Astro and plain JavaScript.",
           details:
-            "The core package has no dependencies. Reveal with one animation is about 2 kB gzipped or less. It uses Intersection Observer and the Web Animations API, and it obeys prefers-reduced-motion. The server renders the content hidden, so the content does not flash before the animation. Packages: @awesome-reveal/react, @awesome-reveal/vue, @awesome-reveal/astro and @awesome-reveal/core. It is the successor of react-awesome-reveal v4.",
+            "The core package has no dependencies. With reveal() and cascade(), the core JavaScript API adds less than 2 kB gzipped. It uses Intersection Observer and the Web Animations API, and it obeys prefers-reduced-motion. The server renders the content hidden, so the content does not flash before the animation. Packages: @awesome-reveal/react, @awesome-reveal/vue, @awesome-reveal/astro and @awesome-reveal/core. It is the successor of react-awesome-reveal v4.",
           optionalLinks: [
             {
               label: "GitHub",

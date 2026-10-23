@@ -13,15 +13,16 @@ sidebar:
   label: Animate a list
 ```
 
-- Start the `title` with the words that people search for, such as the framework, the API or the effect.
-- Write the `title` in 43 characters or fewer, so that `<title>` has 60 characters or fewer.
+- Start the `title` with the words that people search for, such as the framework, the API or the effect. [Google](https://developers.google.com/search/docs/appearance/title-link) and [Bing](https://blogs.bing.com/webmaster/2014/6/How-Does-Bing-Choose-The-Title-For-My-Web-Page/) set no length limit, but they truncate a long title link to the available width.
+- Make the `title` descriptive and concise. Write each search term one time.
 - Use sentence case, as the section headings do. Keep the capitals of names, such as `Cascade` and `Next.js`.
 - Give each page a different `title`.
 - Write the `description` in 140–160 characters. Use the keywords of the page, and describe only what the page contains.
 
-A `title` entry in the frontmatter `head` replaces `<title>`. On current pages, the route middleware also copies it into `og:title` and the JSON-LD headline. Use the entry only where `<title>` must be different from the `<h1>`:
+A `title` entry in the frontmatter `head` replaces `<title>`. On current pages, the route middleware also copies it into `og:title` and the JSON-LD headline. Use the entry only in these cases:
 
 - On the home page, the `<h1>` is the hero text, and the `title` is the product name.
+- On a page whose `title` starts with the product name, such as a release post, the entry removes the `| Awesome Reveal` suffix. Google recommends the site name one time, at the start or the end of `<title>`. Copy the `title` into the entry.
 - On archived pages, such as `src/content/docs/v4/`, use the entry only to keep the old `<title>` of the page, as the v4 index does. Without the entry, the `<title>` is the `title` and the product name of the version.
 
 The `archiving-docs-versions` skill (step 7 and its checks) and the head title logic in `src/routeData.ts` depend on this convention. When you change the convention, update them in the same change.
