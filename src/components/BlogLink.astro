@@ -1,0 +1,32 @@
+---
+import { siteConfig } from "../site.config";
+
+const { pathname } = Astro.url;
+// "page" only on the index. A post or a tag page is in the blog, but it is not the page of the link.
+const current =
+  pathname === siteConfig.blog.path
+    ? "page"
+    : pathname.startsWith(siteConfig.blog.path) || undefined;
+---
+
+<a href={siteConfig.blog.path} aria-current={current}>
+  {siteConfig.blog.title}
+</a>
+
+<style>
+  a {
+    display: flex;
+    align-items: center;
+    min-block-size: var(--header-button-size);
+    padding-inline: var(--space-1);
+    color: var(--sl-color-gray-2);
+    font-size: var(--sl-text-sm);
+    font-weight: 600;
+    text-decoration: none;
+
+    &:hover,
+    &[aria-current] {
+      color: var(--sl-color-white);
+    }
+  }
+</style>

@@ -11,4 +11,10 @@ export const siteConfig = {
     url: "https://morello.dev/",
   },
   sponsorUrl: "https://github.com/sponsors/morellodev",
+  blog: {
+    title: "Blog",
+    path: "/blog/",
+    description:
+      "Release notes, migration guides and news about Awesome Reveal, the open source scroll reveal animation library for React, Vue, Astro and JavaScript.",
+  },
 };

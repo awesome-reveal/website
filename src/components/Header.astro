@@ -1,4 +1,5 @@
 ---
+import BlogLink from "./BlogLink.astro";
 import SocialIcons from "./SocialIcons.astro";
 import VersionSelect from "./VersionSelect.astro";
 // The plugin's Search override limits the search to the version of the page.
@@ -15,8 +16,11 @@ import ThemeToggle from "./ThemeToggle.astro";
     <Search />
   </div>
   <div class="controls print:hidden">
-    <div class="versions">
-      <VersionSelect />
+    <div class="links">
+      <BlogLink />
+      <div class="version-select">
+        <VersionSelect />
+      </div>
     </div>
     <div class="social-icons">
       <SocialIcons variant="header-button" />
@@ -95,13 +99,27 @@ import ThemeToggle from "./ThemeToggle.astro";
     display: flex;
   }
 
-  .versions {
+  .links {
+    display: flex;
+    align-items: center;
+    gap: var(--space-3);
+    margin-inline: var(--space-1);
+  }
+
+  .version-select {
     display: none;
   }
 
   /* With the menu button, the title needs this space on narrow phones. The menu footer shows the icons there. */
   @media (max-width: 24.99rem) {
     :global(:root[data-has-sidebar]) .social-icons {
+      display: none;
+    }
+  }
+
+  /* The menu footer shows the links. Pages without a sidebar have no menu, so the header keeps the blog link. */
+  @media (max-width: 49.99rem) {
+    :global(:root[data-has-sidebar]) .links {
       display: none;
     }
   }
@@ -165,9 +183,8 @@ import ThemeToggle from "./ThemeToggle.astro";
       border-radius: 1rem;
     }
 
-    .versions {
+    .version-select {
       display: flex;
-      margin-inline-end: var(--space-2);
     }
   }
 </style>

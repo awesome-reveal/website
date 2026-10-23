@@ -1,11 +1,15 @@
 ---
+import BlogLink from "./BlogLink.astro";
 import SocialIcons from "./SocialIcons.astro";
 import VersionSelect from "./VersionSelect.astro";
 ---
 
 <div class="mobile-preferences">
-  <div class="social-icons">
-    <SocialIcons />
+  <div class="links">
+    <BlogLink />
+    <div class="social-icons">
+      <SocialIcons />
+    </div>
   </div>
   <VersionSelect />
 </div>
@@ -13,13 +17,20 @@ import VersionSelect from "./VersionSelect.astro";
 <style>
   .mobile-preferences {
     display: flex;
+    align-items: center;
+    justify-content: space-between;
     padding-block: var(--space-2);
     border-top: 1px solid var(--sl-color-hairline-light);
   }
 
+  .links {
+    display: flex;
+    align-items: center;
+    gap: var(--space-5);
+  }
+
   .social-icons {
     display: none;
-    margin-inline-end: auto;
   }
 
   @media (max-width: 24.99rem) {

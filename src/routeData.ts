@@ -10,6 +10,7 @@ import {
 } from "./lib/markdown-slug";
 import { buildStructuredData } from "./lib/structured-data";
 import { findArchivedVersion, getArchivedSiteTitle } from "./lib/versions";
+import { siteConfig } from "./site.config";
 
 type Head = StarlightRouteData["head"];
 type Entry = StarlightRouteData["entry"];
@@ -20,7 +21,11 @@ export const onRequest = defineRouteMiddleware(async (context, next) => {
   // starlight-versions runs later and replaces the sidebar with the one of the current version.
   await next();
   route.sidebar = removeEmptyGroups(route.sidebar);
-  if (!hasMarkdownVersion(route.id)) return;
+  const hasMarkdown = await hasMarkdownVersion(route.id);
+  if (isBlogPage(route.id) && !hasMarkdown) {
+    setDescription(route.head, getBlogListDescription(route));
+  }
+  if (!hasMarkdown) return;
   const archivedVersion = findArchivedVersion(route.id);
   const headTitle = getHeadTitle(route.entry);
 
@@ -38,6 +43,27 @@ function removeEmptyGroups(sidebar: Sidebar): Sidebar {
   return sidebar.filter(
     (item) => item.type !== "group" || item.entries.length > 0,
   );
+}
+
+const isBlogPage = (id: string) => `/${id}/`.startsWith(siteConfig.blog.path);
+
+// The blog plugin renders its lists with the description of the site.
+function getBlogListDescription({ id, entry }: StarlightRouteData) {
+  const [list] = `/${id}/`.slice(siteConfig.blog.path.length).split("/");
+  const { title } = entry.data;
+  if (list === "tags")
+    return `Awesome Reveal blog posts with the tag ${title}.`;
+  if (list === "authors") return `Awesome Reveal blog posts by ${title}.`;
+  return siteConfig.blog.description;
+}
+
+function setDescription(head: Head, description: string) {
+  for (const tag of head) {
+    const isDescription =
+      tag.attrs?.name === "description" ||
+      tag.attrs?.property === "og:description";
+    if (isDescription && tag.attrs) tag.attrs.content = description;
+  }
 }
 
 function getHeadTitle(entry: Entry) {
@@ -100,10 +126,11 @@ function addMarkdownLinks(head: Head, id: string) {
 }
 
 function addStructuredData(
-  { id, head, entry }: StarlightRouteData,
+  route: StarlightRouteData,
   { url, site }: APIContext,
   headTitle: string | undefined,
 ) {
+  const { id, head, entry } = route;
   head.push({
     tag: "script",
     attrs: { type: "application/ld+json" },
@@ -114,7 +141,24 @@ function addStructuredData(
         description: entry.data.description,
         url: new URL(url.pathname, site).href,
         siteUrl: new URL("/", site).href,
+        post: isBlogPage(id) ? getPostData(route) : undefined,
       }),
     ),
   });
+}
+
+function getPostData({
+  entry: { data },
+  head,
+  lastUpdated,
+}: StarlightRouteData) {
+  if (!data.date) return undefined;
+  const image = head.find((tag) => tag.attrs?.property === "og:image")?.attrs
+    ?.content;
+  return {
+    published: data.date,
+    modified: lastUpdated,
+    tags: data.tags ?? [],
+    image: typeof image === "string" ? image : undefined,
+  };
 }
