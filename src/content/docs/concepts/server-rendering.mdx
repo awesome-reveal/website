@@ -29,6 +29,8 @@ The stylesheet does not hide a waiting element with a static rule. It plays the 
 
 If no script attaches the element in 5 seconds, the hold ends, and the content shows. Thus the content does not stay hidden when a script fails to load or throws.
 
+While focus is in the element or in the cascade container, the content shows. Thus a keyboard user does not focus invisible content before the script attaches it. After a blur, the hold continues until its 5 seconds end.
+
 If the script attaches the element after 5 seconds, the content shows, then hides again until it reveals. Lazy hydration often attaches the element that late. Hydrate the reveal content eagerly.
 
 ## When the stylesheet does not hide content

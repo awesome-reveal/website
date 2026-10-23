@@ -31,6 +31,8 @@ Hydrate the reveal content eagerly:
 - **React or Vue in an Astro island:** use [`client:load`](/frameworks/react-vue-astro/#hydrate-the-island-with-clientload), not `client:visible`.
 - **Vue and Nuxt:** do not use [lazy hydration](/frameworks/vue-ssr-nuxt/#hydrate-the-reveals-eagerly) for components with a reveal.
 
+Focus can also cause it. Server markup shows while focus is in it, and the hold continues after a blur. This is on purpose.
+
 ## The content shows before the entrance
 
 - **The JavaScript API does not hide content before your script runs.** Server-rendered content shows, then animates. See [The JavaScript API](/concepts/server-rendering/#the-javascript-api).
@@ -43,7 +45,7 @@ The content also shows immediately when the user asks for reduced motion, prints
 ## The content shows with no animation
 
 - **The user asks for reduced motion.** See [Reduced motion](/concepts/accessibility/#reduced-motion).
-- **Focus moved into the waiting element.** Focus reveals it immediately. See [Focus](/concepts/accessibility/#focus).
+- **Focus moved into the element before or during the entrance.** Focus reveals a waiting element immediately, and it finishes a running entrance. See [Focus](/concepts/accessibility/#focus).
 - **The browser rejected an option.** An invalid easing or duration shows the element with no animation. See [Errors](/concepts/how-it-works/#errors).
 - **A cascade child cannot animate.** In React, Vue and Astro, a child that you add after the reveal shows with no animation. An Astro island or an Astro `Reveal` as a direct child of a cascade does not get the entrance of the cascade. See [Things to know](/guides/lists/#things-to-know). In the JavaScript API, a child that you add after the `cascade()` call shows with no animation. See [Targets](/reference/javascript/#targets).
 - **In Astro, the HTML parser moved the element.** See [Where to place a reveal](/frameworks/astro/#where-to-place-a-reveal).
@@ -61,7 +63,7 @@ The last keyframe is different from the resting style of the element. See [End a
 
 ## Your code waits for animations that never finish
 
-A waiting entrance of `reveal()` or `cascade()` never finishes. See [Wait for the end of the entrance](/guides/reveal-events/#wait-for-the-end-of-the-entrance).
+A waiting entrance of `reveal()` or `cascade()` never finishes. An animation of your own that repeats forever also never finishes. See [Wait for the end of the entrance](/guides/reveal-events/#wait-for-the-end-of-the-entrance).
 
 ## The build fails
 

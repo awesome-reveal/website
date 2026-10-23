@@ -1,6 +1,7 @@
 import { docsLoader, i18nLoader } from "@astrojs/starlight/loaders";
 import { docsSchema, i18nSchema } from "@astrojs/starlight/schema";
 import { defineCollection } from "astro:content";
+import { glob } from "astro/loaders";
 import { z } from "astro/zod";
 import { docsVersionsLoader } from "starlight-versions/loader";
 
@@ -22,6 +23,14 @@ export const collections = {
             "Show the page footer: the edit link, the last-updated date, the pagination and the site credits.",
           ),
       }),
+    }),
+  }),
+  prompts: defineCollection({
+    loader: glob({ pattern: "*.md", base: "./src/content/prompts" }),
+    schema: z.object({
+      title: z
+        .string()
+        .describe("The title of the aside that offers the prompt."),
     }),
   }),
   i18n: defineCollection({ loader: i18nLoader(), schema: i18nSchema() }),

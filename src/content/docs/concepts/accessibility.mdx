@@ -23,7 +23,9 @@ To test, emulate `prefers-reduced-motion` in the developer tools of your browser
 
 Focus in a waiting element reveals it immediately, with no entrance. Thus a keyboard user does not focus invisible content. Focus in a waiting cascade container reveals all its children.
 
-Focus does not shorten an entrance that already started, or its [delay](/guides/timing/#delay-the-entrance). Thus keep `delay` and `interval` short.
+Focus during the [delay](/guides/timing/#delay-the-entrance) or the entrance finishes the entrance immediately. In a cascade, focus in the container also finishes the entrances of the children that wait for their interval.
+
+In React, Vue and Astro, server markup also shows while focus is in it, before the script attaches it. See [The 5 second hold](/concepts/server-rendering/#the-5-second-hold).
 
 In React, Vue and Astro, focus does not reveal an element while `when` is `false`.
 

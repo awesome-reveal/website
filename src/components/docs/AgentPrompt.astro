@@ -1,0 +1,53 @@
+---
+import { Aside } from "@astrojs/starlight/components";
+import { getPrompt } from "../../lib/prompts";
+import CopyButton from "../CopyButton.astro";
+
+interface Props {
+  promptId: string;
+}
+
+const { title, text } = await getPrompt(Astro.props.promptId);
+---
+
+<div class="agent-prompt" data-markdown-ignore data-pagefind-ignore>
+  <Aside type="tip" title={title}>
+    <slot>
+      <p>Copy the prompt, and paste it into your AI agent.</p>
+    </slot>
+    <CopyButton
+      class="copy-prompt not-content"
+      text={text}
+      copiedMessage="Prompt copied"
+    >
+      Copy prompt
+    </CopyButton>
+  </Aside>
+</div>
+
+<style>
+  @media (scripting: none) {
+    .agent-prompt {
+      display: none;
+    }
+  }
+  .copy-prompt {
+    box-sizing: border-box;
+    height: 1.875rem;
+    margin-block-start: var(--space-4);
+    padding-inline: var(--space-3);
+    border: 1px solid var(--sl-color-white);
+    border-radius: 999px;
+    color: var(--sl-color-white);
+    font-size: var(--sl-text-xs);
+    font-weight: 600;
+    line-height: 1.4;
+    outline-offset: -1px;
+    transition: border-color var(--hover-duration) ease;
+  }
+  @media (hover: hover) {
+    .copy-prompt:hover {
+      border-color: var(--sl-color-text-accent);
+    }
+  }
+</style>

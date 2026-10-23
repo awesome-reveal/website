@@ -39,9 +39,7 @@ The entrance is a set of [Web Animations](https://developer.mozilla.org/en-US/do
 ```js
 function entranceFinished(element) {
   return Promise.all(
-    element
-      .getAnimations({ subtree: true })
-      .map((animation) => animation.finished),
+    element.getAnimations().map((animation) => animation.finished),
   );
 }
 
@@ -53,7 +51,9 @@ entranceFinished(element)
 
 - The promise rejects when the entrance stops early, for example after `when` becomes `false` or an unmount. Catch the rejection.
 - The promise resolves immediately when no entrance plays, for example with reduced motion.
-- The promise also waits for your own animations of the element and its descendants.
+- The promise also waits for your own animations of the element. An animation that repeats forever never finishes, so the promise does not resolve.
+
+For a cascade, call [`getAnimations({ subtree: true })`](https://developer.mozilla.org/en-US/docs/Web/API/Element/getAnimations) on the container, because the children animate. The promise then also waits for the animations of all the descendants.
 
 In the JavaScript API, a waiting entrance is a paused animation, and a paused animation does not finish. If your code waits for all of [`document.getAnimations()`](https://developer.mozilla.org/en-US/docs/Web/API/Document/getAnimations), skip the animations with `playState === "paused"`.
 

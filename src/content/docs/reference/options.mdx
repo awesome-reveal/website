@@ -98,7 +98,7 @@ Only `Cascade`, `useCascade`, `v-cascade` and `cascade()` accept `interval`.
 
 **Type:** `boolean | null`. **No default.**
 
-Controls the entrance [manually](/guides/manual-control/). `true` reveals the element, and `false` resets the entrance, with no exit animation. With no value or `null`, the viewport controls the entrance. To play the entrance again, set `when` to `false`, then to `true`.
+Controls the entrance [manually](/guides/manual-control/). `true` reveals the element, and `false` resets the entrance, with no exit animation. With no value or `null`, the viewport controls the entrance. A change from `true` to `null` keeps the element revealed. To play the entrance again, set `when` to `false`, then to `true`.
 
 `when` does not show or hide content. With `false`, the element is transparent, but screen readers read it and the keyboard can focus its controls. To hide content, also set [`hidden`](https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Global_attributes/hidden), or do not render it. If the user asks for [reduced motion](https://developer.mozilla.org/en-US/docs/Web/CSS/Reference/At-rules/@media/prefers-reduced-motion), the element reveals also when `when` is `false`.
 

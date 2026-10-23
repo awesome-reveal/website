@@ -1,0 +1,139 @@
+---
+import Check from "@lucide/astro/icons/check";
+import Copy from "@lucide/astro/icons/copy";
+import X from "@lucide/astro/icons/x";
+
+type Props = {
+  copiedMessage: string;
+  class?: string;
+} & ({ text: string; textUrl?: never } | { textUrl: string; text?: never });
+
+const { copiedMessage, text, textUrl, class: className } = Astro.props;
+---
+
+<button
+  type="button"
+  class:list={["copy-button", className]}
+  data-text={text}
+  data-text-url={textUrl}
+  data-copied-message={copiedMessage}
+  data-state="idle"
+>
+  <span class="state-icons">
+    <Copy data-icon="idle" />
+    <Check data-icon="copied" />
+    <X data-icon="failed" />
+  </span>
+  <slot />
+</button>
+
+<style>
+  /* Zero specificity, so the class of the parent sets the box. */
+  :where(.copy-button) {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-2);
+    background: none;
+    color: inherit;
+    font: inherit;
+    cursor: pointer;
+  }
+  @media (scripting: none) {
+    button.copy-button {
+      display: none;
+    }
+  }
+  .state-icons {
+    display: grid;
+  }
+  [data-icon] {
+    grid-area: 1 / 1;
+    opacity: 0;
+    scale: 0.25;
+    filter: blur(2px);
+  }
+  [data-state="idle"] [data-icon="idle"],
+  [data-state="copied"] [data-icon="copied"],
+  [data-state="failed"] [data-icon="failed"] {
+    opacity: 1;
+    scale: 1;
+    filter: none;
+  }
+  @media (prefers-reduced-motion: no-preference) {
+    [data-icon] {
+      transition:
+        opacity var(--hover-duration) ease,
+        scale var(--hover-duration) ease,
+        filter var(--hover-duration) ease;
+    }
+  }
+</style>
+
+<script>
+  const liveRegion = document.createElement("div");
+  liveRegion.className = "sr-only";
+  liveRegion.setAttribute("role", "status");
+  document.body.append(liveRegion);
+
+  const fetchText = async (url: string) => {
+    const response = await fetch(url);
+    if (!response.ok) throw new Error(String(response.status));
+    return response.text();
+  };
+
+  // Safari rejects a clipboard write after an await.
+  const writeToClipboard = async (pendingText: Promise<string>) => {
+    if (!("ClipboardItem" in window)) {
+      return navigator.clipboard.writeText(await pendingText);
+    }
+    const pendingBlob = pendingText.then(
+      (text) => new Blob([text], { type: "text/plain" }),
+    );
+    return navigator.clipboard.write([
+      new ClipboardItem({ "text/plain": pendingBlob }),
+    ]);
+  };
+
+  const feedbackDurationMs = 2000;
+  let clearAnnouncementTimer: ReturnType<typeof setTimeout>;
+
+  // Screen readers skip a repeated message unless the region empties first.
+  const announce = (message: string) => {
+    liveRegion.textContent = "";
+    requestAnimationFrame(() => (liveRegion.textContent = message));
+    clearTimeout(clearAnnouncementTimer);
+    clearAnnouncementTimer = setTimeout(
+      () => (liveRegion.textContent = ""),
+      feedbackDurationMs,
+    );
+  };
+
+  for (const button of document.querySelectorAll<HTMLButtonElement>(
+    "button.copy-button",
+  )) {
+    const { text, textUrl, copiedMessage } = button.dataset;
+    let resetStateTimer: ReturnType<typeof setTimeout>;
+
+    const getTextToCopy = () =>
+      textUrl ? fetchText(textUrl) : Promise.resolve(text!);
+
+    const showResult = (state: "copied" | "failed", message: string) => {
+      button.dataset.state = state;
+      announce(message);
+      clearTimeout(resetStateTimer);
+      resetStateTimer = setTimeout(
+        () => (button.dataset.state = "idle"),
+        feedbackDurationMs,
+      );
+    };
+
+    button.addEventListener("click", async () => {
+      try {
+        await writeToClipboard(getTextToCopy());
+        showResult("copied", copiedMessage!);
+      } catch {
+        showResult("failed", "Copy failed");
+      }
+    });
+  }
+</script>

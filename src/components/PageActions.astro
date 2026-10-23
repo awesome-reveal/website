@@ -1,16 +1,14 @@
 ---
-import Check from "@lucide/astro/icons/check";
 import ChevronDown from "@lucide/astro/icons/chevron-down";
-import Copy from "@lucide/astro/icons/copy";
 import FileText from "@lucide/astro/icons/file-text";
-import X from "@lucide/astro/icons/x";
 import ClaudeLogo from "../assets/claude.svg";
 import OpenaiLogo from "../assets/openai.svg";
 import { getMarkdownPath } from "../lib/markdown-slug";
 import { isArchived } from "../lib/versions";
+import CopyButton from "./CopyButton.astro";
 
 const { id } = Astro.locals.starlightRoute;
-const markdown = getMarkdownPath(id);
+const markdownPath = getMarkdownPath(id);
 const prompt = encodeURIComponent(
   `Read ${new URL(Astro.url.pathname, Astro.site).href} so I can ask questions about it.`,
 );
@@ -25,14 +23,13 @@ const askLinks = isArchived(id)
 
 <div class="page-actions" data-markdown-ignore data-pagefind-ignore>
   <div class="split">
-    <button type="button" class="copy" data-copy={markdown} data-state="idle">
-      <span class="icon">
-        <Copy data-icon="idle" />
-        <Check data-icon="copied" />
-        <X data-icon="failed" />
-      </span>
-      <span>Copy page</span>
-    </button>
+    <CopyButton
+      class="copy"
+      textUrl={markdownPath}
+      copiedMessage="Page copied as Markdown"
+    >
+      Copy page
+    </CopyButton>
     <button
       type="button"
       class="more"
@@ -53,7 +50,7 @@ const askLinks = isArchived(id)
       hidden
     >
       <li role="none">
-        <a href={markdown} role="menuitem" tabindex="-1">
+        <a href={markdownPath} role="menuitem" tabindex="-1">
           <FileText />
           View as Markdown
         </a>
@@ -75,7 +72,6 @@ const askLinks = isArchived(id)
       ))}
     </ul>
   </div>
-  <span class="sr-only" role="status" data-status></span>
 </div>
 
 <style>
@@ -117,30 +113,6 @@ const askLinks = isArchived(id)
   .copy {
     padding-inline-start: var(--space-4);
     border-radius: 999px 0 0 999px;
-  }
-  .icon {
-    display: grid;
-  }
-  [data-icon] {
-    grid-area: 1 / 1;
-    opacity: 0;
-    scale: 0.25;
-    filter: blur(2px);
-  }
-  .copy[data-state="idle"] [data-icon="idle"],
-  .copy[data-state="copied"] [data-icon="copied"],
-  .copy[data-state="failed"] [data-icon="failed"] {
-    opacity: 1;
-    scale: 1;
-    filter: none;
-  }
-  @media (prefers-reduced-motion: no-preference) {
-    [data-icon] {
-      transition:
-        opacity var(--hover-duration) ease,
-        scale var(--hover-duration) ease,
-        filter var(--hover-duration) ease;
-    }
   }
   /* The halves overlap by one border, and the active half sits on top to show its whole outline. */
   .more {
@@ -199,51 +171,6 @@ const askLinks = isArchived(id)
 </style>
 
 <script>
-  const button = document.querySelector<HTMLButtonElement>("button[data-copy]");
-  const status = document.querySelector<HTMLElement>("[data-status]");
-
-  if (button && status) {
-    let timer: ReturnType<typeof setTimeout>;
-
-    const show = (state: "copied" | "failed", message: string) => {
-      button.dataset.state = state;
-      status.textContent = message;
-      clearTimeout(timer);
-      timer = setTimeout(() => {
-        button.dataset.state = "idle";
-        status.textContent = "";
-      }, 2000);
-    };
-
-    const fetchText = async (url: string) => {
-      const response = await fetch(url);
-      if (!response.ok) throw new Error(String(response.status));
-      return response.text();
-    };
-
-    // Safari rejects a clipboard write after an await, so the write takes the pending text.
-    const writeClipboardText = async (text: Promise<string>) => {
-      if (!("ClipboardItem" in window)) {
-        return navigator.clipboard.writeText(await text);
-      }
-      const blob = text.then(
-        (value) => new Blob([value], { type: "text/plain" }),
-      );
-      return navigator.clipboard.write([
-        new ClipboardItem({ "text/plain": blob }),
-      ]);
-    };
-
-    button.addEventListener("click", async () => {
-      try {
-        await writeClipboardText(fetchText(button.dataset.copy!));
-        show("copied", "Page copied as Markdown");
-      } catch {
-        show("failed", "Copy failed");
-      }
-    });
-  }
-
   // The menu button pattern of the WAI-ARIA APG: https://www.w3.org/WAI/ARIA/apg/patterns/menu-button/
   const trigger = document.getElementById("page-actions-trigger");
   const menu = document.getElementById("page-actions-menu");

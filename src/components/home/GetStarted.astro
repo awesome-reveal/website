@@ -2,7 +2,10 @@
 import { Code, LinkButton, TabItem, Tabs } from "@astrojs/starlight/components";
 import { Reveal } from "@awesome-reveal/astro";
 import ArrowRight from "@lucide/astro/icons/arrow-right";
-import Github from "../../assets/github.svg";
+import { getPrompt } from "../../lib/prompts";
+import CopyButton from "../CopyButton.astro";
+
+const { text: getStartedPrompt } = await getPrompt("get-started");
 
 const frameworks = [
   {
@@ -66,9 +69,9 @@ reveal("h1", { from: "left" });`,
     <Reveal class="intro" threshold={0.5}>
       <h2 class="slide-title">Start in under a minute</h2>
       <p class="slide-lead">
-        Pick your framework, install one package and wrap an element. All four
-        packages share the same core, the same entrance options and TypeScript
-        types.
+        Pick your framework, install one package and wrap an element. Each
+        package includes skills for AI agents. All four packages share the same
+        core, the same entrance options and TypeScript types.
       </p>
     </Reveal>
     <Reveal class="code slide-code" threshold={0.2} delay={120}>
@@ -86,13 +89,13 @@ reveal("h1", { from: "left" });`,
         Read the docs
         <ArrowRight aria-hidden="true" width="1em" height="1em" />
       </LinkButton>
-      <LinkButton
-        href="https://github.com/awesome-reveal/awesome-reveal"
-        variant="secondary"
+      <CopyButton
+        class="copy-prompt sl-link-button secondary"
+        text={getStartedPrompt}
+        copiedMessage="Prompt copied"
       >
-        Star on GitHub
-        <Github aria-hidden="true" width="1em" height="1em" />
-      </LinkButton>
+        Copy prompt
+      </CopyButton>
     </Reveal>
   </section>
   <slot />
@@ -177,5 +180,23 @@ reveal("h1", { from: "left" });`,
   /* Starlight gives a button in Markdown content a margin. Here the grid gap sets the space. */
   .sl-link-button {
     margin: 0;
+  }
+
+  /* LinkButton scopes its box and colors, so the copy button repeats them. theme.css sets the weight, icon size and hover. */
+  .copy-prompt {
+    gap: 0.5em;
+    padding: 0.4375rem 1.125rem;
+    border: 1px solid;
+    border-radius: 999rem;
+    color: var(--sl-color-white);
+    font-size: var(--sl-text-sm);
+    line-height: 1.1875;
+  }
+
+  @media (min-width: 50rem) {
+    .copy-prompt {
+      padding: 0.9375rem 1.25rem;
+      font-size: var(--sl-text-base);
+    }
   }
 </style>
