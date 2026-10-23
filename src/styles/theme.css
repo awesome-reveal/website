@@ -506,7 +506,8 @@ mobile-starlight-toc {
   }
 }
 
-.sidebar-content a[aria-current="page"] {
+/* `.top-level` keeps the blog link of the mobile menu footer out of this rule. */
+.sidebar-content .top-level a[aria-current="page"] {
   background-color: var(--current-page-bg);
   color: var(--sl-color-text-accent);
   font-weight: 700;

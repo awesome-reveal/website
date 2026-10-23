@@ -1,5 +1,9 @@
+const name = "Awesome Reveal";
+
 export const siteConfig = {
-  name: "Awesome Reveal",
+  name,
+  // Open Graph wants language_TERRITORY. Starlight gives the page lang, "en".
+  ogLocale: "en_US",
   description:
     "Scroll reveal animations for React, Vue, Astro and plain JavaScript. They use the Intersection Observer and Web Animations APIs and support reduced motion.",
   repoUrl: "https://github.com/awesome-reveal/awesome-reveal",
@@ -11,4 +15,11 @@ export const siteConfig = {
     url: "https://morello.dev/",
   },
   sponsorUrl: "https://github.com/sponsors/morellodev",
+  blog: {
+    title: "Blog",
+    name: `${name} blog`,
+    path: "/blog/",
+    description:
+      "Release notes, migration guides and news about Awesome Reveal, the open source scroll reveal animation library for React, Vue, Astro and JavaScript.",
+  },
 };

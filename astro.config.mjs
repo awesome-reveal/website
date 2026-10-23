@@ -1,5 +1,6 @@
 import starlight from "@astrojs/starlight";
 import { defineConfig, fontProviders } from "astro/config";
+import starlightBlog from "starlight-blog";
 import starlightHeadingBadges from "starlight-heading-badges";
 import starlightLinksValidator from "starlight-links-validator";
 import starlightLlmsTxt from "starlight-llms-txt";
@@ -69,12 +70,30 @@ export default defineConfig({
               description: "Source code, issues and discussions",
             },
           ],
-          exclude: ["v4/**"],
+          exclude: ["v4/**", "blog/**"],
+          demote: ["blog/**"],
           customSelectors: { all: ["[data-markdown-ignore]"] },
         }),
         starlightVersions({
           current: { redirect: "root" },
+          // An archive keeps the docs of one version. The blog is the same for all versions.
+          exclude: ["blog/**"],
           versions: [{ slug: "v4", redirect: "root" }],
+        }),
+        // After starlight-versions: its middleware needs the docs sidebar, and the blog middleware replaces it.
+        // Header.astro and MobileMenuFooter.astro render the blog link. The route middleware adds the structured data.
+        starlightBlog({
+          title: siteConfig.blog.title,
+          prefix: siteConfig.blog.path,
+          navigation: "none",
+          structuredData: false,
+          authors: {
+            dennis: {
+              name: siteConfig.author.name,
+              url: siteConfig.author.url,
+            },
+          },
+          metrics: { readingTime: true },
         }),
       ],
       title: siteConfig.name,

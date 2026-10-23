@@ -4,10 +4,10 @@ import { hasMarkdownVersion } from "../lib/markdown-slug";
 import PageActions from "./PageActions.astro";
 import VersionNotice from "./VersionNotice.astro";
 
-const { id } = Astro.locals.starlightRoute;
+const showActions = await hasMarkdownVersion(Astro.locals.starlightRoute.id);
 ---
 
 <VersionNotice />
 {/* Before the h1, so that the tab order matches the screen. The skip link to the h1 passes over the actions. */}
-{hasMarkdownVersion(id) && <PageActions />}
+{showActions && <PageActions />}
 <Default />

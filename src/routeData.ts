@@ -4,12 +4,19 @@ import {
 } from "@astrojs/starlight/route-data";
 import type { APIContext } from "astro";
 import {
+  type BlogPost,
+  getOgImageUrl,
+  isBlogPage,
+  isBlogPost,
+} from "./lib/blog";
+import {
   getMarkdownPath,
   getMarkdownSlug,
   hasMarkdownVersion,
 } from "./lib/markdown-slug";
 import { buildStructuredData } from "./lib/structured-data";
 import { findArchivedVersion, getArchivedSiteTitle } from "./lib/versions";
+import { siteConfig } from "./site.config";
 
 type Head = StarlightRouteData["head"];
 type Entry = StarlightRouteData["entry"];
@@ -20,7 +27,16 @@ export const onRequest = defineRouteMiddleware(async (context, next) => {
   // starlight-versions runs later and replaces the sidebar with the one of the current version.
   await next();
   route.sidebar = removeEmptyGroups(route.sidebar);
-  if (!hasMarkdownVersion(route.id)) return;
+  setMetaContent(route.head, ["og:locale"], siteConfig.ogLocale);
+  const hasMarkdown = await hasMarkdownVersion(route.id);
+  if (isBlogPage(route.id) && !hasMarkdown) {
+    setMetaContent(
+      route.head,
+      ["description", "og:description"],
+      getBlogListDescription(route),
+    );
+  }
+  if (!hasMarkdown) return;
   const archivedVersion = findArchivedVersion(route.id);
   const headTitle = getHeadTitle(route.entry);
 
@@ -30,6 +46,9 @@ export const onRequest = defineRouteMiddleware(async (context, next) => {
     setOgTitle(route, headTitle);
   }
   addMarkdownLinks(route.head, route.id);
+  if (isBlogPost(route.entry)) {
+    setPostMeta(route.head, route.entry, route.lastUpdated, context.site);
+  }
   if (!archivedVersion) addStructuredData(route, context, headTitle);
 });
 
@@ -38,6 +57,48 @@ function removeEmptyGroups(sidebar: Sidebar): Sidebar {
   return sidebar.filter(
     (item) => item.type !== "group" || item.entries.length > 0,
   );
+}
+
+// The blog plugin renders its lists with the description of the site.
+function getBlogListDescription({ id, entry }: StarlightRouteData) {
+  const [list] = `/${id}/`.slice(siteConfig.blog.path.length).split("/");
+  const { title } = entry.data;
+  if (list === "tags")
+    return `${siteConfig.name} blog posts with the tag ${title}.`;
+  if (list === "authors") return `${siteConfig.name} blog posts by ${title}.`;
+  return siteConfig.blog.description;
+}
+
+function setMetaContent(head: Head, keys: string[], content: string) {
+  for (const { attrs } of head) {
+    const key = attrs?.property ?? attrs?.name;
+    if (attrs && typeof key === "string" && keys.includes(key))
+      attrs.content = content;
+  }
+}
+
+function setPostMeta(
+  head: Head,
+  post: BlogPost<Entry>,
+  lastUpdated: Date | undefined,
+  site: URL | undefined,
+) {
+  const { title, date, tags = [] } = post.data;
+  const image = getOgImageUrl(post, site);
+  setMetaContent(head, ["og:image", "twitter:image"], image);
+  setMetaContent(head, ["og:image:alt", "twitter:image:alt"], title);
+  const article = [
+    ["published_time", date.toISOString()],
+    ["modified_time", (lastUpdated ?? date).toISOString()],
+    ["author", siteConfig.author.url],
+    ...tags.map((tag) => ["tag", tag]),
+  ];
+  for (const [key, content] of article) {
+    head.push({
+      tag: "meta",
+      attrs: { property: `article:${key}`, content },
+    });
+  }
 }
 
 function getHeadTitle(entry: Entry) {
@@ -67,15 +128,10 @@ function setArchivedSiteTitle(
 ) {
   const newSiteTitle = getArchivedSiteTitle(versionSlug);
   if (!newSiteTitle) return;
-  setOgSiteName(head, newSiteTitle);
+  setMetaContent(head, ["og:site_name"], newSiteTitle);
   if (headTitle === undefined) {
     replaceTitleSuffix(head, siteTitle, newSiteTitle);
   }
-}
-
-function setOgSiteName(head: Head, siteTitle: string) {
-  const ogSiteName = head.find((tag) => tag.attrs?.property === "og:site_name");
-  if (ogSiteName?.attrs) ogSiteName.attrs.content = siteTitle;
 }
 
 function replaceTitleSuffix(head: Head, oldSuffix: string, newSuffix: string) {
@@ -100,10 +156,11 @@ function addMarkdownLinks(head: Head, id: string) {
 }
 
 function addStructuredData(
-  { id, head, entry }: StarlightRouteData,
+  route: StarlightRouteData,
   { url, site }: APIContext,
   headTitle: string | undefined,
 ) {
+  const { id, head, entry, lastUpdated } = route;
   head.push({
     tag: "script",
     attrs: { type: "application/ld+json" },
@@ -114,6 +171,14 @@ function addStructuredData(
         description: entry.data.description,
         url: new URL(url.pathname, site).href,
         siteUrl: new URL("/", site).href,
+        post: isBlogPost(entry)
+          ? {
+              published: entry.data.date,
+              modified: lastUpdated,
+              tags: entry.data.tags ?? [],
+              image: getOgImageUrl(entry, site),
+            }
+          : undefined,
       }),
     ),
   });

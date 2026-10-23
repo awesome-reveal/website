@@ -1,15 +1,9 @@
 import type { APIRoute, InferGetStaticPropsType } from "astro";
-import { getCollection } from "astro:content";
 import { entryToMarkdown } from "../lib/markdown";
-import { getMarkdownSlug } from "../lib/markdown-slug";
+import { getMarkdownEntries, getMarkdownSlug } from "../lib/markdown-slug";
 
 export const getStaticPaths = async () =>
-  (
-    await getCollection(
-      "docs",
-      ({ data }) => import.meta.env.MODE !== "production" || !data.draft,
-    )
-  ).map((entry) => ({
+  (await getMarkdownEntries()).map((entry) => ({
     params: { slug: getMarkdownSlug(entry.id) },
     props: { entry },
   }));

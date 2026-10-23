@@ -1,6 +1,6 @@
 import type { APIContext } from "astro";
 import { getContainerRenderer as getMdxRenderer } from "@astrojs/mdx/container-renderer";
-import { experimental_AstroContainer } from "astro/container";
+import { experimental_AstroContainer as AstroContainer } from "astro/container";
 import { loadRenderers } from "astro:container";
 import { render, type CollectionEntry } from "astro:content";
 import type { Element, ElementContent, Root } from "hast";
@@ -13,7 +13,7 @@ import remarkStringify from "remark-stringify";
 import { unified } from "unified";
 import { remove } from "unist-util-remove";
 
-const container = await experimental_AstroContainer.create({
+const container = await AstroContainer.create({
   renderers: await loadRenderers([getMdxRenderer()]),
 });
 
