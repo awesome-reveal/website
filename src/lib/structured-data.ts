@@ -62,7 +62,7 @@ export function buildStructuredData({
           publisher: { "@id": siteConfig.author["@id"] },
           isPartOf: {
             "@type": "Blog",
-            name: siteConfig.blog.title,
+            name: siteConfig.blog.name,
             url: blogUrl,
           },
         },

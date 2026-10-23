@@ -83,7 +83,7 @@ export async function renderPostOgImage(title: string) {
 
 const cardHtml = (title: string, headlineSize: number) => `
   <div class="card">
-    <div class="label">${escapeHtml(`${siteConfig.name} ${siteConfig.blog.title.toLowerCase()}`)}</div>
+    <div class="label">${escapeHtml(siteConfig.blog.name)}</div>
     <h1 style="font-size: ${headlineSize}px">${escapeHtml(title)}</h1>
     <img class="mark" src="data:image/svg+xml,${encodeURIComponent(mark)}" />
   </div>`;

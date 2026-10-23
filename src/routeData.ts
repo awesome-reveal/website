@@ -15,6 +15,7 @@ import { siteConfig } from "./site.config";
 
 type Head = StarlightRouteData["head"];
 type Entry = StarlightRouteData["entry"];
+type Post = Entry & { data: { date: Date } };
 type Sidebar = StarlightRouteData["sidebar"];
 
 export const onRequest = defineRouteMiddleware(async (context, next) => {
@@ -22,6 +23,7 @@ export const onRequest = defineRouteMiddleware(async (context, next) => {
   // starlight-versions runs later and replaces the sidebar with the one of the current version.
   await next();
   route.sidebar = removeEmptyGroups(route.sidebar);
+  setMetaContent(route.head, ["og:locale"], siteConfig.ogLocale);
   const hasMarkdown = await hasMarkdownVersion(route.id);
   if (isBlogPage(route.id) && !hasMarkdown) {
     setMetaContent(
@@ -40,7 +42,9 @@ export const onRequest = defineRouteMiddleware(async (context, next) => {
     setOgTitle(route, headTitle);
   }
   addMarkdownLinks(route.head, route.id);
-  if (isBlogPost(route.entry)) setPostOgImage(route, context);
+  if (isBlogPost(route.entry)) {
+    setPostMeta(route.head, route.entry, route.lastUpdated, context.site);
+  }
   if (!archivedVersion) addStructuredData(route, context, headTitle);
 });
 
@@ -69,13 +73,28 @@ function setMetaContent(head: Head, keys: string[], content: string) {
   }
 }
 
-function setPostOgImage(
-  { head, entry }: StarlightRouteData,
-  { site }: APIContext,
+function setPostMeta(
+  head: Head,
+  post: Post,
+  lastUpdated: Date | undefined,
+  site: URL | undefined,
 ) {
-  const image = getOgImageUrl(entry, site);
+  const { title, date, tags = [] } = post.data;
+  const image = getOgImageUrl(post, site);
   setMetaContent(head, ["og:image", "twitter:image"], image);
-  setMetaContent(head, ["og:image:alt", "twitter:image:alt"], entry.data.title);
+  setMetaContent(head, ["og:image:alt", "twitter:image:alt"], title);
+  const article = [
+    ["published_time", date.toISOString()],
+    ["modified_time", (lastUpdated ?? date).toISOString()],
+    ["author", siteConfig.author.url],
+    ...tags.map((tag) => ["tag", tag]),
+  ];
+  for (const [key, content] of article) {
+    head.push({
+      tag: "meta",
+      attrs: { property: `article:${key}`, content },
+    });
+  }
 }
 
 function getHeadTitle(entry: Entry) {
