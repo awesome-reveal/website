@@ -3,17 +3,19 @@ import {
   type StarlightRouteData,
 } from "@astrojs/starlight/route-data";
 import type { APIContext } from "astro";
-import {
-  type BlogPost,
-  getOgImageUrl,
-  isBlogPage,
-  isBlogPost,
-} from "./lib/blog";
+import { type BlogPost, isBlogPage, isBlogPost } from "./lib/blog";
 import {
   getMarkdownPath,
   getMarkdownSlug,
   hasMarkdownVersion,
 } from "./lib/markdown-slug";
+import {
+  getOgImage,
+  getOgImageUrl,
+  homeOgImage,
+  type OgImage,
+} from "./lib/og-card";
+import { ogImageSize } from "./lib/og-image";
 import { buildStructuredData } from "./lib/structured-data";
 import { findArchivedVersion, getArchivedSiteTitle } from "./lib/versions";
 import { siteConfig } from "./site.config";
@@ -29,6 +31,11 @@ export const onRequest = defineRouteMiddleware(async (context, next) => {
   route.sidebar = removeEmptyGroups(route.sidebar);
   setMetaContent(route.head, ["og:locale"], siteConfig.ogLocale);
   const hasMarkdown = await hasMarkdownVersion(route.id);
+  addOgImageMeta(
+    route.head,
+    hasMarkdown ? getOgImage(route.entry) : homeOgImage,
+    context.site,
+  );
   if (isBlogPage(route.id) && !hasMarkdown) {
     setMetaContent(
       route.head,
@@ -49,7 +56,7 @@ export const onRequest = defineRouteMiddleware(async (context, next) => {
   }
   addMarkdownLinks(route.head, route.id);
   if (isBlogPost(route.entry)) {
-    setPostMeta(route.head, route.entry, route.lastUpdated, context.site);
+    setPostMeta(route.head, route.entry, route.lastUpdated);
   }
   if (!archivedVersion) addStructuredData(route, context, headTitle);
 });
@@ -83,12 +90,8 @@ function setPostMeta(
   head: Head,
   post: BlogPost<Entry>,
   lastUpdated: Date | undefined,
-  site: URL | undefined,
 ) {
-  const { title, date, tags = [] } = post.data;
-  const image = getOgImageUrl(post, site);
-  setMetaContent(head, ["og:image", "twitter:image"], image);
-  setMetaContent(head, ["og:image:alt", "twitter:image:alt"], title);
+  const { date, tags = [] } = post.data;
   const article = [
     ["published_time", date.toISOString()],
     ["modified_time", (lastUpdated ?? date).toISOString()],
@@ -101,6 +104,28 @@ function setPostMeta(
       attrs: { property: `article:${key}`, content },
     });
   }
+}
+
+function addOgImageMeta(head: Head, image: OgImage, site: URL | undefined) {
+  const url = getOgImageUrl(image, site);
+  const openGraph = {
+    "og:image": url,
+    "og:image:alt": image.alt,
+    "og:image:type": "image/png",
+    "og:image:width": String(ogImageSize.width),
+    "og:image:height": String(ogImageSize.height),
+  };
+  const twitter = { "twitter:image": url, "twitter:image:alt": image.alt };
+  head.push(
+    ...Object.entries(openGraph).map(([property, content]) => ({
+      tag: "meta" as const,
+      attrs: { property, content },
+    })),
+    ...Object.entries(twitter).map(([name, content]) => ({
+      tag: "meta" as const,
+      attrs: { name, content },
+    })),
+  );
 }
 
 function getHeadTitle(entry: Entry) {
@@ -178,7 +203,7 @@ function addStructuredData(
               published: entry.data.date,
               modified: lastUpdated,
               tags: entry.data.tags ?? [],
-              image: getOgImageUrl(entry, site),
+              image: getOgImageUrl(getOgImage(entry), site),
             }
           : undefined,
       }),
