@@ -7,7 +7,7 @@ paths:
 
 # OG cards
 
-The build renders a 1200×630 card for each docs page with Takumi, at `/og/<slug>.<hash>.png`. The hash comes from the CSS and the markup of the card, so a change to the design or to a title gives a new URL, and social sites fetch the new image. Pages without a docs entry, such as the 404 page and the blog lists, get the home card.
+The build renders a 1200×630 card for each docs page with Takumi, at `/og/<slug>.<hash>.png`. The hash comes from the markup, the CSS, the font file names and the size limits of the card, so a change to the design or to a title gives a new URL, and social sites fetch the new image. `/og/*` has an `immutable` cache header, so an input that changes the image must be in the hash. The takumi-js version is not in the hash: if an upgrade changes the images, change the CSS or the markup to get new URLs. Pages without a docs entry, such as the 404 page and the blog lists, get the home card.
 
 ## Design constraints
 

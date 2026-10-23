@@ -31,11 +31,6 @@ export const onRequest = defineRouteMiddleware(async (context, next) => {
   route.sidebar = removeEmptyGroups(route.sidebar);
   setMetaContent(route.head, ["og:locale"], siteConfig.ogLocale);
   const hasMarkdown = await hasMarkdownVersion(route.id);
-  addOgImageMeta(
-    route.head,
-    hasMarkdown ? getOgImage(route.entry) : homeOgImage,
-    context.site,
-  );
   if (isBlogPage(route.id) && !hasMarkdown) {
     setMetaContent(
       route.head,
@@ -43,7 +38,10 @@ export const onRequest = defineRouteMiddleware(async (context, next) => {
       getBlogListDescription(route),
     );
   }
-  if (!hasMarkdown) return;
+  if (!hasMarkdown) {
+    addOgImageMeta(route.head, homeOgImage, context.site);
+    return;
+  }
   const archivedVersion = findArchivedVersion(route.id);
   const headTitle = getHeadTitle(route.entry);
 
@@ -54,11 +52,14 @@ export const onRequest = defineRouteMiddleware(async (context, next) => {
   } else if (route.entry.data.title.startsWith(siteConfig.name)) {
     replaceTitleSuffix(route.head, ` | ${route.siteTitle}`, "");
   }
+  // setOgTitle moves og:title before the frontmatter metas, so the image metas come after it.
+  const ogImage = getOgImage(route.entry);
+  addOgImageMeta(route.head, ogImage, context.site);
   addMarkdownLinks(route.head, route.id);
   if (isBlogPost(route.entry)) {
     setPostMeta(route.head, route.entry, route.lastUpdated);
   }
-  if (!archivedVersion) addStructuredData(route, context, headTitle);
+  if (!archivedVersion) addStructuredData(route, context, headTitle, ogImage);
 });
 
 // Production builds skip draft pages, so a group of drafts has no entries.
@@ -107,6 +108,8 @@ function setPostMeta(
 }
 
 function addOgImageMeta(head: Head, image: OgImage, site: URL | undefined) {
+  // A page can set its own image with og:image in the head frontmatter.
+  if (head.some((tag) => tag.attrs?.property === "og:image")) return;
   const url = getOgImageUrl(image, site);
   const openGraph = {
     "og:image": url,
@@ -186,6 +189,7 @@ function addStructuredData(
   route: StarlightRouteData,
   { url, site }: APIContext,
   headTitle: string | undefined,
+  ogImage: OgImage,
 ) {
   const { id, head, entry, lastUpdated } = route;
   head.push({
@@ -203,7 +207,7 @@ function addStructuredData(
               published: entry.data.date,
               modified: lastUpdated,
               tags: entry.data.tags ?? [],
-              image: getOgImageUrl(getOgImage(entry), site),
+              image: getOgImageUrl(ogImage, site),
             }
           : undefined,
       }),

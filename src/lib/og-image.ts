@@ -63,6 +63,7 @@ const css = `
     display: flex;
     flex-direction: column;
     gap: 36px;
+    max-width: 760px;
   }
 
   /*
@@ -79,7 +80,6 @@ const css = `
   }
 
   h1 {
-    max-width: 760px;
     margin: -0.13em 0;
     font-family: "Bricolage Grotesque";
     font-weight: 800;
@@ -126,14 +126,17 @@ const css = `
 const escapeHtml = (text: string) =>
   text.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
 
-// Takumi loads each URL once, and takes the family name from the font file.
-const fontURLs = fontVariables.flatMap((cssVariable) =>
-  fontData[cssVariable].flatMap((font) =>
-    font.src.map(({ url }) => getFontFileURL(url)),
-  ),
+// The file names contain a hash of the font. At build time, the full URL has a random port.
+const fontPaths = fontVariables.flatMap((cssVariable) =>
+  fontData[cssVariable].flatMap((font) => font.src.map(({ url }) => url)),
 );
 
-const renderOptions = { ...ogImageSize, css, fonts: fontURLs };
+// Takumi loads each URL once, and takes the family name from the font file.
+const renderOptions = {
+  ...ogImageSize,
+  css,
+  fonts: fontPaths.map((path) => getFontFileURL(path)),
+};
 
 // A break after a hyphen splits a package name, such as react-awesome-reveal.
 const keepHyphenatedWords = (html: string) =>
@@ -155,7 +158,7 @@ const cardHtmlVariants = (card: OgCard) =>
 /** Changes when the text, the design or the fonts of the card change. Social sites cache an image by its URL. */
 export const getOgImageHash = (card: OgCard) =>
   createHash("sha256")
-    .update(JSON.stringify({ renderOptions, maxTextBottom }))
+    .update(JSON.stringify({ css, fontPaths, ogImageSize, maxTextBottom }))
     .update(cardHtmlVariants(card).join())
     .digest("hex")
     .slice(0, 8);
@@ -171,13 +174,11 @@ export async function renderOgImage(card: OgCard) {
 
 async function fitsCard(html: string) {
   const [text] = (await measure(html, renderOptions)).children;
-  const headline = text?.children[1];
-  if (!text || !headline)
-    throw new Error("The OG card has no headline to measure.");
+  if (!text) throw new Error("The OG card has no text to measure.");
   const [, , , , , textTop] = text.transform;
-  // A word that is wider than the headline box overflows it. A nowrap word can do this.
-  const overflows = headline.runs.some(
-    ({ x, width }) => x + width > headline.width,
+  // A word that is wider than its box overflows it. A nowrap word can do this.
+  const overflows = text.children.some((line) =>
+    line.runs.some(({ x, width }) => x + width > line.width),
   );
   return textTop + text.height <= maxTextBottom && !overflows;
 }
