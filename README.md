@@ -6,7 +6,7 @@ The packages are in [awesome-reveal/awesome-reveal](https://github.com/awesome-r
 
 ## Commands
 
-Use the Node version in `.nvmrc` and the pnpm version in `package.json`.
+Install pnpm 11 or later. pnpm downloads the Node and pnpm versions in `devEngines` of `package.json`, and runs the scripts with them.
 
 | Command        | Action                                               |
 | :------------- | :--------------------------------------------------- |

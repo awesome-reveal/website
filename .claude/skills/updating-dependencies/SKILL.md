@@ -9,8 +9,8 @@ Do the update on a branch, for example `build/update-dependencies`.
 
 ## Versions to keep
 
-- Node and pnpm: use the same versions as the packages repo (its `.nvmrc` and `packageManager`). To change pnpm, copy the `packageManager` field with its hash. pnpm then downloads and runs that version.
-- Workers Builds reads the Node version from `.nvmrc`, and `pnpm install` downloads the pnpm version in `packageManager`. The build log shows both, in the line `Detected the following tools from environment`.
+- Node and pnpm: use the same major versions as the packages repo (its `.nvmrc` and `packageManager`). Write the versions in `devEngines.runtime` and `devEngines.packageManager` of `package.json`, then run `pnpm install`.
+- Workers Builds reads the Node version from `devEngines.runtime`, and Corepack downloads the pnpm version in `devEngines.packageManager`. In the build log, the line `Detected the following tools from environment` shows the Node version, and the `Done in … using pnpm v…` line of the install shows the pnpm version.
 - TypeScript: stay on the highest version that `@astrojs/check` and `typescript-eslint` support. Check their `peerDependencies` with `pnpm view <package> peerDependencies` before you update TypeScript. `typescript-eslint` often allows only some minor versions, for example `<6.1.0`.
 
 ## Update
@@ -32,7 +32,7 @@ Do the update on a branch, for example `build/update-dependencies`.
 
 1. `pnpm dedupe --check`, `pnpm peers check`, `pnpm check` and `pnpm build`.
 2. Compare the home page, one guide and one archived page with production, for example with screenshots. A Starlight update can change the layout a little.
-3. Push, open a PR, and wait for the "Workers Builds" check in `gh pr checks`. Then open the preview URL, `https://<branch>-awesome-reveal-website.morellodev.workers.dev`, with `-` in place of `/` in the branch name. Wrangler cannot read the build log, so ask the user for the Node and pnpm versions and the new build warnings in the log. These warnings are known, and have no fix in this repo:
+3. Push, open a PR, and wait for the "Workers Builds" check in `gh pr checks`. Then open the preview URL, `https://<branch>-awesome-reveal-website.morellodev.workers.dev`, with `-` in place of `/` in the branch name. Wrangler cannot read the build log. Read it with the Cloudflare API, `GET /accounts/{account_id}/builds/builds/{build_uuid}/logs`, and find the Node and pnpm versions and the new build warnings. The check output in `gh api repos/awesome-reveal/website/commits/<sha>/check-runs` gives the build UUID. These warnings are known, and have no fix in this repo:
    - `[starlight-versions-plugin] A <PageTitle> component override is already defined`: `src/components/PageTitle.astro` already renders `VersionNotice`.
    - `[starlight-versions-plugin] A <Banner> component override is already defined`: `src/components/Banner.astro` already renders `VersionBanner`.
    - `[content] Entry docs → 404 was not found`: Starlight then uses its default 404 page. A `src/content/docs/404.md` adds a route conflict and a `/404.md` page.

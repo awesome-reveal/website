@@ -8,6 +8,7 @@ paths:
 
 # Cloudflare deploys
 
+- The Workers Builds deploy commands are `pnpm exec wrangler deploy` (production) and `pnpm exec wrangler preview` (previews). Do not use `npx`: npm stops with `EBADDEVENGINES`, because `devEngines.packageManager` names pnpm.
 - Cloudflare Web Analytics adds its beacon to the HTML pages by itself, so the site has no analytics code. A `no-transform` value in `Cache-Control` stops the beacon.
 - `public/_redirects` sets the redirects. A rule applies also when an asset exists at its path.
 - `public/_headers` gives `/_astro/*` a long `immutable` cache. Without the Cloudflare adapter, nothing else adds it.
