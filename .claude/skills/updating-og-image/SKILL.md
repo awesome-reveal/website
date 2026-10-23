@@ -7,6 +7,8 @@ description: Renders the Open Graph image `public/og.png` and the GitHub social 
 
 [`assets/og-image.html`](assets/og-image.html) is the source of `public/og.png` (1200×630) and `.github/social-preview.png` (1280×640). The window size of the render selects the size. It copies the tokens of `src/styles/theme.css` and the fonts of `astro.config.mjs`, because it renders outside Astro.
 
+Each blog post gets its own card, with the post title as the headline. `src/lib/og-image.ts` renders it at build time with Takumi, from the same tokens. Its headline and mark are smaller, and the headline gets smaller again for a long title. When you change the design in the template, make the same change there, and look at the post card in the dev server: the `og:image` of the post gives its URL. The file name has the digest of the post file, so it needs no `?v=`. A change to the card design does not change the digest: to make social sites fetch the new cards, also change each post file. The [Constraints](#constraints) apply to both cards.
+
 1. Edit `assets/og-image.html`. Keep the constraints in [Constraints](#constraints).
 2. Run `${CLAUDE_SKILL_DIR}/scripts/render.sh`. It needs Google Chrome, `pngquant` and network access for the Google Fonts. When the PNG changes, the script increases the `?v=` query of the image URL in `astro.config.mjs`. Social sites cache the image by its URL, so each new image needs a new version.
 3. Look at `public/og.png` and `.github/social-preview.png` at full size. Then look at `public/og.png` at phone size: `sips -Z 360 public/og.png --out <scratchpad>/og-mobile.png`. All text must be readable at 360 px.

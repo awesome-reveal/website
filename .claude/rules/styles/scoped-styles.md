@@ -8,7 +8,7 @@ paths:
 
 The Starlight component CSS is in `node_modules/@astrojs/starlight/dist/`.
 
-- Starlight sets `scopedStyleStrategy: "where"`, so a scoped selector gets no extra specificity. The scope already limits a rule to the markup of its component. Do not add a parent class only to narrow the match.
+- Style the elements of our component with type selectors, such as `a` or `h1`. The scope already limits a rule to the markup of its component. Add a class only to tell apart elements of the same type, or for a wrapper that the layout needs. Starlight sets `scopedStyleStrategy: "where"`, so a scoped selector gets no extra specificity.
 - Astro does not scope a compound selector that starts with `:is()`, so the rule becomes global. Start the compound with a type or a class, for example `button:is(.copy, .more):hover`.
 - A child component gets the scope class through its `class` prop. Starlight's `Badge` and `LinkButton` render that prop, so a scoped rule also matches their root element. For example, a bare `span` rule in `Hero.astro` also matches the `Badge`.
 - Starlight puts its component styles in `@layer starlight.*`. Unlayered CSS in `theme.css` and in our components wins over them at any specificity. To override Starlight, do not add selector weight. A rule for the base state also wins over the Starlight `:hover` and `:focus` rules for the same property.

@@ -3,6 +3,7 @@ import {
   type StarlightRouteData,
 } from "@astrojs/starlight/route-data";
 import type { APIContext } from "astro";
+import { getOgImageUrl, isBlogPage, isBlogPost } from "./lib/blog";
 import {
   getMarkdownPath,
   getMarkdownSlug,
@@ -23,7 +24,11 @@ export const onRequest = defineRouteMiddleware(async (context, next) => {
   route.sidebar = removeEmptyGroups(route.sidebar);
   const hasMarkdown = await hasMarkdownVersion(route.id);
   if (isBlogPage(route.id) && !hasMarkdown) {
-    setDescription(route.head, getBlogListDescription(route));
+    setMetaContent(
+      route.head,
+      ["description", "og:description"],
+      getBlogListDescription(route),
+    );
   }
   if (!hasMarkdown) return;
   const archivedVersion = findArchivedVersion(route.id);
@@ -35,6 +40,7 @@ export const onRequest = defineRouteMiddleware(async (context, next) => {
     setOgTitle(route, headTitle);
   }
   addMarkdownLinks(route.head, route.id);
+  if (isBlogPost(route.entry)) setPostOgImage(route, context);
   if (!archivedVersion) addStructuredData(route, context, headTitle);
 });
 
@@ -45,25 +51,31 @@ function removeEmptyGroups(sidebar: Sidebar): Sidebar {
   );
 }
 
-const isBlogPage = (id: string) => `/${id}/`.startsWith(siteConfig.blog.path);
-
 // The blog plugin renders its lists with the description of the site.
 function getBlogListDescription({ id, entry }: StarlightRouteData) {
   const [list] = `/${id}/`.slice(siteConfig.blog.path.length).split("/");
   const { title } = entry.data;
   if (list === "tags")
-    return `Awesome Reveal blog posts with the tag ${title}.`;
-  if (list === "authors") return `Awesome Reveal blog posts by ${title}.`;
+    return `${siteConfig.name} blog posts with the tag ${title}.`;
+  if (list === "authors") return `${siteConfig.name} blog posts by ${title}.`;
   return siteConfig.blog.description;
 }
 
-function setDescription(head: Head, description: string) {
-  for (const tag of head) {
-    const isDescription =
-      tag.attrs?.name === "description" ||
-      tag.attrs?.property === "og:description";
-    if (isDescription && tag.attrs) tag.attrs.content = description;
+function setMetaContent(head: Head, keys: string[], content: string) {
+  for (const { attrs } of head) {
+    const key = attrs?.property ?? attrs?.name;
+    if (attrs && typeof key === "string" && keys.includes(key))
+      attrs.content = content;
   }
+}
+
+function setPostOgImage(
+  { head, entry }: StarlightRouteData,
+  { site }: APIContext,
+) {
+  const image = getOgImageUrl(entry, site);
+  setMetaContent(head, ["og:image", "twitter:image"], image);
+  setMetaContent(head, ["og:image:alt", "twitter:image:alt"], entry.data.title);
 }
 
 function getHeadTitle(entry: Entry) {
@@ -93,15 +105,10 @@ function setArchivedSiteTitle(
 ) {
   const newSiteTitle = getArchivedSiteTitle(versionSlug);
   if (!newSiteTitle) return;
-  setOgSiteName(head, newSiteTitle);
+  setMetaContent(head, ["og:site_name"], newSiteTitle);
   if (headTitle === undefined) {
     replaceTitleSuffix(head, siteTitle, newSiteTitle);
   }
-}
-
-function setOgSiteName(head: Head, siteTitle: string) {
-  const ogSiteName = head.find((tag) => tag.attrs?.property === "og:site_name");
-  if (ogSiteName?.attrs) ogSiteName.attrs.content = siteTitle;
 }
 
 function replaceTitleSuffix(head: Head, oldSuffix: string, newSuffix: string) {
@@ -130,7 +137,7 @@ function addStructuredData(
   { url, site }: APIContext,
   headTitle: string | undefined,
 ) {
-  const { id, head, entry } = route;
+  const { id, head, entry, lastUpdated } = route;
   head.push({
     tag: "script",
     attrs: { type: "application/ld+json" },
@@ -141,24 +148,15 @@ function addStructuredData(
         description: entry.data.description,
         url: new URL(url.pathname, site).href,
         siteUrl: new URL("/", site).href,
-        post: isBlogPage(id) ? getPostData(route) : undefined,
+        post: isBlogPost(entry)
+          ? {
+              published: entry.data.date,
+              modified: lastUpdated,
+              tags: entry.data.tags ?? [],
+              image: getOgImageUrl(entry, site),
+            }
+          : undefined,
       }),
     ),
   });
-}
-
-function getPostData({
-  entry: { data },
-  head,
-  lastUpdated,
-}: StarlightRouteData) {
-  if (!data.date) return undefined;
-  const image = head.find((tag) => tag.attrs?.property === "og:image")?.attrs
-    ?.content;
-  return {
-    published: data.date,
-    modified: lastUpdated,
-    tags: data.tags ?? [],
-    image: typeof image === "string" ? image : undefined,
-  };
 }
