@@ -56,10 +56,10 @@ const css = `
 
   .mark {
     position: absolute;
-    top: 196px;
+    top: 50%;
     right: -150px;
     width: 420px;
-    height: 238px;
+    translate: 0 -50%;
   }
 `;
 
