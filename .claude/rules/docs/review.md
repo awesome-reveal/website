@@ -12,7 +12,7 @@ Give the review of a docs change to a subagent. In its prompt, name this file, t
 2. **Framework claims**: each claim about Astro, Next.js, Nuxt, Vue, React or a browser matches the official docs of that tool. For Astro, use the `astro-docs` MCP server.
 3. **One place for each fact**: no other current page states the same fact or contradicts it. Link to the page that states the fact.
 4. **Copy**: see `site-copy.md`. For the `title` and `description`, see `page-titles.md`. For file names, see `page-urls.md`.
-5. **Internal links**: each link goes to a page without `draft: true`. The production build skips draft pages, so their URLs return 404. Each link that names a page uses the `sidebar.label` or the `title` of that page. `pnpm exec node scripts/list-mismatched-link-texts.mjs` lists the links whose text is neither. See `page-titles.md`.
+5. **Internal links**: each link goes to a page without `draft: true`. The production build skips draft pages, so their URLs return 404. Each link that names a page uses the `sidebar.label` or the `title` of that page. `pnpm exec node scripts/list-mismatched-link-texts.ts` lists the links whose text is neither. See `page-titles.md`.
 6. **External links**: each link returns 200 with no redirect, and its anchor exists. `starlight-links-validator` does not check external links. A 3xx status means a redirect: link to the final URL.
 
    ```sh

@@ -19,7 +19,7 @@ export default [
   pluginVue.configs["no-layout-rules"],
   includeIgnoreFile(gitignorePath),
   {
-    files: ["*.mjs", "scripts/*.mjs"],
+    files: ["*.mjs"],
     languageOptions: {
       globals: globals.node,
     },

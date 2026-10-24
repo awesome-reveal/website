@@ -26,13 +26,13 @@ Write the `sidebar.label` in the form that the [Google style guide](https://deve
 - A framework or reference page: the name of the tool or the API, such as `Next.js` or `React API`.
 - Do not start the label with an `-ing` word. Google permits a gerund when no better word exists, as for `Billing`. `Troubleshooting` stays for this reason: `Troubleshoot` has no object.
 
-Link text that names a page uses its `sidebar.label` or its `title`. `pnpm exec node scripts/list-mismatched-link-texts.mjs` lists the Markdown links whose text is neither. Most results are prose links, such as `[manually](/guides/manual-control/)`, and they are correct. Fix only a result that names the page, such as a "See" link or a list of pages. The script does not read anchor links, frontmatter such as `hero.actions`, or components.
+Link text that names a page uses its `sidebar.label` or its `title`. `pnpm exec node scripts/list-mismatched-link-texts.ts` lists the Markdown links whose text is neither. Most results are prose links, such as `[manually](/guides/manual-control/)`, and they are correct. Fix only a result that names the page, such as a "See" link or a list of pages. The script does not read anchor links, frontmatter such as `hero.actions`, or components.
 
 When you change a `sidebar.label` or a `title`:
 
 1. Search `src/` for the old text, with `\s+` between the words: `rg -i -U 'getting\s+started' src/`. Prettier can wrap a link text onto the next line. This search also finds anchor links, frontmatter and components.
 2. Update each result, except the pages in `src/content/docs/v4/`.
-3. Run `pnpm exec node scripts/list-mismatched-link-texts.mjs`. Fix the results that name the page.
+3. Run `pnpm exec node scripts/list-mismatched-link-texts.ts`. Fix the results that name the page.
 4. Run `gh pr list`. For each open PR, search the lines that it adds: `gh pr diff <number> | rg -i -U '^\+.*getting\s+\+?\s*started'`. The `\+?` matches the diff prefix of a wrapped line. A PR that started before the change can add a link with the old text.
 
 A `title` entry in the frontmatter `head` replaces `<title>`. On current pages, the route middleware also copies it into `og:title` and the JSON-LD headline. Use the entry only in these cases:

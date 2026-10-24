@@ -2,15 +2,33 @@ import { globSync, readFileSync } from "node:fs";
 import path from "node:path";
 import { parse } from "yaml";
 
+interface Frontmatter {
+  title?: string;
+  slug?: string;
+  sidebar?: { label?: string };
+}
+
+interface PageNames {
+  title: string | undefined;
+  label: string | undefined;
+}
+
+interface Mismatch extends PageNames {
+  file: string;
+  line: number;
+  text: string;
+  url: string;
+}
+
 const rootDir = path.resolve(import.meta.dirname, "..");
 const docsDir = path.join("src", "content", "docs");
 const internalLink =
   /\[([^\]]+)\]\((\/[^)\s#?]*)([#?][^)\s]*)?(?:\s+"[^"]*")?\)/g;
 
-const parseFrontmatter = (source) =>
+const parseFrontmatter = (source: string): Frontmatter =>
   parse(source.match(/^---\r?\n([\s\S]*?)\r?\n---/)?.[1] ?? "") ?? {};
 
-const getPageUrl = (file, slug) => {
+const getPageUrl = (file: string, slug: string | undefined) => {
   if (slug !== undefined) return slug ? `/${slug}/` : "/";
   const { dir, name } = path.parse(path.relative(docsDir, file));
   const segments = [...dir.split(path.sep), name].filter(
@@ -20,35 +38,41 @@ const getPageUrl = (file, slug) => {
 };
 
 // Starlight serves a page with and without the trailing slash.
-const withTrailingSlash = (url) => (url.endsWith("/") ? url : `${url}/`);
+const withTrailingSlash = (url: string) =>
+  url.endsWith("/") ? url : `${url}/`;
 
 // Prettier can wrap a link text onto the next line.
-const collapseWhitespace = (text) => text.replace(/\s+/g, " ").trim();
+const collapseWhitespace = (text: string) => text.replace(/\s+/g, " ").trim();
 
-const normalizeName = (text) =>
+const normalizeName = (text: string) =>
   collapseWhitespace(text.replaceAll("`", "")).toLowerCase();
 
-const getLineNumber = (source, index) =>
+const getLineNumber = (source: string, index: number) =>
   source.slice(0, index).split("\n").length;
 
-const collectPageNames = (sources) =>
+const collectPageNames = (sources: Map<string, string>) =>
   new Map(
     [...sources]
       .filter(([file]) => file.startsWith(docsDir + path.sep))
-      .map(([file, source]) => {
+      .map(([file, source]): [string, PageNames] => {
         const { title, sidebar, slug } = parseFrontmatter(source);
         return [getPageUrl(file, slug), { title, label: sidebar?.label }];
       }),
   );
 
-const findMismatchedLinks = (sources, pageNames) =>
+const findMismatchedLinks = (
+  sources: Map<string, string>,
+  pageNames: Map<string, PageNames>,
+): Mismatch[] =>
   [...sources].flatMap(([file, source]) =>
     [...source.matchAll(internalLink)].flatMap((match) => {
-      const [, text, url, anchor] = match;
+      const [, text = "", url = "", anchor] = match;
       const page = pageNames.get(withTrailingSlash(url));
       // An anchor link names a heading or uses prose, so it would bury the page names.
       if (!page || anchor) return [];
-      const names = [page.label, page.title].filter(Boolean).map(normalizeName);
+      const names = [page.label, page.title]
+        .filter((name) => name !== undefined)
+        .map(normalizeName);
       if (names.includes(normalizeName(text))) return [];
       return [
         { file, line: getLineNumber(source, match.index), text, url, ...page },
