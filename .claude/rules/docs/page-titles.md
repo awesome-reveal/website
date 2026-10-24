@@ -19,6 +19,15 @@ sidebar:
 - Give each page a different `title`.
 - Write the `description` in 140–160 characters. Use the keywords of the page, and describe only what the page contains.
 
+Write the `sidebar.label` in the form that the [Google style guide](https://developers.google.com/style/headings) gives for headings:
+
+- A task page (Get started and the guides): start with a bare verb, such as `Animate a list` or `Trigger the reveal`.
+- A concept page: a noun phrase that names the topic, such as `Server rendering`. A benefit, such as "No flash on load", hides the topic. `How it works` is a noun clause, and it is the usual name of an overview page, so it stays.
+- A framework or reference page: the name of the tool or the API, such as `Next.js` or `React API`.
+- Do not start the label with an `-ing` word. Google permits a gerund when no better word exists, as for `Billing`. `Troubleshooting` stays for this reason: `Troubleshoot` has no object.
+
+Link text that names a page uses its `sidebar.label` or its `title`. When you change one of them, search for `](/<slug>/)` and update the links that use the old text.
+
 A `title` entry in the frontmatter `head` replaces `<title>`. On current pages, the route middleware also copies it into `og:title` and the JSON-LD headline. Use the entry only in these cases:
 
 - On the home page, the `<h1>` is the hero text, and the `title` is the product name.
