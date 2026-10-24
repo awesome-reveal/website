@@ -3,6 +3,7 @@
   --paper: #eef0f7;
   --pencil: #9fd3e6;
   --marker: #ffd23f;
+  --surface-card: color-mix(in oklab, var(--sl-color-gray-6) 70%, transparent);
 
   --sl-font: var(--font-hanken);
   --sl-font-mono: var(--font-jetbrains);

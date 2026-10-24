@@ -93,13 +93,13 @@ const hasToolbar = control || replay || Astro.slots.has("controls");
 </section>
 
 <script>
-  import { replayReveal } from "../../lib/replay-reveal";
+  import { replayReveals, revealedElementsIn } from "../../lib/replay-reveal";
 
   // One script runs all the demos, so the page loads no module per chapter.
   for (const chapter of document.querySelectorAll(".chapter")) {
-    const stage = chapter.querySelector(".stage");
+    const stage = chapter.querySelector(".stage")!;
     const snippets = chapter.querySelectorAll<HTMLElement>("[data-snippet]");
-    const choices = stage?.querySelectorAll<HTMLElement>("[data-choice]") ?? [];
+    const choices = stage.querySelectorAll<HTMLElement>("[data-choice]");
 
     chapter.querySelector(".options")?.addEventListener("change", (event) => {
       if (!(event.target instanceof HTMLInputElement)) return;
@@ -111,17 +111,18 @@ const hasToolbar = control || replay || Astro.slots.has("controls");
       for (const choice of choices) {
         const selected = choice.dataset.choice === value;
         choice.toggleAttribute("data-selected", selected);
-        if (selected) replayReveal(choice);
+        if (selected) replayReveals([choice]);
       }
     });
 
     chapter.querySelector("[data-replay]")?.addEventListener("click", () => {
       // A reveal plays and fires `reveal` also when its element is not displayed.
       // All checks run before the first replay, so the style recalculates only once.
-      const shownElements = [
-        ...(stage?.querySelectorAll("awesome-reveal > :first-child") ?? []),
-      ].filter((element) => element.checkVisibility());
-      for (const element of shownElements) replayReveal(element);
+      replayReveals(
+        [...revealedElementsIn(stage)].filter((element) =>
+          element.checkVisibility(),
+        ),
+      );
     });
   }
 </script>
@@ -133,7 +134,6 @@ const hasToolbar = control || replay || Astro.slots.has("controls");
     grid-template-areas: "copy" "stage" "code";
     align-content: center;
     gap: var(--space-6);
-    min-block-size: calc(100svh - var(--sl-nav-height));
     padding-block: var(--space-8);
   }
 
@@ -181,11 +181,7 @@ const hasToolbar = control || replay || Astro.slots.has("controls");
     overflow: hidden;
     border: 1px solid var(--sl-color-hairline-light);
     border-radius: var(--radius-md);
-    background-color: color-mix(
-      in oklab,
-      var(--sl-color-gray-6) 70%,
-      transparent
-    );
+    background-color: var(--surface-card);
   }
 
   .stage :global(.outlined-choice) {

@@ -21,7 +21,7 @@ const label = {
 } as const;
 ---
 
-<div class:list={["showcase", className]} data-showcase data-markdown-ignore>
+<div class:list={["showcase", className]} data-markdown-ignore>
   <div class="bar">
     <span class="dots">
       <span></span>
@@ -93,39 +93,20 @@ const label = {
 
 <script>
   import { getReveal } from "@awesome-reveal/astro";
-  import { replayReveal } from "../../lib/replay-reveal";
+  import { onFirstView } from "../../lib/on-first-view";
+  import { replayReveals, revealedElementsIn } from "../../lib/replay-reveal";
 
-  function revealedParts(showcase: Element) {
-    return showcase.querySelectorAll("awesome-reveal > :first-child");
-  }
-
-  function startParts(showcase: Element) {
-    for (const element of revealedParts(showcase))
-      getReveal(element).when = true;
-  }
-
-  function replayParts(showcase: Element) {
-    for (const element of revealedParts(showcase)) replayReveal(element);
-  }
-
-  function onFirstView(element: Element, callback: () => void) {
-    const observer = new IntersectionObserver(
-      (entries) => {
-        if (!entries.some((entry) => entry.isIntersecting)) return;
-        observer.disconnect();
-        callback();
-      },
-      { threshold: 0.4 },
-    );
-    observer.observe(element);
-  }
-
-  for (const showcase of document.querySelectorAll("[data-showcase]")) {
+  for (const showcase of document.querySelectorAll(".showcase")) {
     // All parts start together, so a part below the fold does not wait for its own scroll.
-    onFirstView(showcase, () => startParts(showcase));
+    onFirstView(showcase, 0.4, () => {
+      for (const element of revealedElementsIn(showcase))
+        getReveal(element).when = true;
+    });
     showcase
       .querySelector("[data-replay]")
-      ?.addEventListener("click", () => replayParts(showcase));
+      ?.addEventListener("click", () =>
+        replayReveals(revealedElementsIn(showcase)),
+      );
   }
 </script>
 
@@ -135,11 +116,7 @@ const label = {
     overflow: hidden;
     border: 1px solid var(--sl-color-hairline-light);
     border-radius: var(--radius-md);
-    background-color: color-mix(
-      in oklab,
-      var(--sl-color-gray-6) 70%,
-      transparent
-    );
+    background-color: var(--surface-card);
   }
 
   .bar {
@@ -284,13 +261,11 @@ const label = {
     background-color: var(--sl-color-white);
   }
 
-  /* Forced colors remove the backgrounds, which are the only shape of the parts. */
-  @media (forced-colors: active) {
-    .dots span,
-    .page span,
-    .headline {
-      border: 1px solid CanvasText;
-    }
+  /* Forced colors remove the backgrounds, so the outline keeps the parts visible. */
+  .dots span,
+  .page span,
+  .headline {
+    outline: 1px solid transparent;
   }
 
   /* The `1fr` row gives the extra height of the 16:9 frame to the headline. */

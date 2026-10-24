@@ -97,7 +97,9 @@ const code = `<Reveal when={saved} hidden={!saved}>
     gap: var(--space-3);
   }
 
+  /* Forced colors remove the background, so the outline keeps the line visible. */
   .line {
+    outline: 1px solid transparent;
     block-size: 0.6rem;
     border-radius: 999px;
     background-color: var(--sl-color-gray-5);
@@ -191,12 +193,5 @@ const code = `<Reveal when={saved} hidden={!saved}>
     color: var(--sl-color-gray-3);
     font-size: var(--sl-text-sm);
     white-space: nowrap;
-  }
-
-  /* Forced colors remove the backgrounds, which are the only shape of the lines. */
-  @media (forced-colors: active) {
-    .line {
-      border: 1px solid CanvasText;
-    }
   }
 </style>

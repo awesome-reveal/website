@@ -113,19 +113,14 @@ const easings = [
 
 <script>
   import { getReveal } from "@awesome-reveal/astro";
+  import { onFirstView } from "../../lib/on-first-view";
 
   // The cards must start together, so one observer starts them all instead of a viewport check for each card.
   for (const list of document.querySelectorAll(".easings")) {
     const reveals = [...list.querySelectorAll(".zoom-card")].map(getReveal);
-    const observer = new IntersectionObserver(
-      ([entry]) => {
-        if (!entry?.isIntersecting) return;
-        observer.disconnect();
-        for (const reveal of reveals) reveal.when = true;
-      },
-      { threshold: 0.5 },
-    );
-    observer.observe(list);
+    onFirstView(list, 0.5, () => {
+      for (const reveal of reveals) reveal.when = true;
+    });
   }
 </script>
 

@@ -117,21 +117,16 @@ reveal("h1", { from: "left" });`,
     padding-block: var(--space-16) var(--space-8);
   }
 
+  /* The auto margins center the content above the credits. */
   .get-started > section {
     display: grid;
+    margin-block: auto;
     grid-template-columns: minmax(0, 1fr);
     gap: var(--space-10);
   }
 
   @media (min-width: 56rem) {
-    .get-started {
-      min-block-size: calc(100svh - var(--sl-nav-height));
-      padding-block-start: var(--space-16);
-    }
-
-    /* The auto margins center the content above the credits. */
     .get-started > section {
-      margin-block: auto;
       grid-template-columns: minmax(0, 5fr) minmax(0, 6fr);
       /* The code also spans the empty last row, which takes its extra height, so the button stays under the lead. */
       grid-template-rows: min-content min-content auto;

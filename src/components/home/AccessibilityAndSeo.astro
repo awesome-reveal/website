@@ -75,7 +75,6 @@ import Search from "@lucide/astro/icons/search";
     display: grid;
     align-content: center;
     gap: var(--space-8);
-    min-block-size: calc(100svh - var(--sl-nav-height));
     padding-block: var(--space-8);
   }
 
@@ -140,11 +139,7 @@ import Search from "@lucide/astro/icons/search";
       padding: var(--space-5);
       border: 1px solid var(--sl-color-hairline-light);
       border-radius: var(--radius-md);
-      background-color: color-mix(
-        in oklab,
-        var(--sl-color-gray-6) 70%,
-        transparent
-      );
+      background-color: var(--surface-card);
     }
 
     .icon {

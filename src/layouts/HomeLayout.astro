@@ -6,14 +6,18 @@
     overflow-anchor: none;
   }
 
+  /* No specificity, so a slide can set its own height. */
+  :where([data-slide]) {
+    min-block-size: calc(100svh - var(--sl-nav-height));
+  }
+
   /* The Starlight content gaps would put space between the slides. */
   [data-slide],
   .sl-markdown-content:has(> [data-slide]) {
     margin-block-start: 0;
   }
 
-  /* From this width, the last slide fills the viewport and holds the credits.
-     With no padding below it, a link to the last slide scrolls to the end of the page. */
+  /* With no padding below the last slide, a link to it scrolls to the end of the page. */
   @media (min-width: 56rem) {
     html:has([data-slide]) {
       --sl-main-pad: 0;
