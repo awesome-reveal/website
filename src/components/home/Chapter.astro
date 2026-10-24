@@ -93,13 +93,7 @@ const hasToolbar = control || replay || Astro.slots.has("controls");
 </section>
 
 <script>
-  import { getReveal } from "@awesome-reveal/astro";
-
-  function replay(element: Element) {
-    const reveal = getReveal(element);
-    reveal.when = false;
-    reveal.when = true;
-  }
+  import { replayReveal } from "../../lib/replay-reveal";
 
   // One script runs all the demos, so the page loads no module per chapter.
   for (const chapter of document.querySelectorAll(".chapter")) {
@@ -117,7 +111,7 @@ const hasToolbar = control || replay || Astro.slots.has("controls");
       for (const choice of choices) {
         const selected = choice.dataset.choice === value;
         choice.toggleAttribute("data-selected", selected);
-        if (selected) replay(choice);
+        if (selected) replayReveal(choice);
       }
     });
 
@@ -127,7 +121,7 @@ const hasToolbar = control || replay || Astro.slots.has("controls");
       const shownElements = [
         ...(stage?.querySelectorAll("awesome-reveal > :first-child") ?? []),
       ].filter((element) => element.checkVisibility());
-      for (const element of shownElements) replay(element);
+      for (const element of shownElements) replayReveal(element);
     });
   }
 </script>
@@ -137,8 +131,10 @@ const hasToolbar = control || replay || Astro.slots.has("controls");
     display: grid;
     grid-template-columns: minmax(0, 1fr);
     grid-template-areas: "copy" "stage" "code";
-    gap: var(--space-8);
-    padding-block: var(--space-16);
+    align-content: center;
+    gap: var(--space-6);
+    min-block-size: calc(100svh - var(--sl-nav-height));
+    padding-block: var(--space-8);
   }
 
   /* The empty rows center the copy and the code beside the stage. */
@@ -147,9 +143,7 @@ const hasToolbar = control || replay || Astro.slots.has("controls");
       grid-template-columns: minmax(0, 5fr) minmax(0, 6fr);
       grid-template-rows: 1fr auto auto 1fr;
       grid-template-areas: ". stage" "copy stage" "code stage" ". stage";
-      align-content: center;
       gap: 0 var(--space-16);
-      min-block-size: calc(100svh - var(--sl-nav-height));
       padding-block: var(--space-16);
     }
 
@@ -168,14 +162,6 @@ const hasToolbar = control || replay || Astro.slots.has("controls");
     display: flex;
     flex-direction: column;
     gap: var(--space-5);
-  }
-
-  h2 {
-    text-wrap: balance;
-  }
-
-  .body {
-    text-wrap: pretty;
   }
 
   .body :global(code) {
@@ -220,8 +206,8 @@ const hasToolbar = control || replay || Astro.slots.has("controls");
     display: grid;
     flex: 1;
     place-items: center;
-    min-block-size: 17rem;
-    padding: var(--space-10) var(--space-5);
+    min-block-size: 15rem;
+    padding: var(--space-6) var(--space-5);
   }
 
   @media (min-width: 56rem) {

@@ -13,7 +13,7 @@ scrollCueTarget: directions
 editUrl: false
 footer: false
 banner:
-  content: "The <code>@awesome-reveal/*</code> packages are a release candidate of version 1.0. The API is frozen. Until the stable release, only fixes change the packages."
+  content: "Version 1.0 of <code>@awesome-reveal/*</code> is a release candidate. The API is frozen."
 hero:
   title: Scroll reveal animations
   tagline: Fade, slide, zoom and stagger elements as they scroll into view. One core with no dependencies runs in React, Vue, Astro and plain JavaScript.
@@ -26,10 +26,6 @@ hero:
       icon: github
       link: https://github.com/awesome-reveal/awesome-reveal
       variant: secondary
-    - text: react-awesome-reveal v4 docs
-      icon: right-arrow
-      link: /v4/
-      variant: minimal
 ---
 
 import AccessibilityAndSeo from "../../components/home/AccessibilityAndSeo.astro";
@@ -43,11 +39,13 @@ import SiteCredits from "../../components/SiteCredits.astro";
 import SlideNav from "../../components/home/SlideNav.astro";
 import Stagger from "../../components/home/Stagger.astro";
 import StartStates from "../../components/home/StartStates.astro";
+import Words from "../../components/home/Words.astro";
 
 <HomeLayout>
   <Sides />
   <StartStates />
   <Stagger />
+  <Words />
   <Keyframes />
   <Control />
   <Events />

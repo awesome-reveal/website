@@ -7,6 +7,7 @@ import ArrowRight from "@lucide/astro/icons/arrow-right";
 import ExternalLink from "@lucide/astro/icons/external-link";
 import Github from "../assets/github.svg";
 import { getMarkdownSlug } from "../lib/markdown-slug";
+import HeroShowcase from "./home/HeroShowcase.astro";
 
 // The hero schema of Starlight accepts only its own icon names, so the frontmatter name picks the icon here.
 const icons = {
@@ -42,42 +43,45 @@ const heroActions =
   data-slide={isHome ? "" : undefined}
   data-slide-label={isHome ? "Intro" : undefined}
 >
-  <Cascade
-    as="h1"
-    id="_top"
-    data-page-title
-    interval={110}
-    duration={900}
-    from={{ opacity: 0, y: "0.35em" }}
-  >
-    {words.map((word) => (
-      <>
-        <span set:html={word} />{" "}
-      </>
-    ))}
-  </Cascade>
-  {data.draft && <DraftContentNotice />}
-  {tagline && (
-    <Reveal as="p" class="tagline" delay={250}>
-      <Fragment set:html={tagline} />
-    </Reveal>
-  )}
-  {heroActions.length > 0 && (
-    <Reveal class="actions" delay={350} from={{ opacity: 0, y: 12 }}>
-      {heroActions.map(({ attrs, icon, link, text, variant }) => {
-        const Icon =
-          icon?.type === "icon"
-            ? icons[icon.name as keyof typeof icons]
-            : undefined;
-        return (
-          <LinkButton href={link} variant={variant} {...attrs}>
-            {text}
-            {Icon && <Icon aria-hidden="true" width="1em" height="1em" />}
-          </LinkButton>
-        );
-      })}
-    </Reveal>
-  )}
+  <div class="intro">
+    <Cascade
+      as="h1"
+      id="_top"
+      data-page-title
+      interval={110}
+      duration={900}
+      from={{ opacity: 0, y: "0.35em" }}
+    >
+      {words.map((word) => (
+        <>
+          <span set:html={word} />{" "}
+        </>
+      ))}
+    </Cascade>
+    {data.draft && <DraftContentNotice />}
+    {tagline && (
+      <Reveal as="p" class="tagline" delay={250}>
+        <Fragment set:html={tagline} />
+      </Reveal>
+    )}
+    {heroActions.length > 0 && (
+      <Reveal class="actions" delay={350} from={{ opacity: 0, y: 12 }}>
+        {heroActions.map(({ attrs, icon, link, text, variant }) => {
+          const Icon =
+            icon?.type === "icon"
+              ? icons[icon.name as keyof typeof icons]
+              : undefined;
+          return (
+            <LinkButton href={link} variant={variant} {...attrs}>
+              {text}
+              {Icon && <Icon aria-hidden="true" width="1em" height="1em" />}
+            </LinkButton>
+          );
+        })}
+      </Reveal>
+    )}
+  </div>
+  {isHome && <HeroShowcase class="showcase" />}
   {scrollCueTarget && (
     <Reveal
       as="p"
@@ -98,17 +102,22 @@ const heroActions =
 </div>
 
 <style>
-  .hero {
+  .hero,
+  .intro {
     display: flex;
     flex-direction: column;
     align-items: flex-start;
-    gap: var(--space-6);
+    gap: var(--hero-gap);
+  }
+
+  .hero {
+    --hero-gap: var(--space-6);
     padding-block: var(--space-2) var(--space-4);
   }
 
   @media (min-width: 50rem) {
     .hero {
-      gap: var(--space-8);
+      --hero-gap: var(--space-8);
       padding-block: clamp(
           var(--space-12),
           var(--space-8) + 12vmin,
@@ -122,8 +131,35 @@ const heroActions =
     min-block-size: calc(100svh - var(--sl-nav-height) - 6rem);
   }
 
-  .home h1 {
+  .home .intro {
     margin-block-start: auto;
+  }
+
+  .showcase {
+    inline-size: 100%;
+  }
+
+  /* The `auto` row keeps the scroll cue at the bottom, under both columns. */
+  @media (min-width: 56rem) {
+    .home {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) minmax(0, 26rem);
+      grid-template-rows: 1fr auto;
+      align-items: center;
+      gap: var(--space-8) var(--space-12);
+    }
+
+    .home .intro {
+      margin-block-start: 0;
+    }
+
+    .home h1 {
+      font-size: clamp(3rem, 1rem + 6vw, 6rem);
+    }
+
+    .scroll-cue {
+      grid-column: 1 / -1;
+    }
   }
 
   /* The space above is on the paragraph, so the focus ring of the link fits its text. */

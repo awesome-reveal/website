@@ -1,5 +1,5 @@
 ---
-import { Cascade, Reveal } from "@awesome-reveal/astro";
+import { Cascade } from "@awesome-reveal/astro";
 import CirclePause from "@lucide/astro/icons/circle-pause";
 import EyeOff from "@lucide/astro/icons/eye-off";
 import Gauge from "@lucide/astro/icons/gauge";
@@ -12,12 +12,25 @@ import Search from "@lucide/astro/icons/search";
   data-slide
   data-slide-label="Accessibility and SEO"
 >
-  <Reveal as="h2" class="slide-title" threshold={0.5}>
-    Accessible and SEO friendly by default
-  </Reveal>
-  <Cascade as="ul" class="points" role="list" interval={100} threshold={0.2}>
+  <Cascade class="copy" interval={90} threshold={0.5}>
+    <h2 class="slide-title">Accessible and SEO friendly by default</h2>
+    <p class="slide-lead">
+      Each package does all four with no configuration. You get all of this, and
+      a lot more, from a core of less than 2 kB with no dependencies.
+    </p>
+  </Cascade>
+  <Cascade
+    as="ul"
+    class="points"
+    role="list"
+    aria-label="Features"
+    interval={100}
+    threshold={0.2}
+  >
     <li>
-      <Search aria-hidden="true" />
+      <span class="icon">
+        <Search />
+      </span>
       <h3>SEO friendly</h3>
       <p>
         Search engines and screen readers read all of your content. It is in the
@@ -25,7 +38,9 @@ import Search from "@lucide/astro/icons/search";
       </p>
     </li>
     <li>
-      <EyeOff aria-hidden="true" />
+      <span class="icon">
+        <EyeOff />
+      </span>
       <h3>No flicker on load</h3>
       <p>
         With the React, Vue and Astro packages, content does not blink into view
@@ -33,19 +48,19 @@ import Search from "@lucide/astro/icons/search";
       </p>
     </li>
     <li>
-      <CirclePause aria-hidden="true" />
+      <span class="icon">
+        <CirclePause />
+      </span>
       <h3>Respects motion settings</h3>
       <p>
         Visitors who ask their device for reduced motion see the content at
         once, with no animation.
       </p>
-      <p class="motion" data-markdown-ignore>
-        Your device: <strong class="full-motion">full motion</strong>
-        <strong class="reduced-motion">reduced motion</strong>
-      </p>
     </li>
     <li>
-      <Gauge aria-hidden="true" />
+      <span class="icon">
+        <Gauge />
+      </span>
       <h3>Fast and smooth</h3>
       <p>
         Pages stay light, and the motion runs smoothly. The browser does the
@@ -59,9 +74,23 @@ import Search from "@lucide/astro/icons/search";
   .accessibility-and-seo {
     display: grid;
     align-content: center;
-    gap: var(--space-12);
+    gap: var(--space-8);
     min-block-size: calc(100svh - var(--sl-nav-height));
-    padding-block: var(--space-16);
+    padding-block: var(--space-8);
+  }
+
+  @media (min-width: 64rem) {
+    .accessibility-and-seo {
+      grid-template-columns: minmax(0, 5fr) minmax(0, 7fr);
+      align-items: center;
+      gap: var(--space-16);
+    }
+  }
+
+  .copy {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-5);
   }
 
   h2 {
@@ -70,72 +99,75 @@ import Search from "@lucide/astro/icons/search";
 
   .points {
     display: grid;
-    grid-template-columns: minmax(0, 1fr);
-    gap: var(--space-8);
+    gap: var(--space-6);
     margin: 0;
     padding: 0;
     list-style: none;
   }
 
-  /* Four points fill one row or two, so no point is left alone on a row. */
+  li {
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr);
+    gap: var(--space-1) var(--space-4);
+  }
+
+  .icon {
+    grid-row: span 2;
+    display: grid;
+    place-items: center;
+    inline-size: 2.75rem;
+    block-size: 2.75rem;
+    border-radius: var(--radius-sm);
+    background-color: var(--marker);
+    color: var(--ink);
+    font-size: 1.375rem;
+  }
+
+  li:nth-child(even) .icon {
+    background-color: var(--pencil);
+  }
+
   @media (min-width: 36rem) {
     .points {
       grid-template-columns: repeat(2, minmax(0, 1fr));
-      gap: var(--space-10) var(--space-8);
+      gap: var(--space-3);
     }
-  }
 
-  @media (min-width: 64rem) {
-    .points {
-      grid-template-columns: repeat(4, minmax(0, 1fr));
+    li {
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-2);
+      padding: var(--space-5);
+      border: 1px solid var(--sl-color-hairline-light);
+      border-radius: var(--radius-md);
+      background-color: color-mix(
+        in oklab,
+        var(--sl-color-gray-6) 70%,
+        transparent
+      );
     }
-  }
 
-  li {
-    display: flex;
-    flex-direction: column;
-    gap: var(--space-2);
-    padding-block-start: var(--space-5);
-    border-top: 2px solid var(--sl-color-white);
-  }
+    .icon {
+      margin-block-end: var(--space-3);
+    }
 
-  li > :global(svg) {
-    margin-block-end: var(--space-2);
-    color: var(--sl-color-text-accent);
-    font-size: 1.75rem;
+    /* In two columns, the colors make a checkerboard. */
+    li:nth-child(3) .icon {
+      background-color: var(--pencil);
+    }
+
+    li:nth-child(4) .icon {
+      background-color: var(--marker);
+    }
   }
 
   h3 {
     color: var(--sl-color-white);
-    font-size: 1.375rem;
+    font-size: 1.25rem;
     line-height: 1.15;
   }
 
   p {
     color: var(--sl-color-gray-3);
-  }
-
-  .motion {
-    align-self: flex-start;
-    margin-block-start: var(--space-2);
-    padding: var(--space-1) var(--space-3);
-    border-radius: 999px;
-    background-color: var(--sl-color-accent-low);
-    color: var(--sl-color-accent-high);
-    font-size: var(--sl-text-sm);
-  }
-
-  .reduced-motion {
-    display: none;
-  }
-
-  @media (prefers-reduced-motion: reduce) {
-    .full-motion {
-      display: none;
-    }
-
-    .reduced-motion {
-      display: inline;
-    }
   }
 </style>

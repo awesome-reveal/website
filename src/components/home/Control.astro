@@ -36,39 +36,49 @@ const code = `<Reveal when={saved} hidden={!saved}>
       <span class="line short"></span>
     </div>
   </div>
-  <label slot="controls" class="switch">
-    <input
-      type="checkbox"
-      role="switch"
-      aria-label="saved, shows the toast"
-      autocomplete="off"
-    />
-    <span class="track" aria-hidden="true"></span>
-    <code>saved</code>
-    <span class="state" aria-hidden="true">
-      false
-    </span>
-  </label>
+  <div slot="controls" class="actions">
+    <button type="button" class="save" data-saved="true">
+      Save
+    </button>
+    <button type="button" class="undo" data-saved="false" aria-disabled="true">
+      Undo
+    </button>
+    <code class="state" aria-hidden="true">
+      saved = false
+    </code>
+  </div>
 </Chapter>
 
 <script>
   import { getReveal } from "@awesome-reveal/astro";
 
   const chapter = document.getElementById("triggers");
-  const input = chapter?.querySelector<HTMLInputElement>(".switch input");
-  const state = chapter?.querySelector(".switch .state");
   const toast = chapter?.querySelector<HTMLElement>(".toast");
-  const reveal = toast && getReveal(toast);
+  const state = chapter?.querySelector(".actions .state");
+  const buttons =
+    chapter?.querySelectorAll<HTMLButtonElement>("[data-saved]") ?? [];
 
-  function showToast() {
-    if (!input || !state || !toast || !reveal) return;
-    toast.hidden = !input.checked;
-    reveal.when = input.checked;
-    state.textContent = String(input.checked);
+  function showToast(saved: boolean) {
+    if (!toast) return;
+    toast.hidden = !saved;
+    getReveal(toast).when = saved;
   }
 
-  showToast();
-  input?.addEventListener("change", showToast);
+  function showState(saved: boolean) {
+    if (state) state.textContent = `saved = ${saved}`;
+    for (const button of buttons) {
+      const current = button.dataset.saved === String(saved);
+      button.setAttribute("aria-disabled", String(current));
+    }
+  }
+
+  for (const button of buttons)
+    button.addEventListener("click", () => {
+      if (button.getAttribute("aria-disabled") === "true") return;
+      const saved = button.dataset.saved === "true";
+      showToast(saved);
+      showState(saved);
+    });
 </script>
 
 <style>
@@ -104,6 +114,7 @@ const code = `<Reveal when={saved} hidden={!saved}>
     inline-size: 70%;
   }
 
+  /* The transparent border draws the edge of the toast in forced colors. */
   .toast {
     position: absolute;
     inset-block-end: var(--space-4);
@@ -113,6 +124,7 @@ const code = `<Reveal when={saved} hidden={!saved}>
     justify-content: center;
     gap: var(--space-2);
     padding: var(--space-3) var(--space-4);
+    border: 1px solid transparent;
     border-radius: var(--radius-sm);
     background-color: var(--marker);
     color: var(--ink);
@@ -123,106 +135,68 @@ const code = `<Reveal when={saved} hidden={!saved}>
     }
   }
 
-  .switch {
-    position: relative;
-    display: inline-flex;
+  .actions {
+    display: flex;
+    flex: 1;
     align-items: center;
-    gap: var(--space-3);
-    min-block-size: var(--option-size);
-    padding-inline: var(--space-1);
-    cursor: pointer;
+    gap: var(--space-2);
   }
 
-  input {
-    position: absolute;
-    inset: 0;
-    margin: 0;
-    opacity: 0;
-    cursor: pointer;
-  }
-
-  .track {
-    --track-inline-size: 2.75rem;
-    --track-block-size: 1.5rem;
-    --thumb-size: 1.125rem;
-    --thumb-inset: calc((var(--track-block-size) - var(--thumb-size)) / 2);
-    position: relative;
-    flex: none;
-    inline-size: var(--track-inline-size);
-    block-size: var(--track-block-size);
+  button {
+    min-block-size: var(--control-size);
+    padding: var(--space-2) var(--space-5);
     border-radius: 999px;
-    background-color: var(--sl-color-gray-5);
-    transition: background-color var(--hover-duration) ease;
-
-    &::before {
-      content: "";
-      position: absolute;
-      inset-block-start: var(--thumb-inset);
-      inset-inline-start: var(--thumb-inset);
-      inline-size: var(--thumb-size);
-      block-size: var(--thumb-size);
-      border-radius: 50%;
-      background-color: var(--sl-color-white);
-      transition:
-        translate var(--hover-duration) ease,
-        background-color var(--hover-duration) ease;
-    }
+    font: inherit;
+    font-size: var(--sl-text-sm);
+    font-weight: 700;
+    cursor: pointer;
+    transition:
+      border-color var(--hover-duration) ease,
+      color var(--hover-duration) ease;
   }
 
-  input:checked + .track {
+  .save {
+    border: 1px solid transparent;
     background-color: var(--marker);
-
-    &::before {
-      translate: calc(
-          var(--track-inline-size) - var(--thumb-size) - 2 * var(--thumb-inset)
-        )
-        0;
-      background-color: var(--ink);
-    }
-  }
-
-  input:focus-visible + .track {
-    outline: 2px solid var(--sl-color-text-accent);
+    color: var(--ink);
     outline-offset: 2px;
   }
 
-  .switch code {
-    color: var(--sl-color-white);
-    font-weight: 700;
+  .undo {
+    border: 1px solid var(--sl-color-hairline-light);
+    background-color: var(--sl-color-black);
+    color: var(--sl-color-gray-2);
+    outline-offset: -1px;
+
+    @media (hover: hover) {
+      &:not([aria-disabled="true"]):hover {
+        border-color: var(--sl-color-text-accent);
+        color: var(--sl-color-white);
+      }
+    }
+  }
+
+  /* Not `disabled`: the button keeps the focus, so the keyboard stays on the control. */
+  button[aria-disabled="true"] {
+    border: 1px dashed var(--sl-color-hairline-light);
+    background-color: transparent;
+    color: var(--sl-color-gray-3);
+    cursor: default;
   }
 
   .state {
-    min-inline-size: 5ch;
+    margin-inline-start: auto;
+    padding: 0;
+    background: none;
     color: var(--sl-color-gray-3);
-    font-family: var(--sl-font-mono);
     font-size: var(--sl-text-sm);
+    white-space: nowrap;
   }
 
-  /* Forced colors remove backgrounds, so the track needs a border and system colors. */
+  /* Forced colors remove the backgrounds, which are the only shape of the lines. */
   @media (forced-colors: active) {
-    .track {
-      forced-color-adjust: none;
+    .line {
       border: 1px solid CanvasText;
-      background-color: Canvas;
-
-      &::before {
-        background-color: CanvasText;
-      }
-    }
-
-    input:checked + .track {
-      background-color: Highlight;
-
-      &::before {
-        background-color: HighlightText;
-      }
-    }
-  }
-
-  @media (prefers-reduced-motion: reduce) {
-    .track,
-    .track::before {
-      transition: none;
     }
   }
 </style>

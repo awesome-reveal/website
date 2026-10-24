@@ -5,12 +5,12 @@ import Chapter from "./Chapter.astro";
 import { objectLiteral } from "../../lib/object-literal";
 
 const tiles: { name: string; from: StartState }[] = [
-  { name: "Fade", from: { opacity: 0 } },
-  { name: "Zoom", from: { opacity: 0, scale: 0.6 } },
-  { name: "Swing", from: { opacity: 0, rotate: -12, y: 40 } },
-  { name: "Blur", from: { opacity: 0, blur: 12 } },
+  { name: "y", from: { opacity: 0, y: 40 } },
+  { name: "scale", from: { opacity: 0, scale: 0.6 } },
+  { name: "rotate", from: { opacity: 0, rotate: -20 } },
+  { name: "blur", from: { opacity: 0, blur: 12 } },
 ];
-const selected = "Zoom";
+const selected = "scale";
 
 const control = {
   name: "from",
@@ -29,7 +29,7 @@ const control = {
   label="Start states"
   title="Zoom, rotate and blur on scroll"
   control={control}
-  mark={2}
+  mark={/from=\{\{[^}]*\}\}/g}
 >
   <p>
     Pass an object to set the start state. Mix opacity, offset, scale, rotation
@@ -101,5 +101,19 @@ const control = {
     display: flex;
     flex-direction: column;
     font-size: var(--sl-text-xs);
+    white-space: nowrap;
+  }
+
+  @container stage (max-width: 24rem) {
+    .tile {
+      gap: var(--space-4);
+      min-block-size: 7rem;
+    }
+  }
+
+  @container stage (max-width: 20rem) {
+    .tile {
+      padding: var(--space-3);
+    }
   }
 </style>

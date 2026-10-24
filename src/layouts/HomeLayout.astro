@@ -29,6 +29,7 @@
     font-size: clamp(2.25rem, 1.5rem + 3vw, 3.75rem);
     line-height: 1;
     letter-spacing: -0.02em;
+    text-wrap: balance;
   }
 
   .slide-lead {
@@ -36,6 +37,7 @@
     color: var(--sl-color-gray-2);
     font-size: var(--sl-text-lg);
     line-height: 1.55;
+    text-wrap: pretty;
   }
 
   /* On a touch screen with a trackpad, the copy button always shows, so the lines wrap before they reach it. */
@@ -46,6 +48,10 @@
   }
 
   @media (max-width: 30rem) {
+    .slide-lead {
+      font-size: var(--sl-text-base);
+    }
+
     .slide-code {
       --ec-codeFontSize: 0.8125rem;
     }
