@@ -12,7 +12,7 @@ Awesome Reveal uses two APIs of the browser. The [Intersection Observer API](htt
 
 All packages use `@awesome-reveal/core`. A waiting element works in one of two ways:
 
-- **React, Vue and Astro**: the stylesheet of the package hides the waiting element with `opacity: 0`, at its resting position. The package creates the entrance at the reveal. See [No flash on load](/concepts/server-rendering/).
+- **React, Vue and Astro**: the stylesheet of the package hides the waiting element with `opacity: 0`, at its resting position. The package creates the entrance at the reveal. See [Server rendering](/concepts/server-rendering/).
 - **The JavaScript API**: `reveal()` and `cascade()` create the entrance when you call them, and pause it at its start. Until the reveal, `reveal()` holds the element, and `cascade()` holds each direct child, at the first keyframe.
 
 ## The entrance is a native animation
