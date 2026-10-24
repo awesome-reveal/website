@@ -21,26 +21,7 @@ import ArrowUp from "@lucide/astro/icons/arrow-up";
 </nav>
 
 <script>
-  // The media query in the styles sets this property, so the query has one source.
-  function keysStepSlides() {
-    return (
-      getComputedStyle(document.documentElement)
-        .getPropertyValue("--slide-keys")
-        .trim() === "on"
-    );
-  }
   const reducedMotion = matchMedia("(prefers-reduced-motion: reduce)");
-  const directions: Record<string, 1 | -1> = {
-    ArrowDown: 1,
-    ArrowRight: 1,
-    PageDown: 1,
-    ArrowUp: -1,
-    ArrowLeft: -1,
-    PageUp: -1,
-  };
-  // These elements use the arrow keys themselves.
-  const keyboardWidgets =
-    "input, textarea, select, [contenteditable], [role='tablist'], dialog, pre";
 
   // Scroll positions that differ by less than this many pixels are the same position.
   const tolerance = 2;
@@ -70,11 +51,11 @@ import ArrowUp from "@lucide/astro/icons/arrow-up";
     );
   }
 
-  function hasModifier(event: KeyboardEvent | MouseEvent) {
+  function hasModifier(event: MouseEvent) {
     return event.altKey || event.ctrlKey || event.metaKey || event.shiftKey;
   }
 
-  // A step during a smooth scroll continues from its target, so quick presses do not stop at the same slide.
+  // A step during a smooth scroll continues from its target, so quick clicks do not stop at the same slide.
   let targetTop: number | undefined;
 
   addEventListener("scrollend", () => {
@@ -109,31 +90,6 @@ import ArrowUp from "@lucide/astro/icons/arrow-up";
     return top;
   }
 
-  // The bottom padding holds no content, so a step may hide it.
-  function slideBottom(index: number) {
-    const slide = slides[index]!;
-    const padding = parseFloat(getComputedStyle(slide).paddingBlockEnd);
-    return slide.getBoundingClientRect().bottom - padding + scrollY;
-  }
-
-  // A slide taller than the viewport scrolls normally, so the keys do not skip its content.
-  function skipsContent(direction: 1 | -1, top: number, tops: number[]) {
-    const from = currentTop();
-    if (direction > 0) {
-      const current = tops.findLastIndex(
-        (slideTop) => slideTop <= from + tolerance,
-      );
-      return (
-        current !== -1 && slideBottom(current) > from + innerHeight + tolerance
-      );
-    }
-    const target = tops.findIndex(
-      (slideTop) => Math.abs(slideTop - top) <= tolerance,
-    );
-    const end = Math.min(slideBottom(target), from + headerHeight());
-    return end > top + innerHeight + tolerance;
-  }
-
   function smoothScrollTo(top: number) {
     // The dot of the target becomes current at once, so the dots of the passed slides do not flash.
     setCurrentLink(slideIndexAt(Math.min(top, bottomTop())));
@@ -148,28 +104,6 @@ import ArrowUp from "@lucide/astro/icons/arrow-up";
     }
     updateStepButtons();
   }
-
-  document.addEventListener("keydown", (event) => {
-    const direction = directions[event.key];
-    if (
-      !direction ||
-      !keysStepSlides() ||
-      event.defaultPrevented ||
-      hasModifier(event) ||
-      (event.target instanceof Element && event.target.closest(keyboardWidgets))
-    )
-      return;
-    // A held key waits for each step to end. Otherwise the key repeat runs to the end in a moment.
-    if (event.repeat && targetTop !== undefined) {
-      event.preventDefault();
-      return;
-    }
-    const tops = slideTops();
-    const top = stepTop(direction, tops);
-    if (top === undefined || skipsContent(direction, top, tops)) return;
-    event.preventDefault();
-    smoothScrollTo(top);
-  });
 
   const stepButtons = [
     ...(nav?.querySelectorAll<HTMLButtonElement>("[data-direction]") ?? []),
@@ -280,29 +214,6 @@ import ArrowUp from "@lucide/astro/icons/arrow-up";
 <style>
   .slide-nav {
     display: none;
-  }
-
-  @media (min-width: 56rem) and (min-height: 36rem) and (hover: hover) and (pointer: fine) {
-    :global(html:has(.slide-nav)) {
-      --slide-keys: on;
-      scroll-snap-type: y proximity;
-      scroll-padding-top: var(--sl-nav-height);
-      /* The page ends at the snap point of the last slide. */
-      --sl-main-pad: 0;
-    }
-
-    :global(html:has(.slide-nav) .content-panel) {
-      padding-block-end: 0;
-    }
-
-    :global(.scroll-cue .keys) {
-      display: inline;
-    }
-
-    /* The hero gets no snap point, so the page can rest at the top with the banner. */
-    :global([data-slide]:not(.hero)) {
-      scroll-snap-align: start;
-    }
   }
 
   /* A link moves the focus to its slide only to set the start of the next Tab.

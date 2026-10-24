@@ -23,7 +23,7 @@ const selectedHref = archived ? `/${archived.slug}/` : "/";
     <span class="sr-only">
       {Astro.locals.t("starlightVersions.select.accessibleLabel")}
     </span>
-    <Clock class="icon label-icon" aria-hidden="true" />
+    <Clock class="icon label-icon" />
     <select autocomplete="off">
       {options.map(({ label, href }) => (
         <option value={href} selected={href === selectedHref}>
@@ -31,7 +31,7 @@ const selectedHref = archived ? `/${archived.slug}/` : "/";
         </option>
       ))}
     </select>
-    <ChevronDown class="icon caret-icon" aria-hidden="true" />
+    <ChevronDown class="icon caret-icon" />
   </label>
 </starlight-version-select>
 
