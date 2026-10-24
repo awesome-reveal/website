@@ -1,6 +1,6 @@
 ---
 title: Vue scroll animations
-description: "Add scroll animations to Vue 3: fade and slide elements in with Reveal, stagger a list with Cascade, and reveal your own elements with the v-reveal directive."
+description: "Add scroll animations to Vue 3.5: fade and slide elements in with Reveal, stagger a list with Cascade, and reveal your own elements with the v-reveal directive."
 sidebar:
   order: 3
   label: Vue
@@ -75,11 +75,11 @@ To use the directives with no import, [register them for all components](/framew
 
 ## Control the reveal from state
 
-To play the entrance when your state changes, such as when a panel opens, give [`when`](/guides/manual-control/). To run code when the element reveals, listen to the [`reveal` event](/guides/reveal-events/) of `Reveal`, or give `onReveal` to `v-reveal`.
+To play the entrance when your state changes, such as when a panel opens, give [`when`](/guides/manual-control/). To run code when the element reveals, listen to the [`reveal` event](/guides/reveal-events/) of `Reveal` and `Cascade`, or give `onReveal` to `v-reveal`.
 
 ## Server rendering
 
-The server HTML hides each waiting element, so the content does not flash before hydration. See [No flash on load](/concepts/server-rendering/).
+To prevent a flash of the content before hydration, see [No flash on load](/concepts/server-rendering/).
 
 - For Nuxt, see [Nuxt and Vue SSR scroll animations](/frameworks/vue-ssr-nuxt/).
 - For a Vue island in Astro, see [React and Vue scroll animations in Astro](/frameworks/react-vue-astro/).
