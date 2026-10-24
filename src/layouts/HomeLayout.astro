@@ -12,6 +12,18 @@
     margin-block-start: 0;
   }
 
+  /* From this width, the last slide fills the viewport and holds the credits.
+     With no padding below it, a link to the last slide scrolls to the end of the page. */
+  @media (min-width: 56rem) {
+    html:has([data-slide]) {
+      --sl-main-pad: 0;
+    }
+
+    html:has([data-slide]) .content-panel {
+      padding-block-end: 0;
+    }
+  }
+
   .slide-title {
     color: var(--sl-color-white);
     font-size: clamp(2.25rem, 1.5rem + 3vw, 3.75rem);
