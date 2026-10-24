@@ -16,7 +16,7 @@ export const collections = {
             .string()
             .optional()
             .describe(
-              'The id of the section that the "Scroll down" link of the hero opens.',
+              "The id of the section that the scroll cue of the hero opens.",
             ),
           footer: z
             .boolean()

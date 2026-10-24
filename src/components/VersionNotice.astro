@@ -13,7 +13,7 @@ const latest = Astro.locals.t("starlightVersions.link.latest", { link: "/" });
 
 {version && (
   <p>
-    <Clock aria-hidden="true" />
+    <Clock />
     <span>
       <Fragment set:html={outdated} /> <Fragment set:html={latest} />
     </span>
