@@ -84,6 +84,21 @@ export default defineConfig({
           exclude: ["blog/**"],
           versions: [{ slug: "v4", redirect: "root" }],
         }),
+        // After starlight-versions, which warns about these overrides although they render its content.
+        {
+          name: "version-overrides",
+          hooks: {
+            "config:setup"({ config, updateConfig }) {
+              updateConfig({
+                components: {
+                  ...config.components,
+                  Banner: "./src/components/Banner.astro",
+                  PageTitle: "./src/components/PageTitle.astro",
+                },
+              });
+            },
+          },
+        },
         // After starlight-versions: its middleware needs the docs sidebar, and the blog middleware replaces it.
         // Header.astro and MobileMenuFooter.astro render the blog link. The route middleware adds the structured data.
         starlightBlog({
@@ -106,12 +121,10 @@ export default defineConfig({
       customCss: ["./src/styles/theme.css"],
       components: {
         Head: "./src/components/Head.astro",
-        Banner: "./src/components/Banner.astro",
         Header: "./src/components/Header.astro",
         MobileMenuFooter: "./src/components/MobileMenuFooter.astro",
         Hero: "./src/components/Hero.astro",
         Footer: "./src/components/Footer.astro",
-        PageTitle: "./src/components/PageTitle.astro",
         ThemeProvider: "./src/components/ThemeProvider.astro",
       },
       editLink: {
