@@ -1,0 +1,87 @@
+---
+title: React scroll animations
+description: "Add scroll animations to React: fade and slide elements in with Reveal, stagger a list with Cascade, and reveal your own elements with the useReveal hook."
+sidebar:
+  order: 1
+  label: React
+---
+
+Use `@awesome-reveal/react` to add scroll animations to a React app. An element fades and slides in when it scrolls into view. The package does not link an animation to the scroll position, as a parallax effect or a scroll progress bar does.
+
+## Install the package
+
+```shell
+pnpm add @awesome-reveal/react
+```
+
+For the supported React versions, see [Requirements](/getting-started/#requirements).
+
+## Reveal an element on scroll
+
+Wrap the element in `Reveal`:
+
+```jsx
+import { Reveal } from "@awesome-reveal/react";
+
+export function Hero() {
+  return (
+    <Reveal as="section" from="left">
+      <h1>Scroll animations in React</h1>
+      <p>The section fades in from the left.</p>
+    </Reveal>
+  );
+}
+```
+
+`Reveal` renders an element around its children. [`as`](/reference/options/#as) sets its tag, and [`from`](/guides/entrances/) sets the entrance. To fade, zoom, rotate or blur the element in, set a [start state](/guides/entrances/#zoom-rotate-and-blur-with-a-start-state).
+
+## Stagger a list with Cascade
+
+`Cascade` reveals its direct children one after the other:
+
+```jsx
+import { Cascade } from "@awesome-reveal/react";
+
+export function Features() {
+  return (
+    <Cascade as="ul" from={{ opacity: 0, y: 16 }} interval={120}>
+      <li>Fast</li>
+      <li>Small</li>
+      <li>Accessible</li>
+    </Cascade>
+  );
+}
+```
+
+For a long list or a tall grid, see [Animate a list](/guides/lists/#reveal-a-long-list-or-a-tall-grid).
+
+## Reveal your own element with a hook
+
+`useReveal` and `useCascade` reveal an element that you render, with no wrapper element. Spread the props from [`getProps()`](/reference/react/#getprops) on one DOM element:
+
+```jsx
+import { useReveal } from "@awesome-reveal/react";
+
+export function Card({ title }) {
+  const { getProps } = useReveal({ from: { opacity: 0, scale: 0.95 } });
+
+  return <article {...getProps({ className: "card" })}>{title}</article>;
+}
+```
+
+## Control the reveal from state
+
+To play the entrance when your state changes, such as when a panel opens, give [`when`](/guides/manual-control/). To run code when the element reveals, give [`onReveal`](/guides/reveal-events/).
+
+## Server rendering
+
+The server HTML hides each waiting element, so the content does not flash before hydration. See [No flash on load](/concepts/server-rendering/).
+
+- For Next.js, see [Next.js scroll animations](/frameworks/nextjs/).
+- For a React island in Astro, see [React and Vue scroll animations in Astro](/frameworks/react-vue-astro/).
+
+## Next steps
+
+- [Use your own keyframes](/guides/keyframes/): give native Web Animations keyframes.
+- [Change the timing](/guides/timing/): set the duration, the delay and the threshold.
+- [React API](/reference/react/): all the components, hooks and types.

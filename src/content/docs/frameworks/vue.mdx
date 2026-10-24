@@ -1,0 +1,91 @@
+---
+title: Vue scroll animations
+description: "Add scroll animations to Vue 3: fade and slide elements in with Reveal, stagger a list with Cascade, and reveal your own elements with the v-reveal directive."
+sidebar:
+  order: 3
+  label: Vue
+---
+
+Use `@awesome-reveal/vue` to add scroll animations to a Vue app. An element fades and slides in when it scrolls into view. The package does not link an animation to the scroll position, as a parallax effect or a scroll progress bar does.
+
+## Install the package
+
+```shell
+pnpm add @awesome-reveal/vue
+```
+
+For the supported Vue versions, see [Requirements](/getting-started/#requirements).
+
+## Reveal an element on scroll
+
+Wrap the element in `Reveal`:
+
+```vue
+<script setup>
+import { Reveal } from "@awesome-reveal/vue";
+</script>
+
+<template>
+  <Reveal as="section" from="left">
+    <h1>Scroll animations in Vue</h1>
+    <p>The section fades in from the left.</p>
+  </Reveal>
+</template>
+```
+
+`Reveal` renders an element around its default slot. [`as`](/reference/options/#as) sets its tag, and [`from`](/guides/entrances/) sets the entrance. To fade, zoom, rotate or blur the element in, set a [start state](/guides/entrances/#zoom-rotate-and-blur-with-a-start-state).
+
+## Stagger a list with Cascade
+
+`Cascade` reveals its direct children one after the other:
+
+```vue
+<script setup>
+import { Cascade } from "@awesome-reveal/vue";
+</script>
+
+<template>
+  <Cascade as="ul" :from="{ opacity: 0, y: 16 }" :interval="120">
+    <li>Fast</li>
+    <li>Small</li>
+    <li>Accessible</li>
+  </Cascade>
+</template>
+```
+
+For a long list or a tall grid, see [Animate a list](/guides/lists/#reveal-a-long-list-or-a-tall-grid).
+
+## Reveal your own element with a directive
+
+`v-reveal` and `v-cascade` reveal an element that you render, with no wrapper element. In `<script setup>`, import `vReveal` to use `v-reveal` in the template:
+
+```vue
+<script setup>
+import { vReveal } from "@awesome-reveal/vue";
+</script>
+
+<template>
+  <article v-reveal="{ from: { opacity: 0, scale: 0.95 } }" class="card">
+    A card
+  </article>
+</template>
+```
+
+To use the directives with no import, [register them for all components](/frameworks/vue-ssr-nuxt/#register-the-directives-for-all-components).
+
+## Control the reveal from state
+
+To play the entrance when your state changes, such as when a panel opens, give [`when`](/guides/manual-control/). To run code when the element reveals, listen to the [`reveal` event](/guides/reveal-events/) of `Reveal`, or give `onReveal` to `v-reveal`.
+
+## Server rendering
+
+The server HTML hides each waiting element, so the content does not flash before hydration. See [No flash on load](/concepts/server-rendering/).
+
+- For Nuxt, see [Nuxt and Vue SSR scroll animations](/frameworks/vue-ssr-nuxt/).
+- For a Vue island in Astro, see [React and Vue scroll animations in Astro](/frameworks/react-vue-astro/).
+
+## Next steps
+
+- [Use your own keyframes](/guides/keyframes/): give native Web Animations keyframes.
+- [Change the timing](/guides/timing/): set the duration, the delay and the threshold.
+- [Vue API](/reference/vue/): all the components, directives and types.

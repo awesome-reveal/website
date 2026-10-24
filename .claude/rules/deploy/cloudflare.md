@@ -18,6 +18,6 @@ paths:
 - The site opts in to AI training: `public/robots.txt` and `public/_headers` send `ai-train=yes` content signals. Keep each AI bot policy of the zone at Allow. A Block policy turns on the managed robots.txt, and Cloudflare then prepends `ai-train=no` and `Disallow` rules for AI crawlers to our file.
 - `awesome-reveal.dev` is a Workers Custom Domain in `wrangler.jsonc`. A DNS record on the hostname blocks it. A redirect rule sends `www` to the apex with a 301. It needs the proxied `www` record.
 - `react-awesome-reveal.morello.dev` and `awesome-reveal.morello.dev` are old domains. Redirect rules in the `morello.dev` zone send them to `awesome-reveal.dev` with a 301, and keep the path and the query string. Keep a proxied record on each hostname, such as an `AAAA` record to `100::`: without a record, the hostname does not resolve, and the rule cannot run.
-  - `react-awesome-reveal.morello.dev` goes to `/v4`, because it served the v4 docs.
+  - `react-awesome-reveal.morello.dev` served the v4 docs, so its paths go to `/v4`. Its root goes to the root of `awesome-reveal.dev`: the old home page has the most backlinks, and they must count for the current docs.
   - `awesome-reveal.morello.dev` goes to the root, because it served the current site at the same paths.
   - Match each hostname with `eq`. `http.host contains "awesome-reveal.morello.dev"` also matches `react-awesome-reveal.morello.dev`.

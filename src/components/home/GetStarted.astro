@@ -11,6 +11,7 @@ const frameworks = [
   {
     label: "React",
     pkg: "@awesome-reveal/react",
+    guide: "/frameworks/react/",
     lang: "jsx",
     code: `import { Reveal } from "@awesome-reveal/react";
 
@@ -23,6 +24,7 @@ export const Hero = () => (
   {
     label: "Vue",
     pkg: "@awesome-reveal/vue",
+    guide: "/frameworks/vue/",
     lang: "vue",
     code: `<script setup>
 import { Reveal } from "@awesome-reveal/vue";
@@ -37,6 +39,7 @@ import { Reveal } from "@awesome-reveal/vue";
   {
     label: "Astro",
     pkg: "@awesome-reveal/astro",
+    guide: "/frameworks/astro/",
     lang: "astro",
     // A line that starts with `---` ends the frontmatter for editor parsers, so the fences are interpolated.
     code: `${"---"}
@@ -50,6 +53,7 @@ ${"---"}
   {
     label: "JavaScript",
     pkg: "@awesome-reveal/core",
+    guide: "/frameworks/javascript/",
     lang: "js",
     code: `import { reveal } from "@awesome-reveal/core";
 
@@ -76,10 +80,14 @@ reveal("h1", { from: "left" });`,
     </Reveal>
     <Reveal class="code slide-code" threshold={0.2} delay={120}>
       <Tabs syncKey="framework">
-        {frameworks.map(({ label, pkg, lang, code }) => (
+        {frameworks.map(({ label, pkg, guide, lang, code }) => (
           <TabItem label={label}>
             <Code code={`pnpm add ${pkg}`} lang="shell" />
             <Code code={code} lang={lang} />
+            <a class="guide" href={guide}>
+              {label} scroll animations
+              <ArrowRight />
+            </a>
           </TabItem>
         ))}
       </Tabs>
@@ -157,6 +165,22 @@ reveal("h1", { from: "left" });`,
 
   .code :global(.expressive-code + .expressive-code) {
     margin-block-start: var(--space-4);
+  }
+
+  .guide {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-2);
+    margin-block-start: var(--space-4);
+    color: var(--sl-color-gray-2);
+    font-size: var(--sl-text-sm);
+    font-weight: 600;
+    text-decoration: none;
+    transition: color var(--hover-duration) ease;
+  }
+
+  .guide:hover {
+    color: var(--sl-color-white);
   }
 
   /* The panels share one cell, so the tallest sets the height and a tab change does not move the centered section.

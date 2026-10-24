@@ -1,0 +1,68 @@
+---
+title: JavaScript scroll animations
+description: "Add scroll animations in plain JavaScript with no framework: reveal elements on scroll with reveal(), stagger a list with cascade(), and stop with dispose()."
+sidebar:
+  order: 7
+  label: JavaScript
+---
+
+Use `@awesome-reveal/core` to add scroll animations to a page with no framework. An element fades and slides in when it scrolls into view. The package does not link an animation to the scroll position, as a parallax effect or a scroll progress bar does.
+
+## Install the package
+
+```shell
+pnpm add @awesome-reveal/core
+```
+
+For the supported browsers, see [Browser support](/reference/browser-support/).
+
+## Reveal elements on scroll
+
+Call `reveal()` with a CSS selector, an element or a list of elements:
+
+```js
+import { reveal } from "@awesome-reveal/core";
+
+reveal(".card");
+reveal(".hero", { from: "left" });
+reveal(".logo", { from: { opacity: 0, scale: 0.9 } });
+```
+
+[`from`](/guides/entrances/) sets the entrance. To fade, zoom, rotate or blur the element in, set a [start state](/guides/entrances/#zoom-rotate-and-blur-with-a-start-state).
+
+For elements that you add later, see [Targets](/reference/javascript/#targets).
+
+## Stagger a list
+
+`cascade()` reveals the direct children of each container one after the other:
+
+```js
+import { cascade } from "@awesome-reveal/core";
+
+cascade(".features", { from: { opacity: 0, y: 16 }, interval: 120 });
+```
+
+For a long list or a tall grid, see [Animate a list](/guides/lists/#reveal-a-long-list-or-a-tall-grid).
+
+## Stop the reveals
+
+`reveal()` and `cascade()` return a handle. When you remove the elements before they reveal, call [`dispose()`](/reference/javascript/#dispose):
+
+```js
+import { reveal } from "@awesome-reveal/core";
+
+const handle = reveal(".card");
+
+// When a single-page app leaves the route:
+handle.dispose();
+```
+
+## Server-rendered pages
+
+`@awesome-reveal/core` does not hide content before your script runs. See [The JavaScript API](/concepts/server-rendering/#the-javascript-api). For server-rendered pages, use [React](/frameworks/react/), [Vue](/frameworks/vue/) or [Astro](/frameworks/astro/).
+
+## Next steps
+
+- [Use your own keyframes](/guides/keyframes/): give native Web Animations keyframes.
+- [Change the timing](/guides/timing/): set the duration, the delay and the threshold.
+- [JavaScript API](/reference/javascript/): the functions, the targets and the types.
