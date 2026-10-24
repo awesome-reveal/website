@@ -13,33 +13,48 @@ interface PageNames {
   label: string | undefined;
 }
 
-interface Mismatch extends PageNames {
+interface MismatchedLink extends PageNames {
   file: string;
   line: number;
-  text: string;
-  url: string;
+  linkText: string;
+  target: string;
 }
 
-const rootDir = path.resolve(import.meta.dirname, "..");
+const repoRoot = path.resolve(import.meta.dirname, "..");
 const docsDir = path.join("src", "content", "docs");
-const internalLink =
-  /\[([^\]]+)\]\((\/[^)\s#?]*)([#?][^)\s]*)?(?:\s+"[^"]*")?\)/g;
+const placeholderOrigin = "https://example.com";
+// A target that starts with `//` is an external link.
+const internalLinkPattern = /\[([^\]]+)\]\((\/(?!\/)[^)\s]*)(?:\s+"[^"]*")?\)/g;
+
+const readSourcesByFile = () => {
+  // The archived pages keep their text, so their links are out of scope.
+  const files = globSync("src/content/**/*.{md,mdx}", {
+    cwd: repoRoot,
+    exclude: [path.join(docsDir, "v4", "**")],
+  });
+  return new Map(
+    files.map((file) => [
+      file,
+      readFileSync(path.join(repoRoot, file), "utf8"),
+    ]),
+  );
+};
 
 const parseFrontmatter = (source: string): Frontmatter =>
   parse(source.match(/^---\r?\n([\s\S]*?)\r?\n---/)?.[1] ?? "") ?? {};
 
 const getPageUrl = (file: string, slug: string | undefined) => {
-  if (slug !== undefined) return slug ? `/${slug}/` : "/";
+  if (slug !== undefined) return path.posix.join("/", slug, "/");
   const { dir, name } = path.parse(path.relative(docsDir, file));
   const segments = [...dir.split(path.sep), name].filter(
     (segment) => segment && segment !== "index",
   );
-  return segments.length ? `/${segments.join("/")}/` : "/";
+  return path.posix.join("/", ...segments, "/");
 };
 
 // Starlight serves a page with and without the trailing slash.
-const withTrailingSlash = (url: string) =>
-  url.endsWith("/") ? url : `${url}/`;
+const withTrailingSlash = (pathname: string) =>
+  pathname.endsWith("/") ? pathname : `${pathname}/`;
 
 // Prettier can wrap a link text onto the next line.
 const collapseWhitespace = (text: string) => text.replace(/\s+/g, " ").trim();
@@ -47,13 +62,20 @@ const collapseWhitespace = (text: string) => text.replace(/\s+/g, " ").trim();
 const normalizeName = (text: string) =>
   collapseWhitespace(text.replaceAll("`", "")).toLowerCase();
 
+const matchesPageName = (linkText: string, page: PageNames) =>
+  [page.label, page.title]
+    .filter((name) => name !== undefined)
+    .map(normalizeName)
+    .includes(normalizeName(linkText));
+
 const getLineNumber = (source: string, index: number) =>
   source.slice(0, index).split("\n").length;
 
-const collectPageNames = (sources: Map<string, string>) =>
+const collectPageNamesByUrl = (sourcesByFile: Map<string, string>) =>
   new Map(
-    [...sources]
-      .filter(([file]) => file.startsWith(docsDir + path.sep))
+    sourcesByFile
+      .entries()
+      .filter(([file]) => path.matchesGlob(file, path.join(docsDir, "**")))
       .map(([file, source]): [string, PageNames] => {
         const { title, sidebar, slug } = parseFrontmatter(source);
         return [getPageUrl(file, slug), { title, label: sidebar?.label }];
@@ -61,40 +83,34 @@ const collectPageNames = (sources: Map<string, string>) =>
   );
 
 const findMismatchedLinks = (
-  sources: Map<string, string>,
-  pageNames: Map<string, PageNames>,
-): Mismatch[] =>
-  [...sources].flatMap(([file, source]) =>
-    [...source.matchAll(internalLink)].flatMap((match) => {
-      const [, text = "", url = "", anchor] = match;
-      const page = pageNames.get(withTrailingSlash(url));
-      // An anchor link names a heading or uses prose, so it would bury the page names.
-      if (!page || anchor) return [];
-      const names = [page.label, page.title]
-        .filter((name) => name !== undefined)
-        .map(normalizeName);
-      if (names.includes(normalizeName(text))) return [];
-      return [
-        { file, line: getLineNumber(source, match.index), text, url, ...page },
-      ];
-    }),
-  );
+  sourcesByFile: Map<string, string>,
+  pageNamesByUrl: Map<string, PageNames>,
+): MismatchedLink[] =>
+  sourcesByFile
+    .entries()
+    .flatMap(([file, source]) =>
+      source.matchAll(internalLinkPattern).flatMap((match) => {
+        const [, linkText = "", target = ""] = match;
+        const { pathname, hash } = new URL(target, placeholderOrigin);
+        const page = pageNamesByUrl.get(withTrailingSlash(pathname));
+        // An anchor link names a heading or uses prose, so it would bury the page names.
+        if (!page || hash || matchesPageName(linkText, page)) return [];
+        const line = getLineNumber(source, match.index);
+        return [{ file, line, linkText, target, ...page }];
+      }),
+    )
+    .toArray();
 
-// The archived pages keep their text, so their links are out of scope.
-const files = globSync("src/content/**/*.{md,mdx}", {
-  cwd: rootDir,
-  exclude: ["src/content/docs/v4/**"],
-});
-const sources = new Map(
-  files.map((file) => [file, readFileSync(path.join(rootDir, file), "utf8")]),
+const formatMismatchedLink = (link: MismatchedLink) =>
+  `${link.file}:${link.line}\t"${collapseWhitespace(link.linkText)}" -> ${link.target}\t(label: ${link.label ?? "none"}, title: ${link.title})`;
+
+const sourcesByFile = readSourcesByFile();
+const mismatchedLinks = findMismatchedLinks(
+  sourcesByFile,
+  collectPageNamesByUrl(sourcesByFile),
 );
-const mismatches = findMismatchedLinks(sources, collectPageNames(sources));
 
-for (const { file, line, text, url, label, title } of mismatches) {
-  console.log(
-    `${file}:${line}\t"${collapseWhitespace(text)}" -> ${url}\t(label: ${label ?? "none"}, title: ${title})`,
-  );
-}
+for (const link of mismatchedLinks) console.log(formatMismatchedLink(link));
 console.error(
-  `${mismatches.length} links have a text that is not the label or the title of their page.`,
+  `${mismatchedLinks.length} links have a text that is not the label or the title of their page.`,
 );

@@ -26,7 +26,7 @@ Write the `sidebar.label` in the form that the [Google style guide](https://deve
 - A framework or reference page: the name of the tool or the API, such as `Next.js` or `React API`.
 - Do not start the label with an `-ing` word. Google permits a gerund when no better word exists, as for `Billing`. `Troubleshooting` stays for this reason: `Troubleshoot` has no object.
 
-Link text that names a page uses its `sidebar.label` or its `title`. `pnpm exec node scripts/list-mismatched-link-texts.ts` lists the Markdown links whose text is neither. Most results are prose links, such as `[manually](/guides/manual-control/)`, and they are correct. Fix only a result that names the page, such as a "See" link or a list of pages. The script does not read anchor links, frontmatter such as `hero.actions`, or components.
+Link text that names a page uses its `sidebar.label` or its `title`. `pnpm exec node scripts/list-mismatched-link-texts.ts` lists the Markdown links whose text is neither. Most results are prose links, such as `[manually](/guides/manual-control/)`, and they are correct. Fix only a result that names the page, such as a "See" link or a list of pages. The script reads only inline Markdown links to a root path, such as `[text](/guides/lists/)`, and it skips the links with an anchor. It does not read frontmatter such as `hero.actions`, or components.
 
 When you change a `sidebar.label` or a `title`:
 
