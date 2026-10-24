@@ -16,6 +16,12 @@ export default defineConfig({
   experimental: {
     contentIntellisense: true,
   },
+  vite: {
+    optimizeDeps: {
+      // Display-only code: the site does not install its imports.
+      entries: ["!src/snippets/**"],
+    },
+  },
   fonts: [
     {
       name: "Bricolage Grotesque",
