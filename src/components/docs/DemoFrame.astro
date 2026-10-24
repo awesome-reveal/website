@@ -72,25 +72,20 @@ const inFeed = !hasStarlightRoute(Astro.locals);
 )}
 
 <script>
-  import { getReveal } from "@awesome-reveal/astro";
+  import { replayReveals, revealedElementsIn } from "../../lib/replay-reveal";
 
   for (const demo of document.querySelectorAll(".demo-frame")) {
     const stage = demo.querySelector(".stage")!;
     const choices = stage.querySelectorAll<HTMLElement>("[data-choice]");
     const snippets = demo.querySelectorAll<HTMLElement>("[data-snippet]");
-    const shownReveals = () =>
-      [
-        ...(choices.length > 0
+    const shownElements = () =>
+      revealedElementsIn(
+        choices.length > 0
           ? stage.querySelector("[data-choice][data-selected]")!
-          : stage
-        ).querySelectorAll("awesome-reveal > :first-child"),
-      ].map(getReveal);
+          : stage,
+      );
 
-    const replay = () => {
-      const reveals = shownReveals();
-      for (const reveal of reveals) reveal.when = false;
-      for (const reveal of reveals) reveal.when = true;
-    };
+    const replay = () => replayReveals(shownElements());
 
     demo.querySelector(".options")?.addEventListener("change", (event) => {
       if (!(event.target instanceof HTMLInputElement)) return;
@@ -122,11 +117,7 @@ const inFeed = !hasStarlightRoute(Astro.locals);
     border-radius: var(--radius-md);
     /* With overflow: hidden, WebKit does not paint the fade of an inline child. */
     clip-path: inset(0 round var(--radius-md));
-    background-color: color-mix(
-      in oklab,
-      var(--sl-color-gray-6) 70%,
-      transparent
-    );
+    background-color: var(--surface-card);
   }
 
   .stage {

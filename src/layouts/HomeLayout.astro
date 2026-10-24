@@ -6,14 +6,18 @@
     overflow-anchor: none;
   }
 
+  /* No specificity, so a slide can set its own height. */
+  :where([data-slide]) {
+    min-block-size: calc(100svh - var(--sl-nav-height));
+  }
+
   /* The Starlight content gaps would put space between the slides. */
   [data-slide],
   .sl-markdown-content:has(> [data-slide]) {
     margin-block-start: 0;
   }
 
-  /* From this width, the last slide fills the viewport and holds the credits.
-     With no padding below it, a link to the last slide scrolls to the end of the page. */
+  /* With no padding below the last slide, a link to it scrolls to the end of the page. */
   @media (min-width: 56rem) {
     html:has([data-slide]) {
       --sl-main-pad: 0;
@@ -29,6 +33,7 @@
     font-size: clamp(2.25rem, 1.5rem + 3vw, 3.75rem);
     line-height: 1;
     letter-spacing: -0.02em;
+    text-wrap: balance;
   }
 
   .slide-lead {
@@ -36,6 +41,7 @@
     color: var(--sl-color-gray-2);
     font-size: var(--sl-text-lg);
     line-height: 1.55;
+    text-wrap: pretty;
   }
 
   /* On a touch screen with a trackpad, the copy button always shows, so the lines wrap before they reach it. */
@@ -46,6 +52,10 @@
   }
 
   @media (max-width: 30rem) {
+    .slide-lead {
+      font-size: var(--sl-text-base);
+    }
+
     .slide-code {
       --ec-codeFontSize: 0.8125rem;
     }

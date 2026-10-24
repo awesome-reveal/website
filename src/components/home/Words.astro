@@ -1,0 +1,84 @@
+---
+import { Cascade } from "@awesome-reveal/astro";
+import Chapter from "./Chapter.astro";
+
+const intervals = [60, 120, 240];
+const selected = 120;
+const words = ["Every", "word", "gets", "its", "own", "entrance"];
+const highlighted = "word";
+
+const control = {
+  name: "interval",
+  selected: String(selected),
+  options: intervals.map((interval) => ({
+    value: String(interval),
+    code: `<Cascade as="h2" interval={${interval}}>
+  <span>Every</span> <span>word</span>{" "}
+  <span>gets</span> <span>its</span>{" "}
+  <span>own</span> <span>entrance</span>
+</Cascade>`,
+  })),
+};
+---
+
+<Chapter
+  id="words"
+  label="Words"
+  title="Reveal headings word by word"
+  control={control}
+  mark={/interval=\{\d+\}/g}
+>
+  <p>
+    Wrap each word in an element, and <code>Cascade</code> reveals the words in
+    order. Give them <code>display: inline-block</code>, because a transform
+    does not move an inline box.
+  </p>
+  <div slot="stage" class="headlines">
+    {intervals.map((interval) => (
+      <Cascade
+        as="p"
+        class="headline swapped-choice"
+        data-choice={String(interval)}
+        data-selected={interval === selected ? "" : undefined}
+        interval={interval}
+        duration={700}
+        threshold={0.5}
+      >
+        {words.map((word, index) => (
+          <>
+            {index > 0 && " "}
+            <span class:list={{ highlight: word === highlighted }}>{word}</span>
+          </>
+        ))}
+      </Cascade>
+    ))}
+  </div>
+</Chapter>
+
+<style>
+  .headlines {
+    display: grid;
+    inline-size: min(100%, 26rem);
+  }
+
+  .headline {
+    margin: 0;
+    color: var(--sl-color-white);
+    font-family: var(--font-display);
+    font-size: clamp(2.5rem, 1.5rem + 4vw, 3.5rem);
+    font-weight: 800;
+    line-height: 1.1;
+    text-wrap: balance;
+  }
+
+  span {
+    display: inline-block;
+  }
+
+  .highlight {
+    padding-inline: 0.25em;
+    border-radius: var(--radius-sm);
+    background-color: var(--marker);
+    color: var(--ink);
+  }
+</style>

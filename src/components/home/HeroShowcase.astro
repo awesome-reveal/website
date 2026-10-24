@@ -1,0 +1,305 @@
+---
+import type { RevealOptions } from "@awesome-reveal/astro";
+import { Cascade, Reveal } from "@awesome-reveal/astro";
+import ReplayButton from "../ReplayButton.astro";
+
+interface Props {
+  class?: string;
+}
+
+const { class: className } = Astro.props;
+
+const flip: NonNullable<RevealOptions["keyframes"]> = [
+  { opacity: 0, rotate: "x -80deg", easing: "ease-out" },
+  { opacity: 1, rotate: "x 12deg", offset: 0.6 },
+  { opacity: 1, rotate: "x 0deg" },
+];
+const label = {
+  from: { opacity: 0, x: -8 },
+  duration: 500,
+  when: false,
+} as const;
+---
+
+<div class:list={["showcase", className]} data-markdown-ignore>
+  <div class="bar">
+    <span class="dots">
+      <span></span>
+      <span></span>
+      <span></span>
+    </span>
+    <ReplayButton title="the page preview" />
+  </div>
+  <div
+    class="page"
+    role="img"
+    aria-label="A page preview. Its parts enter with four effects: from the top, a zoom, a stagger and a flip."
+  >
+    <Reveal class="nav" from="top" delay={300} when={false}>
+      <span class="logo"></span>
+      <span class="link"></span>
+      <span class="link"></span>
+      <span class="cta"></span>
+    </Reveal>
+    <Reveal as="code" {...label} delay={450}>
+      from="top"
+    </Reveal>
+    <Reveal
+      class="headline"
+      from={{ opacity: 0, scale: 0.8 }}
+      when={false}
+      delay={450}
+      duration={800}
+    >
+      <span class="title"></span>
+      <span class="line"></span>
+      <span class="line short"></span>
+    </Reveal>
+    <Reveal as="code" {...label} delay={600}>
+      scale: 0.8
+    </Reveal>
+    <Cascade
+      class="tiles"
+      from={{ opacity: 0, scale: 0.4, rotate: 45 }}
+      when={false}
+      delay={650}
+      interval={80}
+      duration={500}
+    >
+      <span class="marker"></span>
+      <span class="ink"></span>
+      <span class="pencil"></span>
+      <span class="outline"></span>
+    </Cascade>
+    <Reveal as="code" {...label} delay={800}>
+      &lt;Cascade&gt;
+    </Reveal>
+    <Cascade
+      class="cards"
+      keyframes={flip}
+      when={false}
+      delay={950}
+      interval={150}
+      duration={900}
+    >
+      <span></span>
+      <span></span>
+    </Cascade>
+    <Reveal as="code" {...label} delay={1100}>
+      keyframes
+    </Reveal>
+  </div>
+</div>
+
+<script>
+  import { getReveal } from "@awesome-reveal/astro";
+  import { onFirstView } from "../../lib/on-first-view";
+  import { replayReveals, revealedElementsIn } from "../../lib/replay-reveal";
+
+  for (const showcase of document.querySelectorAll(".showcase")) {
+    // All parts start together, so a part below the fold does not wait for its own scroll.
+    onFirstView(showcase, 0.4, () => {
+      for (const element of revealedElementsIn(showcase))
+        getReveal(element).when = true;
+    });
+    showcase
+      .querySelector("[data-replay]")
+      ?.addEventListener("click", () =>
+        replayReveals(revealedElementsIn(showcase)),
+      );
+  }
+</script>
+
+<style>
+  .showcase {
+    container: showcase / inline-size;
+    overflow: hidden;
+    border: 1px solid var(--sl-color-hairline-light);
+    border-radius: var(--radius-md);
+    background-color: var(--surface-card);
+  }
+
+  .bar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    min-block-size: 3rem;
+    padding-block: var(--space-2);
+    padding-inline: var(--space-3);
+    border-block-end: 1px solid var(--sl-color-hairline-light);
+    --control-size: 2rem;
+  }
+
+  .dots {
+    display: flex;
+    gap: var(--space-2);
+  }
+
+  .dots span {
+    inline-size: 0.625rem;
+    block-size: 0.625rem;
+    border-radius: 50%;
+    background-color: var(--sl-color-gray-5);
+  }
+
+  .page {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    align-items: center;
+    gap: var(--space-4);
+    padding: var(--space-5);
+  }
+
+  code {
+    justify-self: start;
+    padding-block: 0.25em;
+    padding-inline: 0.75em;
+    border: 1px solid var(--sl-color-hairline);
+    border-radius: 999px;
+    color: var(--sl-color-text-accent);
+    font-size: var(--sl-text-xs);
+    white-space: nowrap;
+  }
+
+  .nav {
+    display: flex;
+    align-items: center;
+    gap: var(--space-3);
+  }
+
+  .nav span {
+    block-size: 0.5rem;
+    border-radius: 999px;
+    background-color: var(--sl-color-gray-4);
+  }
+
+  .nav .logo {
+    inline-size: 1.75rem;
+    block-size: 0.875rem;
+    background-color: var(--marker);
+  }
+
+  .nav .link {
+    inline-size: 2rem;
+  }
+
+  .nav .cta {
+    inline-size: 2.75rem;
+    block-size: 1.25rem;
+    margin-inline-start: auto;
+    background-color: var(--sl-color-white);
+  }
+
+  .headline {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-2);
+    padding: var(--space-5) var(--space-4);
+    border-radius: var(--radius-sm);
+    background-color: var(--pencil);
+  }
+
+  .headline span {
+    block-size: 0.5rem;
+    border-radius: 999px;
+    background-color: color-mix(in oklab, var(--ink) 40%, transparent);
+  }
+
+  .headline .title {
+    inline-size: 70%;
+    block-size: 1rem;
+    margin-block-end: var(--space-1);
+    background-color: var(--ink);
+  }
+
+  .headline .short {
+    inline-size: 55%;
+  }
+
+  .tiles {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: var(--space-2);
+  }
+
+  .tiles span {
+    aspect-ratio: 1;
+    border-radius: var(--radius-sm);
+  }
+
+  .tiles .marker {
+    background-color: var(--marker);
+  }
+
+  .tiles .ink {
+    background-color: var(--sl-color-white);
+  }
+
+  .tiles .pencil {
+    background-color: var(--pencil);
+  }
+
+  .tiles .outline {
+    border: 2px solid var(--sl-color-gray-4);
+  }
+
+  .cards {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: var(--space-2);
+    perspective: 40rem;
+  }
+
+  .cards span {
+    block-size: 2.75rem;
+    border-radius: var(--radius-sm);
+    background-color: var(--marker);
+    transform-origin: 50% 0;
+  }
+
+  .cards span + span {
+    background-color: var(--sl-color-white);
+  }
+
+  /* Forced colors remove the backgrounds, so the outline keeps the parts visible. */
+  .dots span,
+  .page span,
+  .headline {
+    outline: 1px solid transparent;
+  }
+
+  /* The `1fr` row gives the extra height of the 16:9 frame to the headline. */
+  @container showcase (min-width: 32rem) {
+    .page {
+      grid-template-rows: auto 1fr auto auto;
+      aspect-ratio: 16 / 9;
+      gap: var(--space-5) var(--space-6);
+      padding: var(--space-8);
+    }
+
+    .headline {
+      align-self: stretch;
+      justify-content: center;
+      padding-inline: var(--space-6);
+    }
+
+    .headline .title {
+      block-size: 1.5rem;
+    }
+
+    .tiles span {
+      aspect-ratio: 3 / 2;
+    }
+
+    .cards span {
+      block-size: 3.5rem;
+    }
+  }
+
+  @container showcase (max-width: 22rem) {
+    .page {
+      gap: var(--space-3);
+      padding: var(--space-4);
+    }
+  }
+</style>

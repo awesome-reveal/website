@@ -47,7 +47,7 @@ const { title, class: className } = Astro.props;
     }
   }
 
-  /* On a narrow container, the button shares one row with a choice control, so its label is only for screen readers. */
+  /* A narrow container has no space for the label. */
   @container (max-width: 30rem) {
     button {
       flex: none;
