@@ -25,7 +25,7 @@ Awesome Reveal 1.0 is out as a release candidate. It animates elements as they s
 </Aside>
 
 - **New to Awesome Reveal?** [Try the demos](#scroll-reveal-demos), then [add it to your project](#add-scroll-animations-in-react-vue-astro-or-javascript).
-- **Coming from `react-awesome-reveal` v4?** Read [what changed](#what-changed-from-react-awesome-reveal-v4), then follow the [migration guide](/guides/migrate-from-v4/).
+- **Coming from `react-awesome-reveal` v4?** Read [what changed](#what-changed-from-react-awesome-reveal-v4), then follow the [Migrate from v4](/guides/migrate-from-v4/) guide.
 
 ## Scroll reveal demos
 
@@ -64,7 +64,7 @@ Then wrap an element in `Reveal`. With `@awesome-reveal/core`, call `reveal()` i
   js={revealJs}
 />
 
-When the element enters the viewport, it fades in and moves up 24 pixels. The [getting started guide](/getting-started/) covers every step and the [requirements](/getting-started/#requirements). For framework setup, see the [Next.js](/frameworks/nextjs/), [Nuxt](/frameworks/vue-ssr-nuxt/) and [Astro](/frameworks/astro/) pages.
+When the element enters the viewport, it fades in and moves up 24 pixels. The [Get started](/getting-started/) page covers every step and the [requirements](/getting-started/#requirements). For framework setup, see the [Next.js](/frameworks/nextjs/), [Vue SSR and Nuxt](/frameworks/vue-ssr-nuxt/) and [Astro](/frameworks/astro/) pages.
 
 ## Why Awesome Reveal 1.0 is a rewrite
 
@@ -86,7 +86,7 @@ With `reveal()` and `cascade()`, `@awesome-reveal/core` adds less than 2 kB gzip
 
 ### The same API in React, Vue and Astro
 
-Each framework package has a `Reveal` and a `Cascade`, and the JavaScript package has the `reveal()` and `cascade()` functions. The entrance and viewport options, such as `from`, `duration` and `threshold`, have the same names and defaults in every package. The [options reference](/reference/options/#where-you-can-use-each-option) shows where each option works. The [React](/reference/react/), [Vue](/reference/vue/), [Astro](/reference/astro/) and [JavaScript](/reference/javascript/) references list the hooks, directives and functions of each one.
+Each framework package has a `Reveal` and a `Cascade`, and the JavaScript package has the `reveal()` and `cascade()` functions. The entrance and viewport options, such as `from`, `duration` and `threshold`, have the same names and defaults in every package. The [Options](/reference/options/#where-you-can-use-each-option) page shows where each option works. The [React API](/reference/react/), [Vue API](/reference/vue/), [Astro API](/reference/astro/) and [JavaScript API](/reference/javascript/) pages list the hooks, directives and functions of each one.
 
 ### Fade, slide, zoom and blur entrances
 
@@ -100,7 +100,7 @@ import { Reveal } from "@awesome-reveal/react";
 <Reveal from={{ opacity: 0, blur: 8 }}>Blur in</Reveal>;
 ```
 
-Need another effect? Pass an array of [native keyframes](/guides/keyframes/). The [entrance animations guide](/guides/entrances/) has more examples.
+Need another effect? Pass an array of [native keyframes](/guides/keyframes/). The [Choose the entrance](/guides/entrances/) guide has more examples.
 
 ### Server rendering, accessibility and performance
 
@@ -112,7 +112,7 @@ Need another effect? Pass an array of [native keyframes](/guides/keyframes/). Th
 ### Manual control, agent skills and TypeScript
 
 - **Manual control and events.** In React, Vue and Astro, the `when` option reveals an element from your own state, and a reveal event runs your code when the element reveals. See [Trigger reveal animations manually](/guides/manual-control/) and [Run code when an element reveals](/guides/reveal-events/).
-- **Skills for coding agents.** Each package includes skills for coding agents, such as Claude Code or Codex. For example, the migration skill tells the agent to replace the v4 `cascade` prop with `Cascade`, and to set `interval` to the v4 `duration * damping`. See [AI coding agent skills](/guides/ai-agents/).
+- **Skills for coding agents.** Each package includes skills for coding agents, such as Claude Code or Codex. For example, the migration skill tells the agent to replace the v4 `cascade` prop with `Cascade`, and to set `interval` to the v4 `duration * damping`. See [AI coding agent skills and llms.txt](/guides/ai-agents/).
 - **TypeScript and ES modules.** The packages include their own TypeScript types, and they're ES modules only.
 
 ## When to choose Awesome Reveal
@@ -137,10 +137,10 @@ Version 1.0 changes the API on purpose. Here are the main changes for React code
 
 `Reveal` also renders one element around its children, and one observer watches that element. Version 4 wrapped each element child in a `div`.
 
-To upgrade, install `@awesome-reveal/react`, or `react-awesome-reveal@next` (v5) if you want to keep the old import path. [Choose the package](/guides/migrate-from-v4/#choose-the-package) compares the two. The [migration guide](/guides/migrate-from-v4/) goes through each step, with the v4 position of each effect. The [v4 docs](/v4/) stay online.
+To upgrade, install `@awesome-reveal/react`, or `react-awesome-reveal@next` (v5) if you want to keep the old import path. [Choose the package](/guides/migrate-from-v4/#choose-the-package) compares the two. The [Migrate from v4](/guides/migrate-from-v4/) guide goes through each step, with the v4 position of each effect. The [v4 docs](/v4/) stay online.
 
 ## Get started with Awesome Reveal
 
-Start with the [getting started guide](/getting-started/). It also has a prompt that you can give your coding agent, so it adds the animations for you.
+Start with the [Get started](/getting-started/) page. It also has a prompt that you can give your coding agent, so it adds the animations for you.
 
 The code is on [GitHub](https://github.com/awesome-reveal/awesome-reveal), under the MIT license. I'd like to hear what works and what doesn't, so tell me in [GitHub Discussions](https://github.com/awesome-reveal/awesome-reveal/discussions). To follow the next updates, subscribe to the [RSS feed of this blog](/blog/rss.xml).
