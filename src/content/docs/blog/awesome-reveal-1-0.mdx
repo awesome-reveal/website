@@ -1,14 +1,13 @@
 ---
-title: "Awesome Reveal 1.0 RC: scroll animations for React, Vue and Astro"
-description: Awesome Reveal 1.0 RC adds scroll reveal animations to React, Vue, Astro and JavaScript, with native browser APIs, no dependencies and reduced motion support.
+title: "Awesome Reveal 1.0: scroll animations for React, Vue and Astro"
+description: Awesome Reveal 1.0 adds scroll reveal animations to React, Vue, Astro and JavaScript, with native browser APIs, no dependencies and reduced motion support.
 date: 2026-10-23
 authors: dennis
 tags:
   - Release
-excerpt: Awesome Reveal 1.0 brings scroll reveal animations to React, Vue, Astro and plain JavaScript. It's built on native browser APIs, has no dependencies and supports reduced motion. The release candidate is on npm now.
+excerpt: Awesome Reveal 1.0 brings scroll reveal animations to React, Vue, Astro and plain JavaScript. It's built on native browser APIs, has no dependencies and supports reduced motion. It's on npm now.
 ---
 
-import { Aside } from "@astrojs/starlight/components";
 import CascadeDemo from "../../../components/docs/CascadeDemo.astro";
 import EntranceDemo from "../../../components/docs/EntranceDemo.astro";
 import FrameworkTabs from "../../../components/docs/FrameworkTabs.astro";
@@ -17,12 +16,7 @@ import revealVue from "../../../snippets/getting-started/hero-title.vue?raw";
 import revealAstro from "../../../snippets/getting-started/hero-title.astro?raw";
 import revealJs from "../../../snippets/getting-started/hero-title.js?raw";
 
-Awesome Reveal 1.0 is out as a release candidate. It animates elements as they scroll into view: wrap an element in `Reveal`, and it fades in when it enters the viewport. It now works in React, Vue, Astro and plain JavaScript, and its core has no dependencies.
-
-<Aside type="note" title="Release candidate">
-  The `@awesome-reveal/*` packages are a release candidate. The API is frozen,
-  so only fixes will change the packages before the stable release.
-</Aside>
+Awesome Reveal 1.0 is out. It animates elements as they scroll into view: wrap an element in `Reveal`, and it fades in when it enters the viewport. It now works in React, Vue, Astro and plain JavaScript, and its core has no dependencies.
 
 - **New to Awesome Reveal?** [Try the demos](#scroll-reveal-demos), then [add it to your project](#add-scroll-animations-in-react-vue-astro-or-javascript).
 - **Coming from `react-awesome-reveal` v4?** Read [what changed](#what-changed-from-react-awesome-reveal-v4), then follow the [Migrate from v4](/guides/migrate-from-v4/) guide.
@@ -137,7 +131,7 @@ Version 1.0 changes the API on purpose. Here are the main changes for React code
 
 `Reveal` also renders one element around its children, and one observer watches that element. Version 4 wrapped each element child in a `div`.
 
-To upgrade, install `@awesome-reveal/react`, or `react-awesome-reveal@next` (v5) if you want to keep the old import path. [Choose the package](/guides/migrate-from-v4/#choose-the-package) compares the two. The [Migrate from v4](/guides/migrate-from-v4/) guide goes through each step, with the v4 position of each effect. The [v4 docs](/v4/) stay online.
+To upgrade, install `@awesome-reveal/react`, or `react-awesome-reveal` v5 if you want to keep the old import path. [Choose the package](/guides/migrate-from-v4/#choose-the-package) compares the two. The [Migrate from v4](/guides/migrate-from-v4/) guide goes through each step, with the v4 position of each effect. The [v4 docs](/v4/) stay online.
 
 ## Get started with Awesome Reveal
 
