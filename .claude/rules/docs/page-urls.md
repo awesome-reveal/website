@@ -13,6 +13,4 @@ The path of a file under `src/content/docs/` gives the URL of the page: `guides/
 
 To rename a page, change its file name, and update the internal links. `starlight-links-validator` fails the build on a broken link.
 
-Until the packages publish a stable 1.0.0, you can rename any page and add no redirect. Until then, `npm view @awesome-reveal/core dist-tags.latest` gives a prerelease version.
-
-After the stable release, do not rename a page in production to add keywords. A page is in production when it is on `main` without `draft: true`. [Google](https://developers.google.com/search/docs/crawling-indexing/site-move-with-url-changes) asks for a 301 or 308 redirect to the new URL for at least one year. Rename the page only when its topic changes. Then ask the user about a redirect in `public/_redirects` before you add it. See `.claude/rules/deploy/cloudflare.md`.
+Do not rename a page in production to add keywords. A page is in production when it is on `main` without `draft: true`. [Google](https://developers.google.com/search/docs/crawling-indexing/site-move-with-url-changes) asks for a 301 or 308 redirect to the new URL for at least one year. Rename the page only when its topic changes. Then ask the user about a redirect in `public/_redirects` before you add it. See `.claude/rules/deploy/cloudflare.md`.
