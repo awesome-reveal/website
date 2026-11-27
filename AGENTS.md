@@ -1,6 +1,6 @@
 # website
 
-The docs site for the `@awesome-reveal/*` packages, at <https://awesome-reveal.dev>. It uses Astro with Starlight. The packages are in [awesome-reveal/awesome-reveal](https://github.com/awesome-reveal/awesome-reveal). Their development branch is `next`.
+The docs site for the `@awesome-reveal/*` packages, at <https://awesome-reveal.dev>. It uses Astro with Starlight. The packages are in [awesome-reveal/awesome-reveal](https://github.com/awesome-reveal/awesome-reveal).
 
 ## Map
 
@@ -40,4 +40,4 @@ Before a change to the deploy, the headers, the redirects or the zone (DNS, rule
 - Work on a branch, named `<type>/<description>`. Use Conventional Commits, and squash-merge PRs.
 - Add an official Astro integration with `pnpm astro add <name>`, and other packages with `pnpm add`. Do not edit the dependencies in `package.json` by hand.
 - Use `@lucide/astro` for every icon that our code renders. The details and the one exception are in `.claude/rules/components/icons.md`.
-- Take API names, option defaults and examples from the `next` branch of the packages repo, not from the v4 archive.
+- Take API names, option defaults and examples from the `main` branch of the packages repo, not from the v4 archive.
