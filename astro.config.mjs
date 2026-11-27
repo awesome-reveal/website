@@ -13,6 +13,8 @@ const site = "https://awesome-reveal.dev";
 // https://astro.build/config
 export default defineConfig({
   site,
+  // Starlight 0.43 stopped forcing "where". The theme and the class props of child components depend on it.
+  scopedStyleStrategy: "where",
   experimental: {
     contentIntellisense: true,
   },
