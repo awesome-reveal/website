@@ -13,6 +13,8 @@ const site = "https://awesome-reveal.dev";
 // https://astro.build/config
 export default defineConfig({
   site,
+  // The theme and the class props of child components need zero-specificity scoped styles.
+  scopedStyleStrategy: "where",
   experimental: {
     contentIntellisense: true,
   },
