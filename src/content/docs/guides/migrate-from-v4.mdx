@@ -2,7 +2,7 @@
 title: Migrate from react-awesome-reveal v4
 description: "Move from react-awesome-reveal v4 to @awesome-reveal/react: replace Fade, Slide, Zoom and the other effect components, and update renamed and removed props."
 sidebar:
-  order: 7
+  order: 8
   label: Migrate from v4
 ---
 
@@ -143,7 +143,7 @@ The type check does not find these changes. Check them after the migration:
 
 - **One element.** `Reveal` renders one element around its children, and `as` sets its tag. Version 4 wrapped each element child in a `div`, and animated each `li` of a list child.
 - **One observer.** One observer watches the whole `Reveal`, so all its children reveal together. For a long list, use one `Reveal` for each item.
-- **`Cascade` does not split text.** To reveal each word, wrap each word in an element. See [Animate a list](/guides/lists/#reveal-the-words-of-a-heading).
+- **`Cascade` does not split text.** To reveal each word, wrap each word in an element. See [Animate text](/guides/text/).
 - **A new easing.** The generated entrance uses `cubic-bezier(0.22, 1, 0.36, 1)`. To change it, use native keyframes.
 - **One play.** The entrance plays one time. In v4, it played each time by default.
 

@@ -1,0 +1,11 @@
+---
+import { Cascade } from "@awesome-reveal/astro";
+
+const text = "Reveal each letter";
+---
+
+<Cascade as="h2" aria-label={text} from={{ opacity: 0 }} interval={40}>
+  {Array.from(text).map((letter) => (
+    <span aria-hidden="true">{letter}</span>
+  ))}
+</Cascade>

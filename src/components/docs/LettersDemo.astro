@@ -1,0 +1,43 @@
+---
+import { Cascade } from "@awesome-reveal/astro";
+import DemoFrame from "./DemoFrame.astro";
+
+interface Props {
+  id: string;
+  title: string;
+}
+
+const { id, title } = Astro.props;
+
+const text = "Reveal each letter";
+const letters = Array.from(text);
+---
+
+<DemoFrame id={id} title={title}>
+  {/* A paragraph cannot have an aria-label, so the full text is visually hidden. */}
+  <p>
+    <span class="sr-only">{text}</span>
+    <Cascade
+      as="span"
+      aria-hidden="true"
+      from={{ opacity: 0 }}
+      interval={40}
+      threshold={0.5}
+    >
+      {letters.map((letter) => (
+        <span>{letter}</span>
+      ))}
+    </Cascade>
+  </p>
+</DemoFrame>
+
+<style>
+  p {
+    margin: 0;
+    color: var(--sl-color-white);
+    font-family: var(--font-display);
+    font-size: var(--sl-text-h2);
+    font-weight: 700;
+    text-align: center;
+  }
+</style>

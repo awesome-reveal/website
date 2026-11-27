@@ -17,6 +17,6 @@ Write the copy in ASD-STE100 Simplified Technical English:
 
 Blog posts use a conversational voice instead of STE. See `blog-voice.md`.
 
-Check each claim about the packages against the `next` branch. See `content-sources.md`.
+Check each claim about the packages against the `main` branch. See `content-sources.md`.
 
 The archived pages in `src/content/docs/v4/` keep their text. See `archived-versions.md`.

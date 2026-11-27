@@ -5,7 +5,7 @@ paths:
 
 # Sources for the docs content
 
-The current docs describe the `@awesome-reveal/*` packages. Check each API name, option default and code example against the `next` branch of [awesome-reveal/awesome-reveal](https://github.com/awesome-reveal/awesome-reveal). Read the local clone at `../awesome-reveal`. Run `git fetch` in it, and check that `HEAD` equals `origin/next`. If it differs, tell the user, and read the file on GitHub. Do not pull or edit in the clone. In your reply, give the file and line that backs each claim. Without a clone, read the file on GitHub at `https://raw.githubusercontent.com/awesome-reveal/awesome-reveal/next/<path>`. Browse the file tree at `https://github.com/awesome-reveal/awesome-reveal/tree/next`.
+The current docs describe the `@awesome-reveal/*` packages. Check each API name, option default and code example against the `main` branch of [awesome-reveal/awesome-reveal](https://github.com/awesome-reveal/awesome-reveal). Read the local clone at `../awesome-reveal`. Run `git fetch` in it, and check that `HEAD` equals `origin/main`. If it differs, tell the user, and read the file on GitHub. Do not pull or edit in the clone. In your reply, give the file and line that backs each claim. Without a clone, read the file on GitHub at `https://raw.githubusercontent.com/awesome-reveal/awesome-reveal/main/<path>`. Browse the file tree at `https://github.com/awesome-reveal/awesome-reveal/tree/main`.
 
 Where to find the facts:
 

@@ -1,6 +1,6 @@
 ---
 title: Staggered list animations with Cascade
-description: "Animate the items of a list, a grid or the words of a heading one after the other with Cascade and the interval option, and reveal long lists item by item."
+description: "Animate the items of a list or a grid one after the other with Cascade and the interval option. Change the interval, and reveal long lists item by item."
 sidebar:
   order: 4
   label: Animate a list
@@ -8,11 +8,6 @@ sidebar:
 
 import CascadeDemo from "../../../components/docs/CascadeDemo.astro";
 import FrameworkTabs from "../../../components/docs/FrameworkTabs.astro";
-import WordsDemo from "../../../components/docs/WordsDemo.astro";
-import wordsReact from "../../../snippets/lists/heading-words.jsx?raw";
-import wordsVue from "../../../snippets/lists/heading-words.vue?raw";
-import wordsAstro from "../../../snippets/lists/heading-words.astro?raw";
-import wordsJs from "../../../snippets/lists/heading-words.js?raw";
 import longListReact from "../../../snippets/lists/post-list.jsx?raw";
 import longListVue from "../../../snippets/lists/post-list.vue?raw";
 import longListAstro from "../../../snippets/lists/post-list.astro?raw";
@@ -37,28 +32,13 @@ Put the items in a cascade. Select an interval to see the effect:
   intervals={[0, 80, 160, 320]}
 />
 
-Only the direct element children animate. Text and deeper descendants do not animate. In React, Vue and Astro, a child with [`display: contents`](https://developer.mozilla.org/en-US/docs/Web/CSS/Reference/Properties/display#contents) shows immediately.
+Only the direct element children animate. Text and deeper descendants do not animate. To reveal the words or the letters of a text, see <a id="reveal-the-words-of-a-heading" href="/guides/text/">Animate text</a>. In React, Vue and Astro, a child with [`display: contents`](https://developer.mozilla.org/en-US/docs/Web/CSS/Reference/Properties/display#contents) shows immediately.
 
 ## Change the interval
 
 `interval` sets the time between the entrances of two children, in milliseconds. The default is 80. The child at position `index` waits `delay + index * interval`. So [`delay`](/guides/timing/#delay-the-entrance) moves the start of the whole sequence.
 
 A negative interval gives negative delays. Each later child then starts further into its entrance.
-
-## Reveal the words of a heading
-
-A cascade does not split text. To reveal each word, wrap each word in an element:
-
-<FrameworkTabs
-  react={wordsReact}
-  vue={wordsVue}
-  astro={wordsAstro}
-  js={wordsJs}
-/>
-
-The entrance moves the element with a transform, and an [inline element cannot have a transform](https://www.w3.org/TR/css-transforms-1/#transformable-element). So give the words `display: inline-block`. Select `inline` to see the words fade in with no movement:
-
-<WordsDemo id="words" title="Reveal the words of a heading" />
 
 ## Reveal a long list or a tall grid
 

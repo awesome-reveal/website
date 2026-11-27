@@ -1,0 +1,107 @@
+---
+title: Migrate from react-reveal to @awesome-reveal/react
+description: "Replace the Fade, Slide, Zoom and Rotate components of react-reveal with Reveal and Cascade, and change the react-reveal props into Awesome Reveal options."
+sidebar:
+  order: 9
+  label: Migrate from react-reveal
+---
+
+[`react-reveal`](https://www.npmjs.com/package/react-reveal) is a different library from Awesome Reveal. Its last version, 1.2.2, is from May 2018. It declares React 15 or 16 as a peer dependency. Do the steps on this page to move its reveal animations to `@awesome-reveal/react`.
+
+To migrate from `react-awesome-reveal`, see [Migrate from v4](/guides/migrate-from-v4/).
+
+## Install the package
+
+The package needs React 18 or 19.
+
+```sh
+pnpm remove react-reveal
+pnpm add @awesome-reveal/react
+```
+
+Remove the `config()` call of `react-reveal/globals`. The package loads its stylesheet automatically. For the two setups that need a step, see [Set up the stylesheet](/guides/migrate-from-v4/#set-up-the-stylesheet).
+
+## Replace the effect components
+
+`react-reveal` has one default export for each effect, such as `react-reveal/Fade`. Replace each effect with the `Reveal` named export:
+
+```jsx
+import { Reveal } from "@awesome-reveal/react";
+```
+
+Set [`from`](/guides/entrances/) to the start state of the effect. In `react-reveal`, a side prop such as `left` names the side where the element starts, as `from` does. The effects move the element by its full size, so this table gives that start position:
+
+| react-reveal                  | `from` with the react-reveal start position |
+| ----------------------------- | ------------------------------------------- |
+| `<Fade>`                      | `{ opacity: 0 }`                            |
+| `<Fade left>`                 | `{ opacity: 0, x: "-100%" }`                |
+| `<Fade right>`                | `{ opacity: 0, x: "100%" }`                 |
+| `<Fade top>`                  | `{ opacity: 0, y: "-100%" }`                |
+| `<Fade bottom>`               | `{ opacity: 0, y: "100%" }`                 |
+| `<Fade left big>`             | `{ opacity: 0, x: -2000 }`                  |
+| `<Fade left distance="40px">` | `{ opacity: 0, x: -40 }`                    |
+| `<Slide left>`                | `{ x: "-100%" }`                            |
+| `<Slide right>`               | `{ x: "100%" }`                             |
+| `<Slide top>`                 | `{ y: "-100%" }`                            |
+| `<Slide bottom>`              | `{ y: "100%" }`                             |
+| `<Zoom>`                      | `{ opacity: 0, scale: 0.1 }`                |
+| `<Rotate>`                    | `{ opacity: 0, rotate: -200 }`              |
+
+The `up` and `down` props of `react-reveal` are other names for `bottom` and `top`. With `mirror`, the element starts on the opposite side. For example, `<Fade left mirror>` is `{ opacity: 0, x: "100%" }`. To use the shorter motion of Awesome Reveal, set `from` to the side, for example `from="left"`. The element then moves 24 pixels.
+
+The `react-reveal` effects take 1000 milliseconds. The default duration of Awesome Reveal is 600 milliseconds. To keep the `react-reveal` duration, set `duration={1000}`. The easing is different. To change it, use your own keyframes.
+
+For `Bounce`, `Flip`, `Roll` and `LightSpeed`, and for `Zoom` or `Rotate` with a side prop, change the CSS animation into native keyframes. See [Change Emotion keyframes into native keyframes](/guides/migrate-from-v4/#change-emotion-keyframes-into-native-keyframes): the steps are the same. The effects that repeat, such as `Pulse`, `Shake` and `Tada`, have no replacement. The entrance plays one time and ends at the resting style of the element.
+
+## Update the props
+
+| react-reveal                                                  | Awesome Reveal                                                                                                                      |
+| ------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------- |
+| `left`, `right`, `top`, `bottom`, `big`, `distance`, `mirror` | `from`. See the table above.                                                                                                        |
+| `duration`, `timeout`                                         | `duration`, in milliseconds.                                                                                                        |
+| `delay`                                                       | `delay`, in milliseconds.                                                                                                           |
+| `fraction`                                                    | [`threshold`](/guides/timing/#reveal-later-with-a-threshold). The `react-reveal` default is 0.2. The Awesome Reveal default is 0.   |
+| `cascade`                                                     | The `Cascade` component. See [Change a cascade](#change-a-cascade).                                                                 |
+| `when`, `in`                                                  | [`when`](/guides/manual-control/). With `false`, the entrance resets with no exit animation.                                        |
+| `spy`                                                         | Set `when` to `false`, then to `true`. See [Play the entrance again](/guides/manual-control/#play-the-entrance-again).              |
+| `onReveal`                                                    | [`onReveal`](/guides/reveal-events/). It gets the element.                                                                          |
+| `wait`                                                        | Start a timer in `onReveal`.                                                                                                        |
+| `innerRef`, `refProp`                                         | `ref`. `Reveal` passes it to the element that it renders.                                                                           |
+| `ssrFadeout`, `ssrReveal`                                     | Remove them. The server HTML hides the content, so the content does not flash. See [Server rendering](/concepts/server-rendering/). |
+| `out`, `opposite`, `collapse`                                 | No replacement. Awesome Reveal has no exit animations.                                                                              |
+| `count`, `forever`                                            | No replacement. The entrance plays one time.                                                                                        |
+
+## Change a cascade
+
+In `react-reveal`, the `cascade` prop animates the children of the one child of the effect. All the children start together, and each later child has a longer duration. `Cascade` gives each child the same duration, and starts each child [`interval`](/guides/lists/#change-the-interval) milliseconds after the previous one.
+
+Render the parent element with `Cascade`, and put the children directly in it:
+
+```jsx title="react-reveal"
+import Fade from "react-reveal/Fade";
+
+<Fade bottom cascade>
+  <ul>
+    <li>One</li>
+    <li>Two</li>
+  </ul>
+</Fade>;
+```
+
+```jsx title="Awesome Reveal"
+import { Cascade } from "@awesome-reveal/react";
+
+<Cascade as="ul" from={{ opacity: 0, y: "100%" }} duration={1000}>
+  <li>One</li>
+  <li>Two</li>
+</Cascade>;
+```
+
+With a text child, the `react-reveal` cascade splits the text into letters. `Cascade` does not split text. See [Animate text](/guides/text/).
+
+## Behavior changes
+
+The type check does not find these changes. Check them after the migration:
+
+- **One element around the children.** `react-reveal` animates its child element directly, and gives each child its own effect. `Reveal` renders one element around all its children, and `as` sets its tag. All its children reveal together. To reveal each child separately, give each child its own `Reveal`. To animate an element with no wrapper, use [`useReveal`](/reference/react/#usereveal).
+- **Reduced motion.** If the user asks for reduced motion, the content shows with no animation. `react-reveal` plays the animation. See [Accessibility](/concepts/accessibility/#reduced-motion).

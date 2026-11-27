@@ -8,7 +8,7 @@ paths:
 
 Give the review of a docs change to a subagent. In its prompt, name this file, the changed pages and the request of the user. Tell it to report each problem with `file:line`, the evidence and a fix, and to write "no findings" for each check that passes.
 
-1. **Package claims**: each API name, option default and code sample matches the `next` branch. See `content-sources.md`.
+1. **Package claims**: each API name, option default and code sample matches the `main` branch. See `content-sources.md`.
 2. **Framework claims**: each claim about Astro, Next.js, Nuxt, Vue, React or a browser matches the official docs of that tool. For Astro, use the `astro-docs` MCP server.
 3. **One place for each fact**: no other current page states the same fact or contradicts it. Link to the page that states the fact.
 4. **Copy**: see `site-copy.md`. For the `title` and `description`, see `page-titles.md`. For file names, see `page-urls.md`.
