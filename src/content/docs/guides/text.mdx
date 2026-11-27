@@ -1,0 +1,65 @@
+---
+title: Text reveal animations for words and letters
+description: "Reveal the words or the letters of a heading one after the other with Cascade. Split the text into elements, and keep it readable for screen readers."
+sidebar:
+  order: 5
+  label: Animate text
+---
+
+import FrameworkTabs from "../../../components/docs/FrameworkTabs.astro";
+import LettersDemo from "../../../components/docs/LettersDemo.astro";
+import WordsDemo from "../../../components/docs/WordsDemo.astro";
+import wordsReact from "../../../snippets/text/heading-words.jsx?raw";
+import wordsVue from "../../../snippets/text/heading-words.vue?raw";
+import wordsAstro from "../../../snippets/text/heading-words.astro?raw";
+import wordsJs from "../../../snippets/text/heading-words.js?raw";
+import lettersReact from "../../../snippets/text/heading-letters.jsx?raw";
+import lettersVue from "../../../snippets/text/heading-letters.vue?raw";
+import lettersAstro from "../../../snippets/text/heading-letters.astro?raw";
+import lettersJs from "../../../snippets/text/heading-letters.js?raw";
+
+A cascade does not split text. To reveal the words or the letters of a text, wrap each part in an element, and put the elements in a cascade. For the cascade APIs and the `interval` option, see [Animate a list](/guides/lists/).
+
+## Reveal each word
+
+Wrap each word in an element:
+
+<FrameworkTabs
+  react={wordsReact}
+  vue={wordsVue}
+  astro={wordsAstro}
+  js={wordsJs}
+/>
+
+The entrance moves the element with a transform, and an [inline element cannot have a transform](https://www.w3.org/TR/css-transforms-1/#transformable-element). So give the words `display: inline-block`. Select `inline` to see the words fade in with no movement:
+
+<WordsDemo id="words" title="Reveal each word" />
+
+## Reveal each letter
+
+Split the text with `Array.from(text)`, and put each letter in an element.
+
+<FrameworkTabs
+  react={lettersReact}
+  vue={lettersVue}
+  astro={lettersAstro}
+  js={lettersJs}
+/>
+
+Keep the letters inline. The browser can [break a line before and after each inline-block element](https://www.w3.org/TR/css-text-3/#line-break-details), so a word of inline-block letters can break between two letters. An inline element cannot move, so give the letters a start state with only `opacity`, as in the example, or with `opacity` and `blur`.
+
+<LettersDemo id="letters" title="Reveal each letter" />
+
+## Keep the text readable for screen readers
+
+A screen reader can read each letter element as a separate word. Give the full text to screen readers one time:
+
+- On an element that can have a name, such as a heading, set `aria-label` to the full text. Set `aria-hidden="true"` on each letter. The examples above do this.
+- On an element that cannot have a name, such as a paragraph or a `div`, put the full text in a visually hidden element. Put the letters in an element with `aria-hidden="true"`, and make it the cascade.
+
+The words need no change. Screen readers read a word in its own element as one word.
+
+## Things to know
+
+- **`Array.from` splits the text into code points.** Use the letter examples only when each character that a reader sees has one code point. Other characters break into pieces, such as some emoji and the Hindi `कि`.
+- **Each letter adds one interval.** The last letter starts `(count - 1) * interval` milliseconds after the first. Split only short text, such as a heading.
